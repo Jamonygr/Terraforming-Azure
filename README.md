@@ -3,7 +3,7 @@
 [![Course quality](https://github.com/Jamonygr/Terraforming-Azure/actions/workflows/quality.yml/badge.svg)](https://github.com/Jamonygr/Terraforming-Azure/actions/workflows/quality.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-54c8ff)](https://github.com/Jamonygr/Terraforming-Azure/blob/main/LICENSE)
 
-![Terraforming Azure: a hub, three spokes and simulated on-premises](assets/illustrations/cover.svg)
+![Terraforming Azure: from your first deployment to a complete hub-and-spoke network](assets/illustrations/terraforming-azure-cover.png)
 
 **From your first deployment to a complete hub-and-spoke network.**
 
