@@ -14,8 +14,8 @@ variable "address_space" {
   type        = string
   default     = "10.7.0.0/16"
   validation {
-    condition     = can(cidrnetmask(var.address_space))
-    error_message = "Supply a valid IPv4 CIDR."
+    condition     = can(cidrnetmask(var.address_space)) && can(regex("/16$", var.address_space)) && try(cidrhost(var.address_space, 0) == split("/", var.address_space)[0], false)
+    error_message = "Supply a canonical IPv4 /16 network (for example 10.7.0.0/16); this lesson derives /24 subnets from it."
   }
 }
 

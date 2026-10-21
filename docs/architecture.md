@@ -22,13 +22,18 @@ downloads, not as a substitute for hybrid routes. All VM NICs remain private.
 
 ## Traffic contract
 
+The [detailed traffic and evidence matrix](traffic-matrix.md) records source,
+destination, protocol, DNS name, expected address, forward route, return route,
+enforcement and expected result separately. Azure runtime remains unverified;
+the overhaul release uses configuration, mocks, local tests and browser checks.
+
 For every successful test, record the source, destination, protocol, expected
 forward and return routes, enforcement point, command, and observed result.
 
 | Source → destination | Protocol / name | Forward and return path | Expected enforcement |
 |---|---|---|---|
 | Allowed operator → application | HTTPS / `app.terraforming-azure.test` | Public WAF → private IIS; IIS returns within the same app VNet | Operator allowlist, WAF; normal page 200, test rule 403 |
-| Bastion → Windows | RDP / private IP | Hub to directly peered spoke and back | Bastion plus workload NSG; no public RDP |
+| Bastion → Windows | RDP / private IP | Direct hub/spoke peering; corporate VM uses IP-based connection over VPN | Standard Bastion plus workload NSG; no public RDP |
 | App → approved internet host | HTTPS / allowed FQDN | UDR → Firewall → internet; stateful return | Firewall application allow rule |
 | App → unapproved internet host | HTTPS | Same next hop, denied before destination | Firewall deny evidence |
 | Operations → application | HTTP / private IIS IP | Explicit app-prefix route → Firewall → app; reciprocal route back | Firewall network rule plus destination NSG |
@@ -65,6 +70,10 @@ See [Microsoft's inspection scenarios](https://learn.microsoft.com/en-us/azure/p
 Spokes use Firewall DNS proxy. Firewall forwards to the static resolver inbound
 IP. Azure private zones are linked to the resolver's hub. The hybrid stage adds
 an outbound endpoint and a hub-linked ruleset for the corporate namespace.
+The outbound endpoint reaches corporate DNS directly over VPN, with the return
+path learned back to the hub. Its subnet has no Firewall UDR; the corporate NSG
+permits TCP/UDP 53 from the outbound resolver subnet. This pair has no Firewall
+rule or Firewall-log requirement.
 Corporate Windows DNS conditionally forwards the Azure lab zone and original
 service namespaces (`blob.core.windows.net`, `vault.azure.net`) to the inbound IP.
 Do not create a hub-linked rule that forwards an Azure private zone back to its

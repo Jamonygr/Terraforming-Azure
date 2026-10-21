@@ -1,8 +1,14 @@
 # TFA-032 - RBAC, policy, budgets, and locks
 
-[Course home](../../README.md) | [Previous lab](../TFA-031/README.md) | [Next lab](../TFA-033/README.md)
+<!-- lab-metadata:start -->
+**Phase 5:** Hybrid operations
 
-> **Mode:** Azure deployment | **Time:** 70-100 minutes | **Cost:** Low deployment cost; the budget is an alert mechanism and does not stop resource spending.
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-031 — Hybrid DNS with Private Resolver](../TFA-031/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-031/README.md) | [Next lab](../TFA-033/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ A usable lab needs permissions, guardrails, cost visibility, and a deliberate cl
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Apply practical permissions, policy, budget notifications, and resource locks. Your evidence must distinguish configuration intent from the observed result: Each control addresses a distinct question and cleanup removes the lock deliberately.
+
+## Predict the mechanism
+
+RBAC assigns actions to principals at a scope; Azure Policy evaluates resource properties against governance rules. A deletion lock blocks accidental removal but is not a backup or a defense against an authorized lock remover. A budget alert reports a threshold and does not suspend billable resources.
+
+Before running commands, write the expected result: **Each control addresses a distinct question and cleanup removes the lock deliberately.** Then explain what would change in this controlled failure: Attempt the documented policy violation or deletion with a lock, then repair the exact control. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,13 +30,15 @@ RBAC determines who may act. Azure Policy checks whether a resource configuratio
 
 ## Architecture
 
-![TFA-032 architecture](../../assets/diagrams/TFA-032.svg)
+<!-- lab-diagram:start -->
+![TFA-032 teaching diagram](../../assets/diagrams/TFA-032.svg)
+<!-- lab-diagram:end -->
 
 A resource-group Reader assignment to an existing principal, a custom required-tag policy and RG assignment, an RG budget, and an optional delete lock that is off by default.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
 
 Low deployment cost; the budget is an alert mechanism and does not stop resource spending. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
@@ -69,7 +83,7 @@ terraform output budget_id
 az network nsg create -g $rg -n nsg-policy-negative-test --location $env:TF_VAR_location
 ```
 
-Reader and policy are scoped to the lab RG, the budget exists with your explicit current-month start date, and no lock exists until enabled. The untagged NSG should be denied once policy propagates; if it was created before enforcement, remove it before cleanup and record the timing.
+Reader and policy are scoped to the lab RG, the budget exists with your explicit current-month start date, and no lock exists until enabled. The untagged NSG should be denied once policy propagates; if it was created before enforcement, record that timing, verify its exact ID with `az network nsg show -g $rg -n nsg-policy-negative-test --query id -o tsv`, then remove only that synthetic NSG with `az network nsg delete -g $rg -n nsg-policy-negative-test` before cleanup. The Terraform group destroy is blocked by unexpected nested resources under the provider safety setting, so do not leave this manual probe behind.
 
 Save a short local evidence note with the time, exact probe, observed result, and your explanation. Resource existence, DNS, routing, authorization, and application success are different kinds of evidence.
 
@@ -88,17 +102,25 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 ## Cleanup
 
 ```powershell
+$cleanupGroup = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroup) { throw 'Capture the actual lab group before planning destruction.' }
 # If you enabled the lock, remove it through code first.
 terraform apply -var='enable_delete_lock=false'
+if ($LASTEXITCODE -ne 0) { throw 'Lock removal failed: resolve it before planning destruction.' }
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 # Check the Azure resource group no longer exists after successful destroy.
-az group exists --subscription $env:TF_VAR_subscription_id --name rg-tfa032
+$groupExists = az group exists --subscription $env:TF_VAR_subscription_id --name $cleanupGroup
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 ```
 
-A successful destroy and an empty state are the expected result. Verify the actual lab group name from the earlier output if you changed name_prefix. The subscription-scoped custom policy definition is also managed by this root and must be removed by its destroy; an RG-only delete is insufficient cleanup. Do not commit generated plans or state as evidence.
+A successful destroy and an empty state are the expected result. The cleanup command uses the captured group, including a changed prefix. The subscription-scoped custom policy definition is also managed by this root and must be removed by its destroy; an RG-only delete is insufficient cleanup. Do not commit generated plans or state as evidence.
 
 ## Completion criteria
 
@@ -110,3 +132,15 @@ A successful destroy and an empty state are the expected result. Verify the actu
 ## Continue learning
 
 [Official documentation](https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets) | [Continue to TFA-033](../TFA-033/README.md)
+
+## Evidence contract
+
+Inspect the scoped assignment, policy, budget and lock; follow the explicit unlock-before-destroy sequence. Each control addresses a distinct question and cleanup removes the lock deliberately.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.
+
+## Rehearse governance evidence without Azure
+
+[Test-GovernanceEvidence.ps1](Test-GovernanceEvidence.ps1) reads a normalized evidence package: the policy denial response, exact resource/assignment IDs, budget configuration and spend, a separately observed notification event, and lock lists before/after a successful unlock. It requires `RequestDisallowedByPolicy` from the intended assignment; an unrelated authorization error does not count. It calculates the spend percentage and checks both the threshold and notification observation. It also verifies the owned `CanNotDelete` lock disappears after a successful apply. The resource remains present after a notification, demonstrating that a budget is not a shutdown mechanism.
+
+Run `pwsh -NoProfile -File tests/Test-RouteGovernanceFixtures.ps1` from the repository root. The synthetic positive case models 85% spend against an 80% threshold; six negative cases reject the wrong error, wrong assignment, spend below threshold, absent notification, a remaining lock, and failed unlock. A fixture does not prove mail delivery, policy enforcement or Azure lock behavior. For a later live exercise, combine your captured CLI/API responses and notification observation into the same documented fields, without including tokens, recipient secrets or unrelated resource data.

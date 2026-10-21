@@ -41,7 +41,10 @@ and actual Azure certificate validation are Azure runtime checks.
 Outputs expose the resource group, subnet prefixes/IDs, VM names/IDs/private IPs,
 NICs, resolver/firewall IPs, ingress IP/name/hostname, private service names,
 workspace and VPN connection names. No credential output is exposed.
-`traffic_contract` is explanatory plan metadata; live verification must inspect
+`traffic_contract` derives its values from managed NIC, route, association, peering
+and service resources. `evidence_targets` supplies non-secret resource names and
+IDs; `private_endpoint_ips` reports actual service-connection addresses. These are
+configuration evidence; live verification must inspect
 effective routes, actual HTTP/DNS behavior and service logs.
 
 ## Important implementation boundaries
@@ -57,7 +60,9 @@ effective routes, actual HTTP/DNS behavior and service logs.
 - Spoke DNS → Firewall proxy → resolver inbound → hub-linked private zones. The
   hub outbound ruleset forwards only the corp zone over VPN. Windows DNS forwards
   original Azure service namespaces back to inbound; there is no self-forwarding
-  Azure zone rule in the hub ruleset.
+  Azure zone rule in the hub ruleset. The outbound endpoint/corporate DNS pair uses
+  a direct VPN path, with no Firewall UDR or Firewall rule. Its corporate NSG
+  allows DNS from the outbound resolver subnet; do not expect Firewall logs for it.
 - corp01 boots on Azure DNS before its DNS role is installed, then changes its own
   DNS client and the VNet setting. The on-premises NAT provides extension/AMA
   Internet egress and does not bypass more-specific private VPN paths.
@@ -78,7 +83,15 @@ terraform validate
 terraform test
 ```
 
-The mock-provider suite plans all stages and checks actual resource relationships:
+The mock-provider suite applies all stages in memory and checks actual resource
+relationships using distinct fabricated IDs:
 counts, private NICs/services, WAF prevention/backends, PE policies, explicit routes,
 gateway transit and DNS forwarding. It makes no Azure API calls and cannot certify
 cloud deployability or traffic behavior. TFA-040 provides the live acceptance work.
+
+The repository mutation runner copies this module to an isolated temporary root
+and proves that five changes fail assertions: adding a workload public IP,
+associating the app route table with the WAF subnet, disabling PE route policies,
+widening Firewall rule sources, and removing a required return route. It never
+modifies the working module. Run `python tools/test_capstone_mutations.py` from the
+repository root with contributor Python 3.12+.

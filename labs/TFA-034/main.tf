@@ -46,13 +46,15 @@ module "client" {
 }
 
 module "server" {
+  depends_on          = [azurerm_subnet_nat_gateway_association.probe, azurerm_nat_gateway_public_ip_association.probe]
   source              = "../../modules/patterns/windows-vm"
   name                = "${var.name_prefix}-server"
   resource_group_name = azurerm_resource_group.lab.name
   location            = azurerm_resource_group.lab.location
   subnet_id           = azurerm_subnet.server.id
   admin_password      = var.admin_password
-  bootstrap_command   = "Install-WindowsFeature Web-Server -IncludeManagementTools; New-NetFirewallRule -DisplayName 'Lab IIS HTTP' -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow"
+  private_ip_address  = "10.34.2.4"
+  bootstrap_command   = "Install-WindowsFeature Web-Server -IncludeManagementTools; if (-not (Get-NetFirewallRule -DisplayName 'Lab IIS HTTP' -ErrorAction SilentlyContinue)) { New-NetFirewallRule -DisplayName 'Lab IIS HTTP' -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow }; ${var.incident == "app-stopped" ? "Stop-Service W3SVC -Force" : "Start-Service W3SVC"}"
 
   tags = local.tags
 }

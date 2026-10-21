@@ -3,22 +3,22 @@
     "id": "TFA-016-Q1",
     "prompt": "Why bootstrap storage from local state first?",
     "options": [
-      "State cannot ever move",
+      "Remote state is mandatory for the first resource",
+      "Provider authentication also provisions the backend",
       "The remote backend must exist before initialization can use it",
-      "Azure Blob creates its own subscription",
-      "Backend blocks are ignored by Terraform"
+      "Backend initialization creates the storage resources"
     ],
-    "answer": 1,
+    "answer": 2,
     "explanation": "Terraform cannot initialize against a backend resource that has not been created."
   },
   {
     "id": "TFA-016-Q2",
     "prompt": "What supplies Azure Blob state locking?",
     "options": [
-      "The README navigation",
-      "The region name",
+      "Storage account versioning",
+      "A resource-group delete lock",
       "Blob leasing in the backend",
-      "The resource-group tag"
+      "GitHub workflow concurrency alone"
     ],
     "answer": 2,
     "explanation": "The AzureRM backend uses Blob leases to coordinate state access."
@@ -27,12 +27,12 @@
     "id": "TFA-016-Q3",
     "prompt": "Which role is relevant to Entra-authenticated state blob access?",
     "options": [
-      "Reader on an unrelated VNet only",
-      "DNS Zone Reader only",
-      "No role is ever required",
-      "Storage Blob Data Contributor"
+      "Reader on the storage account",
+      "Storage Blob Data Contributor",
+      "Storage Account Contributor only",
+      "Contributor on the resource group only"
     ],
-    "answer": 3,
+    "answer": 1,
     "explanation": "Control-plane ownership alone does not necessarily establish the required blob data-plane authorization."
   },
   {
@@ -40,9 +40,9 @@
     "prompt": "What must remain consistent after a correct state migration?",
     "options": [
       "Resource bindings and state lineage",
-      "Every state serial forever",
-      "The file’s physical storage location",
-      "An account key written into Git"
+      "The backend configuration file name",
+      "The backend's physical storage location",
+      "Every serial number forever"
     ],
     "answer": 0,
     "explanation": "Migration moves the state without recreating its resource ownership history."
@@ -51,12 +51,12 @@
     "id": "TFA-016-Q5",
     "prompt": "What is the correct teardown order for this self-hosting exercise?",
     "options": [
-      "Disable all state locking permanently",
       "Migrate back locally, then destroy the backend resources",
-      "Delete storage first, then try to read its state",
-      "Commit state publicly before destroy"
+      "Delete the remote state blob before migration",
+      "Destroy Storage before removing the backend block",
+      "Remove local state after switching stage"
     ],
-    "answer": 1,
+    "answer": 0,
     "explanation": "Keep the backend available until the state no longer depends on it."
   }
 ]

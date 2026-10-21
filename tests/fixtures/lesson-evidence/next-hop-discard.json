@@ -1,0 +1,5 @@
+{
+  "nextHopType": "None",
+  "nextHopIpAddress": "0.0.0.0",
+  "routeTableId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/tfa013-rg/providers/Microsoft.Network/routeTables/tfa013-routes"
+}

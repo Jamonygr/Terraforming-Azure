@@ -3,21 +3,21 @@
     "id": "TFA-005-Q1",
     "prompt": "What is the principal lifecycle distinction between a resource and a data source?",
     "options": [
-      "Resources only document objects",
-      "They have identical ownership behavior",
+      "Data sources are resources with optional creation",
       "Resources manage objects; data sources read them",
-      "Data sources always delete objects"
+      "Resources and data sources both delete remote objects",
+      "Data sources automatically import ownership"
     ],
-    "answer": 2,
+    "answer": 1,
     "explanation": "A data source observes an existing object; it does not take lifecycle ownership."
   },
   {
     "id": "TFA-005-Q2",
     "prompt": "Why does the group data source wait for the managed group?",
     "options": [
-      "Its file name sorts later",
-      "All data sources always run last",
-      "The provider guesses from the README",
+      "Data blocks execute after every resource block",
+      "The matching name string always creates an implicit dependency",
+      "Terraform evaluates files alphabetically",
       "Its name references the managed resource"
     ],
     "answer": 3,
@@ -27,36 +27,36 @@
     "id": "TFA-005-Q3",
     "prompt": "What does a local value provide?",
     "options": [
-      "A reusable expression inside the module",
-      "A new caller input automatically",
-      "A separate state backend",
-      "A new Azure tenant"
+      "A persistent object stored independently of state",
+      "A separate caller-controlled input",
+      "A value shared automatically across all roots",
+      "A reusable expression inside the module"
     ],
-    "answer": 0,
+    "answer": 3,
     "explanation": "Locals simplify internal expressions; variables define the caller input interface."
   },
   {
     "id": "TFA-005-Q4",
     "prompt": "Reading the managed group through a data source means destroy will do what?",
     "options": [
-      "Create a second group first",
-      "Delete the group through its managed resource binding",
-      "Never delete the group again",
-      "Delete the subscription"
+      "Stop with two competing ownership bindings",
+      "Delete it through the data-source address",
+      "Retain it because a data source also references it",
+      "Delete the group through its managed resource binding"
     ],
-    "answer": 1,
+    "answer": 3,
     "explanation": "The data source does not remove or duplicate the resource’s ownership."
   },
   {
     "id": "TFA-005-Q5",
     "prompt": "A data source names a missing group. What should you expect?",
     "options": [
-      "Terraform imports all groups",
-      "The data source silently adds Owner rights",
+      "Create the group using its configured name",
       "The read fails rather than creating the group",
-      "A group is created automatically"
+      "Return an empty group and continue successfully",
+      "Import the named group into state automatically"
     ],
-    "answer": 2,
+    "answer": 1,
     "explanation": "Observation and creation are separate operations."
   }
 ]

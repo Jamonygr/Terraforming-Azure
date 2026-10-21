@@ -131,3 +131,8 @@ output "network_interface_id" {
 output "principal_id" {
   value = azurerm_windows_virtual_machine.vm.identity[0].principal_id
 }
+
+output "bootstrap_command" {
+  description = "Non-secret command from the planned extension settings, useful for offline behavior contracts. Never place credentials in bootstrap_command."
+  value       = try(jsondecode(azurerm_virtual_machine_extension.bootstrap[0].settings).commandToExecute, null)
+}

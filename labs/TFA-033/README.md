@@ -1,8 +1,14 @@
 # TFA-033 - Provider aliases and subscription boundaries
 
-[Course home](../../README.md) | [Previous lab](../TFA-032/README.md) | [Next lab](../TFA-034/README.md)
+<!-- lab-metadata:start -->
+**Phase 5:** Hybrid operations
 
-> **Mode:** Azure deployment | **Time:** 45-65 minutes | **Cost:** Resource groups alone have no usage charge.
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-032 — RBAC, policy, budgets, and locks](../TFA-032/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-032/README.md) | [Next lab](../TFA-034/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ A provider alias is an explicit deployment boundary. A resource can be created i
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Map provider aliases explicitly and understand cross-subscription prerequisites. Your evidence must distinguish configuration intent from the observed result: Both explicit mappings work in the training subscription without hidden defaults.
+
+## Predict the mechanism
+
+An aliased provider is a distinct configuration passed explicitly into a child module. Using two aliases in one subscription practices mapping without pretending to establish a cross-subscription boundary. A real second subscription additionally needs credentials, permissions, registration and state separation appropriate to that scope.
+
+Before running commands, write the expected result: **Both explicit mappings work in the training subscription without hidden defaults.** Then explain what would change in this controlled failure: Omit the required provider mapping and restore the declared interface. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,13 +30,15 @@ The default AzureRM provider uses `subscription_id`; the `secondary` alias uses 
 
 ## Architecture
 
-![TFA-033 architecture](../../assets/diagrams/TFA-033.svg)
+<!-- lab-diagram:start -->
+![TFA-033 teaching diagram](../../assets/diagrams/TFA-033.svg)
+<!-- lab-diagram:end -->
 
 One resource group through the default provider and another through an aliased provider, with both fully qualified ARM IDs shown as outputs.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
 
 Resource groups alone have no usage charge. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
@@ -82,15 +96,22 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 ## Cleanup
 
 ```powershell
+$cleanupGroup = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroup) { throw 'Capture the actual lab group before planning destruction.' }
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 # Check the Azure resource group no longer exists after successful destroy.
-az group exists --subscription $env:TF_VAR_subscription_id --name rg-tfa033
+$groupExists = az group exists --subscription $env:TF_VAR_subscription_id --name $cleanupGroup
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 ```
 
-A successful destroy and an empty state are the expected result. Verify the actual lab group name from the earlier output if you changed name_prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
+A successful destroy and an empty state are the expected result. The cleanup command uses the captured group, including a changed prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
 
 ## Completion criteria
 
@@ -102,3 +123,9 @@ A successful destroy and an empty state are the expected result. Verify the actu
 ## Continue learning
 
 [Official documentation](https://developer.hashicorp.com/terraform/language/providers/configuration#alias-multiple-provider-configurations) | [Continue to TFA-034](../TFA-034/README.md)
+
+## Evidence contract
+
+Run the alias mapping tests and inspect which provider configuration each module receives. Both explicit mappings work in the training subscription without hidden defaults.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

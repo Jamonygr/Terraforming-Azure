@@ -1,14 +1,30 @@
 # TFA-009 — Explicit outbound connectivity
 
-![Explicit outbound connectivity teaching diagram](../../assets/diagrams/TFA-009.svg)
+<!-- lab-metadata:start -->
+**Phase 2:** Azure networks
+
+**Learning target:** 75 minutes · **Cost tier:** Moderate · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-008 — NSGs and application security groups](../TFA-008/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-009 teaching diagram](../../assets/diagrams/TFA-009.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Connect a private subnet to an explicit NAT Gateway and distinguish outbound SNAT from inbound publication.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-008](../TFA-008/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+NAT Gateway translates outbound connections from its associated subnet to a selected public source address. The NAT public IP is not a public IP on the VM and creates no inbound listener. A subnet can exist with NAT configured before any workload proves outbound behavior.
+
+Before running commands, write the expected result: **Configuration attaches one explicit egress path; no inbound public VM endpoint is implied.** Then explain what would change in this controlled failure: Remove the NAT subnet association in a reviewed plan and identify the missing egress dependency. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The subnet disables default outbound access and explicitly associates a Standard
 
 Private workload subnet → NAT Gateway → Standard static public IPv4 → Internet destination. Replies return through the NAT mapping; no public IP is attached to a workload NIC.
 
-**Cost:** Moderate: NAT Gateway, its public IPv4 address, and processed data are billable. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -92,9 +108,13 @@ Comment out the subnet association and plan. Expect removal of the egress attach
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -107,3 +127,9 @@ Choose egress deliberately for policy, routing, resilience, scale, and cost. NAT
 ## Navigation
 
 [Previous: TFA-008](../TFA-008/README.md) · [Curriculum](../../README.md) · [Next: TFA-010](../TFA-010/README.md)
+
+## Evidence contract
+
+Inspect subnet/NAT/public-IP associations; use the later private Windows workload to observe actual egress. Configuration attaches one explicit egress path; no inbound public VM endpoint is implied.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

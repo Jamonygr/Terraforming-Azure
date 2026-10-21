@@ -1,14 +1,30 @@
 # TFA-007 — IP addressing, CIDR, VNets, and subnets
 
-![IP addressing, CIDR, VNets, and subnets teaching diagram](../../assets/diagrams/TFA-007.svg)
+<!-- lab-metadata:start -->
+**Phase 2:** Azure networks
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-006 — Collections and resource identity](../TFA-006/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-007 teaching diagram](../../assets/diagrams/TFA-007.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Calculate an address plan and deploy three non-overlapping workload subnets directly before introducing a module.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-006](../TFA-006/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+A VNet prefix contains subnet prefixes; subnets in the same VNet cannot overlap. Azure reserves the first four and last address in each subnet. A /24 contains 256 addresses but 251 usable addresses, and the gateway address cannot be assigned to a VM.
+
+Before running commands, write the expected result: **The segmented subnets fit the VNet without overlap.** Then explain what would change in this controlled failure: Propose overlapping prefixes, explain the rejection, then restore disjoint ranges. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The VNet defines an address space; subnets divide it into workload boundaries. A
 
 VNet 10.7.0.0/16 contains web 10.7.1.0/24, app 10.7.2.0/24, and data 10.7.3.0/24. There is no peering, route table, VM, NSG, or gateway.
 
-**Cost:** Low: VNets and subnets have no direct hourly fee; later connectivity and traffic may be billed. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -92,9 +108,13 @@ Temporarily give app and web the same netnum in main.tf and plan. Local validati
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -107,3 +127,11 @@ Allocate address spaces across regions, subscriptions, hybrid networks, and futu
 ## Navigation
 
 [Previous: TFA-006](../TFA-006/README.md) · [Curriculum](../../README.md) · [Next: TFA-008](../TFA-008/README.md)
+
+## Evidence contract
+
+Compare network/subnet prefixes and calculate containment and usable counts before planning. The segmented subnets fit the VNet without overlap.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.
+
+Run `terraform test` after initialization for the four mocked allocation contracts: distinct contained /24s, malformed CIDR, wrong /16 size and noncanonical host bits. The generated subnet design avoids overlap; arbitrary user-supplied overlapping subnet maps are not part of this root.

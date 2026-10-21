@@ -124,7 +124,7 @@ resource "azurerm_virtual_machine_extension" "iis" {
   type_handler_version       = "1.10"
   auto_upgrade_minor_version = true
   settings = jsonencode({
-    commandToExecute = "powershell.exe -ExecutionPolicy Bypass -Command Install-WindowsFeature -Name Web-Server -IncludeManagementTools; Set-Content -Path C:/inetpub/wwwroot/Default.htm -Value 'Terraforming Azure TFA-010'"
+    commandToExecute = "powershell.exe -NoLogo -NonInteractive -ExecutionPolicy Bypass -EncodedCommand ${textencodebase64(file("${path.module}/Bootstrap-Iis.ps1"), "UTF-16LE")}"
   })
   depends_on = [azurerm_subnet_nat_gateway_association.lab, azurerm_nat_gateway_public_ip_association.lab]
 }

@@ -1,0 +1,5 @@
+{
+  "nextHopType": "VnetLocal",
+  "nextHopIpAddress": "0.0.0.0",
+  "routeTableId": "System Route"
+}

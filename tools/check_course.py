@@ -6,6 +6,7 @@ import re
 import xml.etree.ElementTree as ET
 
 ROOT=Path(__file__).resolve().parents[1]
+EXCLUDED={'.site-docs','site','.terraform','.git','.venv','work','node_modules','playwright-report','test-results'}
 
 def main():
     errors=[]
@@ -34,11 +35,11 @@ def main():
             prompts.add(prompt)
         if not list(folder.glob('*.tf')):errors.append(f'{l["id"]}: missing executable Terraform example')
     for path in ROOT.rglob('*.svg'):
-        if any(p in path.parts for p in ('.site-docs','site','.terraform')):continue
+        if EXCLUDED.intersection(path.parts):continue
         try:ET.parse(path)
         except ET.ParseError as e:errors.append(f'{path.relative_to(ROOT)}: invalid SVG {e}')
     for path in ROOT.rglob('*.md'):
-        if any(p in path.parts for p in ('.site-docs','site','.terraform','.git','work')):continue
+        if EXCLUDED.intersection(path.parts):continue
         body=re.sub(r'```.*?```','',path.read_text(encoding='utf-8'),flags=re.S)
         for href in re.findall(r'!?\[[^\]]*\]\(([^\s)]+)\)',body):
             if urlparse(href).scheme or href.startswith(('#','//')):continue

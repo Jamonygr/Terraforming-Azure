@@ -1,72 +1,40 @@
 # Cost and cleanup
 
-Costs are part of each exercise. Local/mocked lessons create no cloud resources.
-Low-cost labels describe relative footprint, not a spending limit. Region, SKU,
-currency, discounts, minimum capacity, traffic, disk, logs and taxes affect actual
-charges. Budgets notify; they do not enforce a hard spending cap.
+Costs are part of each exercise. Start with the **[complete dated estimates](cost-estimates.md)**: all 40 lesson inventories, optional probe topologies and the four cumulative capstone stages. The tables count every declared fixed-price component and state the assumed Storage/log usage. They are estimates, not bills observed from a deployed environment.
 
 ## Before each paid stage
 
-1. Read the lesson inventory and resource SKU defaults.
-2. Obtain current West Europe retail rates using
-   `./scripts/Get-LabCostEstimate.ps1`; review ambiguous meters rather than choosing
-   the cheapest one. The script returns candidates, not a billing quote.
-3. Complete the price worksheet below for both a four-hour and 24-hour session.
-4. Review the plan, quota, teardown commands and regional availability.
-5. Record the start time and destroy after the exercise. Check Cost Management
-   later because billing data has a delay.
+1. Read the lesson resource inventory and the dated assumptions.
+2. Reproduce its estimate locally, without login or a network request:
 
-Use [Azure's pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
-and the [official Retail Prices API](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices)
-to verify current meter selection. Do not carry an old numeric estimate forward
-as if it were a current quote.
+   ```powershell
+   ./scripts/Get-LabCostEstimate.ps1 -Lab TFA-031 -Hours 4
+   ./scripts/Get-LabCostEstimate.ps1 -Lab TFA-012 -OptionalProbes -Hours 4
+   ./scripts/Get-LabCostEstimate.ps1 -Stage hybrid -Hours 24
+   ```
 
-## Session worksheet
+3. Review the current [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) and add traffic, processing, operations and any extra log ingestion. Rates and regional availability can change.
+4. Review the saved plan, permissions, resource quotas and cleanup commands before choosing to deploy.
+5. Record the start time. Destroy after the exercise and check billing later because Cost Management data is delayed.
 
-### Dated example: selected hourly services
+Firewall, Bastion, WAF, DNS Resolver and VPN gateways have substantial charges while provisioned, even when no learner is actively using them. Review the cost checkpoint before **secure**, **applications** and **hybrid**. The full default hybrid estimate on 21 October 2026 is **USD 14.31 for four hours** or **USD 85.61 for 24 hours**, including the stated log/storage assumptions and excluding additional usage. The detailed table is the source for these numbers.
 
-Retrieved from the official Retail Prices API on **2026-10-21**, West Europe,
-USD retail consumption pricing. These are selected fixed/hourly services only,
-not the full deployment bill. The sample assumes one WAF instance's illustrative
-10 capacity units; verify actual billed capacity and add every remaining row.
+## Rates, units and maintenance
 
-| Selected meter | Quantity | USD/hour total | Four hours | 24 hours |
-|---|---:|---:|---:|---:|
-| Firewall Standard deployment | 1 | 1.2500 | 5.00 | 30.00 |
-| Bastion Standard gateway | 1 | 0.2900 | 1.16 | 6.96 |
-| WAF_v2 fixed cost | 1 | 0.4680 | 1.87 | 11.23 |
-| WAF_v2 capacity units | 10 | 0.1440 | 0.58 | 3.46 |
-| VpnGw1AZ | 2 | 0.4200 | 1.68 | 10.08 |
-| **Selected-meter subtotal** | | **2.5720** | **10.29** | **61.73** |
+[The price snapshot](cost-snapshot.json) records 20 exact meter selections, products, regions, tiers, units and effective dates. [The inventory](../curriculum/costs.json) separates default and optional quantities. The table generator has unit tests for monthly conversion, daily DNS billing and the required capstone quantities:
 
-Reproduce using `./scripts/Get-LabCostEstimate.ps1 -SelectionFile
-docs/cost-selection.example.json`. The JSON records exact meter IDs and quantities.
-This subtotal excludes Windows VMs, disks, DNS Resolver endpoints/rulesets,
-private endpoints, NAT, public IPs, Storage, traffic, logs and taxes. DNS Resolver
-meters are monthly, prorated to hours, and can use global/zone geography in the
-API rather than the `westeurope` ARM region; check the [DNS pricing page](https://azure.microsoft.com/en-us/pricing/details/dns/)
-instead of assuming a missing region result means zero cost.
+```powershell
+python tools/cost_estimate.py --check
+python tools/cost_estimate.py --stage applications --hours 4
+```
 
-### Complete the remaining footprint
+Maintainers can inspect current candidates with `./scripts/Get-LabCostEstimate.ps1 -Refresh`. This calls only Microsoft's public Retail Prices API; no subscription access is used. Its optional `-SelectionFile docs/cost-selection.example.json` mode is retained for comparing the earlier selected-hourly subtotal. That subtotal is not the complete course estimate. NAT/Private Link use Global meters and DNS Resolver uses Zone 1 meters, so region-only candidate searches do not find every service.
 
-| Resource | Full-stage quantity | Four-hour estimate | 24-hour estimate |
-|---|---:|---|---|
-| Firewall Standard | 1 deployment | hourly meter × 4 + processed data | hourly meter × 24 + processed data |
-| Bastion Standard | 1 deployment | hourly meter × 4 + transfer | hourly meter × 24 + transfer |
-| Application Gateway WAF_v2 | 1 deployment | gateway hourly + capacity units × 4 | gateway hourly + capacity units × 24 |
-| VPN Gateway | 2 selected gateway SKUs | sum of gateway hourly meters × 4 | sum of gateway hourly meters × 24 |
-| DNS Private Resolver | inbound + outbound endpoint | endpoint/ruleset meters × 4 + queries | endpoint/ruleset meters × 24 + queries |
-| Windows VMs | inspect plan; IIS pair + operations + corporate | quantity × Windows SKU hourly × 4 + disks | quantity × Windows SKU hourly × 24 + disks |
-| Private endpoints | Blob + Key Vault | endpoint hours + processed data | endpoint hours + processed data |
-| Corporate NAT Gateway | 1 | hourly × 4 + processed data | hourly × 24 + processed data |
-| Supporting services | public IPs, disks, Storage, peering, logs | selected meters and usage | selected meters and usage |
+For a full refresh, run `python tools/refresh_cost_snapshot.py --output work/cost-candidate.json`. It requires an exact product/region/tier/unit match and rejects missing or ambiguous selections. Review the candidate against `docs/cost-snapshot.json`, update the snapshot deliberately, then run `python tools/cost_estimate.py --write`. Never infer zero cost from a missing meter. Never treat a monthly meter as hourly. The quantity model assumes 128 GiB OS disks; verify the selected image and disk size. Extra WAF capacity, longer deployments, extra disks and interrupted cleanup increase the bill.
 
-The cost script supports an explicit selection JSON file with per-meter quantity.
-Once a regional meter has been verified, it prints dated four-hour/24-hour totals
-for those selected hourly meters. Add variable consumption and monthly units
-separately; it deliberately refuses to treat non-hourly prices as hourly prices.
+Budget alerts notify; they do not stop resources or enforce a spending cap. Local/mock validation does not prove regional availability, successful deployment or teardown. **Azure runtime is unverified; live Azure passes are excluded from the overhaul release gates.**
 
-## Teardown is a tested operation
+## Cleanup is part of the exercise
 
 For independent local-state labs, run the documented `terraform plan -destroy
 -out tfplan`, inspect it, then `terraform apply tfplan`. Confirm each resource

@@ -86,3 +86,30 @@ run "injected_nsg_incident" {
     error_message = "The controlled incident must block server HTTP."
   }
 }
+
+run "incident_dns_wrong" {
+  command = plan
+  variables { incident = "dns-wrong" }
+  assert {
+    condition     = azurerm_private_dns_a_record.app.records == toset(["10.34.2.99"])
+    error_message = "The selected dns-wrong incident must change only its intended layer."
+  }
+}
+
+run "incident_route_drop" {
+  command = plan
+  variables { incident = "route-drop" }
+  assert {
+    condition     = length(azurerm_route.drop) == 1 && azurerm_route.drop[0].address_prefix == "10.34.2.4/32" && azurerm_route.drop[0].next_hop_type == "None"
+    error_message = "The selected route-drop incident must change only its intended layer."
+  }
+}
+
+run "incident_app_stopped" {
+  command = plan
+  variables { incident = "app-stopped" }
+  assert {
+    condition     = strcontains(module.server.bootstrap_command, "Stop-Service W3SVC -Force") && azurerm_private_dns_a_record.app.records == toset(["10.34.2.4"]) && length(azurerm_route.drop) == 0
+    error_message = "The selected app-stopped incident must change only its intended layer."
+  }
+}

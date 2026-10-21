@@ -24,12 +24,11 @@ resource "azurerm_user_assigned_identity" "github" {
 resource "azurerm_federated_identity_credential" "github" {
   for_each = toset([var.github_environment, var.github_plan_environment])
 
-  name                = "github-${each.key}"
-  resource_group_name = azurerm_resource_group.lab.name
-  parent_id           = azurerm_user_assigned_identity.github.id
-  audience            = ["api://AzureADTokenExchange"]
-  issuer              = "https://token.actions.githubusercontent.com"
-  subject             = "repo:${var.github_owner}/${var.github_repository}:environment:${each.key}"
+  name                      = "github-${each.key}"
+  user_assigned_identity_id = azurerm_user_assigned_identity.github.id
+  audience                  = ["api://AzureADTokenExchange"]
+  issuer                    = "https://token.actions.githubusercontent.com"
+  subject                   = "repo:${var.github_owner}/${var.github_repository}:environment:${each.key}"
 }
 
 resource "azurerm_role_assignment" "lab_contributor" {

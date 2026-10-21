@@ -16,3 +16,5 @@ output "vpn_connection_names" { value = module.capstone.vpn_connection_names }
 output "workspace_name" { value = module.capstone.workspace_name }
 output "workspace_customer_id" { value = module.capstone.workspace_customer_id }
 output "traffic_contract" { value = module.capstone.traffic_contract }
+output "private_endpoint_ips" { value = module.capstone.private_endpoint_ips }
+output "evidence_targets" { value = module.capstone.evidence_targets }

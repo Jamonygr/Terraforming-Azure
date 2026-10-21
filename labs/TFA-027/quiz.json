@@ -3,45 +3,45 @@
     "id": "TFA-027-Q1",
     "prompt": "Why must the HTTPS test send the listener hostname?",
     "options": [
+      "The backend VM selects the public listener",
+      "The probe hostname always replaces the client hostname",
       "The listener and certificate are configured for that host",
-      "The VM has a public IP",
-      "WAF only filters DNS packets",
-      "HTTP cannot use IP addresses"
+      "The public IP automatically rewrites every Host header"
     ],
-    "answer": 0,
+    "answer": 2,
     "explanation": "Using curl --resolve preserves host/TLS name while selecting the gateway public IP."
   },
   {
     "id": "TFA-027-Q2",
     "prompt": "What does curl -k change in this self-signed exercise?",
     "options": [
-      "It disables WAF",
-      "It disables certificate trust verification for that request",
-      "It opens port 80 on the backend",
-      "It enables end-to-end TLS"
+      "Disable WAF request inspection",
+      "Enable TLS between gateway and IIS",
+      "Trust the certificate permanently in Windows",
+      "It disables certificate trust verification for that request"
     ],
-    "answer": 1,
+    "answer": 3,
     "explanation": "The option is limited to this lab's self-signed certificate and must not become production client guidance."
   },
   {
     "id": "TFA-027-Q3",
     "prompt": "The gateway returns HTTP 502. Which evidence should you inspect first?",
     "options": [
-      "Only the Git branch name",
-      "Only the certificate output password",
       "Backend health and probe/IIS/NSG settings",
-      "Only the resource-group tags"
+      "Only the WAF blocked-request count",
+      "Only whether the gateway public IP exists",
+      "Only the external DNS TTL"
     ],
-    "answer": 2,
+    "answer": 0,
     "explanation": "An unhealthy backend commonly produces 502; changing WAF is not the first diagnosis."
   },
   {
     "id": "TFA-027-Q4",
     "prompt": "Where is TLS terminated in this implementation?",
     "options": [
-      "At each IIS VM only",
-      "At Azure Firewall Premium",
-      "At the DNS resolver",
+      "At the client with plaintext public ingress",
+      "At Firewall using TLS inspection",
+      "At IIS with encrypted backend HTTP settings",
       "At Application Gateway; backend traffic is HTTP"
     ],
     "answer": 3,
@@ -52,9 +52,9 @@
     "prompt": "Why keep the gateway subnet separate from generic forced-tunnel routes?",
     "options": [
       "Application Gateway v2 has infrastructure routing restrictions and asymmetric-route risks",
-      "A subnet may never have routes",
-      "WAF only works without a VNet",
-      "It prevents all public internet traffic"
+      "Peering automatically corrects asymmetric public returns",
+      "App Gateway subnets cannot have any UDR",
+      "A WAF policy supplies its own return routes"
     ],
     "answer": 0,
     "explanation": "Gateway infrastructure routing requires its own supported design; workload UDRs must not be copied blindly."

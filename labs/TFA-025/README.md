@@ -1,8 +1,14 @@
 # TFA-025 - Azure Firewall and Firewall Policy
 
-[Course home](../../README.md) | [Previous lab](../TFA-024/README.md) | [Next lab](../TFA-026/README.md)
+<!-- lab-metadata:start -->
+**Phase 4:** Private platforms
 
-> **Mode:** Azure deployment | **Time:** 60-90 minutes plus service provisioning | **Cost:** High: Azure Firewall Standard, private Windows probe, and Log Analytics ingestion. Destroy when finished.
+**Learning target:** 120 minutes · **Cost tier:** High · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-024 — Managed identity and Key Vault](../TFA-024/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-024/README.md) | [Next lab](../TFA-026/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ Centralized inspection is valuable only when routes direct traffic through the f
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Build a Firewall Policy and distinguish network rules from application rules. Your evidence must distinguish configuration intent from the observed result: Allowed and prohibited destinations differ according to policy, not accidental direct routing.
+
+## Predict the mechanism
+
+Firewall network rules match IP/port/protocol and application rules understand supported application names. DNS proxy and policy DNS settings influence name-based enforcement. A default deny is meaningful only when a packet actually traverses the Firewall and logging identifies the selected rule or denial.
+
+Before running commands, write the expected result: **Allowed and prohibited destinations differ according to policy, not accidental direct routing.** Then explain what would change in this controlled failure: Remove the intended allow rule, observe a policy denial, restore it. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,15 +30,17 @@ Azure Firewall Policy groups ordered collections and rules. This lab permits HTT
 
 ## Architecture
 
-![TFA-025 architecture](../../assets/diagrams/TFA-025.svg)
+<!-- lab-diagram:start -->
+![TFA-025 teaching diagram](../../assets/diagrams/TFA-025.svg)
+<!-- lab-diagram:end -->
 
 A hub VNet with the required AzureFirewallSubnet, Firewall Standard and a public IP, Firewall Policy with a narrow application rule, and a private Windows probe in a workload subnet whose default route points to the firewall.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
 
-High: Azure Firewall Standard, private Windows probe, and Log Analytics ingestion. Destroy when finished. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
+Charged resources include Azure Firewall Standard, private Windows probe, and Log Analytics ingestion. Destroy when finished. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
 ## Step 1 - Read the implementation
 
@@ -108,16 +122,23 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 ## Cleanup
 
 ```powershell
+$cleanupGroup = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroup) { throw 'Capture the actual lab group before planning destruction.' }
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 Remove-Item Env:TF_VAR_admin_password -ErrorAction SilentlyContinue
 # Check the Azure resource group no longer exists after successful destroy.
-az group exists --subscription $env:TF_VAR_subscription_id --name rg-tfa025
+$groupExists = az group exists --subscription $env:TF_VAR_subscription_id --name $cleanupGroup
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 ```
 
-A successful destroy and an empty state are the expected result. Verify the actual lab group name from the earlier output if you changed name_prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
+A successful destroy and an empty state are the expected result. The cleanup command uses the captured group, including a changed prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
 
 ## Completion criteria
 
@@ -129,3 +150,9 @@ A successful destroy and an empty state are the expected result. Verify the actu
 ## Continue learning
 
 [Official documentation](https://learn.microsoft.com/en-us/azure/firewall/policy-rule-sets) | [Continue to TFA-026](../TFA-026/README.md)
+
+## Evidence contract
+
+Compare one allowed and one denied authored flow, then query the matching Firewall evidence. Allowed and prohibited destinations differ according to policy, not accidental direct routing.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

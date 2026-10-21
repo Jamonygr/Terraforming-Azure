@@ -3,24 +3,24 @@
     "id": "TFA-026-Q1",
     "prompt": "Two spokes are each peered with the hub. Can they automatically communicate through that peering chain?",
     "options": [
-      "Yes; hub peering is always transitive",
-      "Only if every VM is Windows",
-      "Only if the VNets share a tag",
-      "No; VNet peering is non-transitive"
+      "No; VNet peering is non-transitive",
+      "Yes, if both spokes use the same DNS server",
+      "Yes, if allow_forwarded_traffic is enabled alone",
+      "Yes, both hub peerings form an automatic route chain"
     ],
-    "answer": 3,
+    "answer": 0,
     "explanation": "Transit needs an explicit supported path such as a firewall plus routes."
   },
   {
     "id": "TFA-026-Q2",
     "prompt": "Why configure a route on both workload subnets?",
     "options": [
+      "To propagate DNS zones to the spokes",
+      "To advertise both prefixes through BGP automatically",
       "To preserve the forward and return inspection paths",
-      "To duplicate DNS records",
-      "To make the VPN shared key match",
-      "To grant RBAC to the firewall"
+      "To make each peering bidirectional"
     ],
-    "answer": 0,
+    "answer": 2,
     "explanation": "A stateful transit design needs symmetric routing as well as an allow rule."
   },
   {
@@ -28,21 +28,21 @@
     "prompt": "What next-hop type directs a spoke-prefix route to the firewall IP?",
     "options": [
       "Internet",
-      "VirtualAppliance",
+      "VirtualNetworkGateway",
       "None",
-      "VirtualNetworkGateway"
+      "VirtualAppliance"
     ],
-    "answer": 1,
+    "answer": 3,
     "explanation": "The firewall acts as a virtual appliance next hop in these UDRs."
   },
   {
     "id": "TFA-026-Q4",
     "prompt": "ICMP fails even though Azure Firewall permits it. What is another likely layer?",
     "options": [
-      "Terraform fmt",
-      "The resource-group name",
+      "The policy's display name",
+      "The managed identity's data-plane role",
       "Windows guest firewall on the destination",
-      "The managed identity client ID"
+      "The route table's tags"
     ],
     "answer": 2,
     "explanation": "Guest firewall and Azure network enforcement are independent."
@@ -51,9 +51,9 @@
     "id": "TFA-026-Q5",
     "prompt": "Why is adding direct spoke peering a poor fix for this lab?",
     "options": [
-      "It makes VNet peering transitive",
-      "It enables TLS inspection",
-      "It reduces all Firewall charges to zero",
+      "It forces all traffic through Firewall automatically",
+      "It adds another mandatory inspection hop",
+      "It makes the existing Firewall rule take priority over routes",
       "It can bypass the inspection path being taught"
     ],
     "answer": 3,

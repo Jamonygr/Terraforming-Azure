@@ -1,14 +1,30 @@
 # TFA-015 — Drift, import, and refactoring
 
-![Drift, import, and refactoring teaching diagram](../../assets/diagrams/TFA-015.svg)
+<!-- lab-metadata:start -->
+**Phase 3:** Terraform engineering
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-014 — State, addressing, and locking](../TFA-014/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-015 teaching diagram](../../assets/diagrams/TFA-015.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Detect an out-of-band tag change, import an existing lab group, and move an address without replacing its Azure object.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-014](../TFA-014/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+Drift is a difference observed during refresh; Terraform configuration still determines the intended target. Import binds an existing object to an address but does not invent a well-matched configuration. A moved block preserves an existing binding during a declared address refactor.
+
+Before running commands, write the expected result: **The intended existing object is bound once and moves address without replacement.** Then explain what would change in this controlled failure: Remove or mismatch the moved declaration, compare the destructive plan, then restore. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ Import establishes ownership of an existing object at a Terraform address. A mov
 
 One managed group at azurerm_resource_group.current. A moved block supports the former legacy address. An optional import.tf.example adds a second deliberately created empty group.
 
-**Cost:** Low: one group initially, plus a second empty group during the import exercise. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -93,9 +109,13 @@ If import reports that the target does not exist, compare the subscription GUID 
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -108,3 +128,9 @@ Review imports and moves as carefully as creation. Record resource ownership and
 ## Navigation
 
 [Previous: TFA-014](../TFA-014/README.md) · [Curriculum](../../README.md) · [Next: TFA-016](../TFA-016/README.md)
+
+## Evidence contract
+
+Inspect the refresh/import/moved plans and ensure the refactor does not destroy the existing object. The intended existing object is bound once and moves address without replacement.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

@@ -3,21 +3,21 @@
     "id": "TFA-025-Q1",
     "prompt": "What directs a workload subnet's internet traffic through Azure Firewall?",
     "options": [
-      "Merely deploying Firewall Policy",
-      "A public DNS A record for the firewall",
+      "Adding a Firewall public-IP output",
       "A route table association with an appropriate next-hop route",
-      "Adding tags to the subnet"
+      "Enabling DNS proxy without subnet routes",
+      "Attaching a Firewall Policy alone"
     ],
-    "answer": 2,
+    "answer": 1,
     "explanation": "Policy decides what to do with packets reaching the firewall; routing brings the packets there."
   },
   {
     "id": "TFA-025-Q2",
     "prompt": "Which rule fits HTTPS access to a small set of FQDNs?",
     "options": [
-      "A network rule allowing TCP 443 to every address",
-      "An inbound RDP NSG rule",
-      "A private DNS VNet link",
+      "A network rule allowing 443 to every address",
+      "An NSG destination matching a URL path",
+      "A route with the requested hostname",
       "A narrowly scoped application rule"
     ],
     "answer": 3,
@@ -27,22 +27,22 @@
     "id": "TFA-025-Q3",
     "prompt": "What happens to traffic with no matching allow rule?",
     "options": [
+      "It uses the next collection group as a bypass",
       "It is denied",
-      "It bypasses inspection",
-      "It uses the next spoke automatically",
-      "It is allowed if the VM has Contributor"
+      "It is allowed if the destination resolves privately",
+      "It follows the subnet's default allow after Firewall"
     ],
-    "answer": 0,
+    "answer": 1,
     "explanation": "Azure Firewall is deny-by-default; Azure RBAC does not authorize packets."
   },
   {
     "id": "TFA-025-Q4",
     "prompt": "Does this Firewall Standard exercise demonstrate TLS decryption?",
     "options": [
-      "Yes, every HTTPS application rule decrypts payloads",
+      "Yes, Standard public IPs enable inspection",
       "No",
-      "Only if its public IP is Standard",
-      "Only if DNS TTL is 60"
+      "Yes, DNS proxy supplies the decryption certificate",
+      "Yes, every HTTPS application rule decrypts payloads"
     ],
     "answer": 1,
     "explanation": "Allowing an HTTPS FQDN is not the same as configuring TLS inspection."
@@ -51,10 +51,10 @@
     "id": "TFA-025-Q5",
     "prompt": "What does a successful Firewall deployment prove without a test host?",
     "options": [
-      "The application is reachable",
-      "Every return path is correct",
+      "The workload used the intended DNS proxy",
+      "Allowed FQDNs are reachable from all workloads",
       "The configured resources exist, not that a workload flow succeeded",
-      "DNS from all spokes works"
+      "The application's return path is symmetric"
     ],
     "answer": 2,
     "explanation": "Control-plane deployment evidence must not be presented as unperformed packet tests."

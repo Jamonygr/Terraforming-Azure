@@ -11,7 +11,10 @@ output "resource_group_name" {
 
 locals {
   networks = { hub = "10.12.0.0/16", spoke = "10.13.0.0/16", isolated = "10.14.0.0/16" }
-  peers    = { hub_to_spoke = { from = "hub", to = "spoke" }, spoke_to_hub = { from = "spoke", to = "hub" } }
+  peers = merge(
+    { hub_to_spoke = { from = "hub", to = "spoke" }, spoke_to_hub = { from = "spoke", to = "hub" } },
+    var.enable_probes ? { hub_to_isolated = { from = "hub", to = "isolated" }, isolated_to_hub = { from = "isolated", to = "hub" } } : {}
+  )
 }
 
 resource "azurerm_virtual_network" "network" {
@@ -36,6 +39,6 @@ resource "azurerm_virtual_network_peering" "peer" {
 }
 
 output "vnet_names" {
-  description = "Hub/spoke have a direct pair; isolated has no peering."
+  description = "Default has one direct hub/spoke pair; optional probes add hub/isolated, never spoke/isolated."
   value       = { for key, net in azurerm_virtual_network.network : key => net.name }
 }

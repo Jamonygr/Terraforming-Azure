@@ -3,36 +3,36 @@
     "id": "TFA-012-Q1",
     "prompt": "How many peering resources establish the direct hub/spoke pair here?",
     "options": [
-      "One per subnet automatically",
-      "Two directional resources",
-      "One resource that owns both directions",
-      "Zero because VNet names include hub"
+      "One resource owns both directions",
+      "Three resources are required for any pair",
+      "One peering for each subnet",
+      "Two directional resources"
     ],
-    "answer": 1,
+    "answer": 3,
     "explanation": "Each participating VNet owns its local peering configuration."
   },
   {
     "id": "TFA-012-Q2",
     "prompt": "Hub peers with A and B. What follows automatically?",
     "options": [
-      "A and B now share local state",
-      "Their address spaces may freely overlap",
+      "The two spokes receive a shared default route",
       "A-to-B transit is not provided merely by those peerings",
-      "A-to-B traffic always routes through the hub"
+      "A-to-B transit follows the hub's peering automatically",
+      "Forwarded traffic is accepted without a forwarding path"
     ],
-    "answer": 2,
+    "answer": 1,
     "explanation": "VNet peering is non-transitive; transit requires an actual forwarding and route design."
   },
   {
     "id": "TFA-012-Q3",
     "prompt": "What does a Connected peering state establish?",
     "options": [
-      "Every application port works",
-      "DNS resolves every private service",
-      "A firewall has inspected every packet",
-      "The control-plane peering relationship is established"
+      "The control-plane peering relationship is established",
+      "All NSG rules permit application traffic",
+      "Every private DNS zone is visible",
+      "The forward and return paths are symmetric"
     ],
-    "answer": 3,
+    "answer": 0,
     "explanation": "Connection state is useful evidence but does not prove end-to-end application behavior."
   },
   {
@@ -40,9 +40,9 @@
     "prompt": "What happens if the directly peered VNet address spaces overlap?",
     "options": [
       "Azure cannot establish the intended peering",
-      "Peering becomes transitive",
-      "Terraform merges their subnets",
-      "Azure ignores all CIDRs"
+      "Terraform chooses the smaller address space",
+      "Peering connects only the nonoverlapping portions",
+      "Azure translates overlap through peering"
     ],
     "answer": 0,
     "explanation": "A valid peering design requires non-overlapping address spaces."
@@ -51,12 +51,12 @@
     "id": "TFA-012-Q5",
     "prompt": "What does allow_forwarded_traffic=true fail to create on its own?",
     "options": [
-      "A documented setting",
       "A real routing or forwarding appliance",
-      "A Boolean input",
-      "A peering configuration property"
+      "A peering setting accepting transit traffic",
+      "Permission to carry forwarded packets",
+      "Permission to receive already-forwarded packets"
     ],
-    "answer": 1,
+    "answer": 0,
     "explanation": "Allowing forwarded traffic is a permission on the path; it does not supply the device or routes."
   }
 ]

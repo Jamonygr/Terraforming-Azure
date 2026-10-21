@@ -1,0 +1,230 @@
+{
+  "date": "2026-10-21",
+  "currency": "USD",
+  "region": "westeurope",
+  "monthly_hours": 730,
+  "monthly_days": 31,
+  "source": "https://prices.azure.com/api/retail/prices",
+  "meters": {
+    "firewall": {
+      "meterId": "e90604a4-719b-454b-879d-b85523882c92",
+      "productName": "Azure Firewall",
+      "meterName": "Standard Deployment",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1 Hour",
+      "retailPrice": 1.25,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2018-11-01T00:00:00Z",
+      "basis": "hour"
+    },
+    "bastion_standard": {
+      "meterId": "4836590f-078a-5184-b23a-63ad1c7979cc",
+      "productName": "Azure Bastion",
+      "meterName": "Standard Gateway",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1 Hour",
+      "retailPrice": 0.29,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2021-07-01T00:00:00Z",
+      "basis": "hour"
+    },
+    "bastion_basic": {
+      "meterId": "c6d29001-2ec1-43ce-8ec8-8c753399ff6c",
+      "productName": "Azure Bastion",
+      "meterName": "Basic Gateway",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1 Hour",
+      "retailPrice": 0.19,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2020-01-01T00:00:00Z",
+      "basis": "hour"
+    },
+    "waf": {
+      "meterId": "5e47ce41-ebfb-4fc4-a5fe-07e14d518ac1",
+      "productName": "Application Gateway WAF v2",
+      "meterName": "Standard Fixed Cost",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1/Hour",
+      "retailPrice": 0.468,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2019-05-09T00:00:00Z",
+      "basis": "hour"
+    },
+    "waf_cu": {
+      "meterId": "78fe1aba-44ce-435b-b710-8c9babdb1a7d",
+      "productName": "Application Gateway WAF v2",
+      "meterName": "Standard Capacity Units",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1/Hour",
+      "retailPrice": 0.0144,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2019-05-09T00:00:00Z",
+      "basis": "hour"
+    },
+    "vpn": {
+      "meterId": "f7f36e66-5b21-445a-9df1-f192e56ed76c",
+      "productName": "VPN Gateway",
+      "meterName": "VpnGw1AZ",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1 Hour",
+      "retailPrice": 0.21,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2025-01-01T00:00:00Z",
+      "basis": "hour"
+    },
+    "pip": {
+      "meterId": "9c150bf9-2bad-430e-a53c-c213804f49ef",
+      "productName": "IP Addresses",
+      "meterName": "Standard IPv4 Static Public IP",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1 Hour",
+      "retailPrice": 0.005,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2018-06-01T00:00:00Z",
+      "basis": "hour"
+    },
+    "nat": {
+      "meterId": "ae30040a-67f5-485b-b0f4-a6ef50504d9c",
+      "productName": "NAT Gateway",
+      "meterName": "Standard Gateway",
+      "armRegionName": "Global",
+      "unitOfMeasure": "1 Hour",
+      "retailPrice": 0.045,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2020-06-01T00:00:00Z",
+      "basis": "hour"
+    },
+    "pe": {
+      "meterId": "e6ab7238-e433-4fe0-a2b2-2b2564df2cdb",
+      "productName": "Virtual Network Private Link",
+      "meterName": "Standard Private Endpoint",
+      "armRegionName": "Global",
+      "unitOfMeasure": "1 Hour",
+      "retailPrice": 0.01,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2020-02-01T00:00:00Z",
+      "basis": "hour"
+    },
+    "vm": {
+      "meterId": "c91dffb7-fc1f-42f4-8e1d-d1fd248d552f",
+      "productName": "Virtual Machines BS Series Windows",
+      "meterName": "B2s",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1 Hour",
+      "retailPrice": 0.056,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2025-10-01T00:00:00Z",
+      "basis": "hour"
+    },
+    "ssd": {
+      "meterId": "97258e5f-0fa0-47c0-accd-96b7aee6361f",
+      "productName": "Standard SSD Managed Disks",
+      "meterName": "E10 LRS Disk",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1/Month",
+      "retailPrice": 9.6,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2018-11-01T00:00:00Z",
+      "basis": "month"
+    },
+    "hdd": {
+      "meterId": "e7ee9909-19a9-49e9-855c-c5226617df19",
+      "productName": "Standard HDD Managed Disks",
+      "meterName": "S10 LRS Disk",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1/Month",
+      "retailPrice": 5.888,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2017-10-01T00:00:00Z",
+      "basis": "month"
+    },
+    "dns_in": {
+      "meterId": "75134e89-9779-5c46-867e-c02460344857",
+      "productName": "Azure DNS",
+      "meterName": "Private Resolver Inbound Endpoint",
+      "armRegionName": "Zone 1",
+      "unitOfMeasure": "1",
+      "retailPrice": 180.0,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2022-09-01T00:00:00Z",
+      "basis": "month"
+    },
+    "dns_out": {
+      "meterId": "b8f4b89b-fb87-5fcd-ba98-5d6813a09c44",
+      "productName": "Azure DNS",
+      "meterName": "Private Resolver Outbound Endpoint",
+      "armRegionName": "Zone 1",
+      "unitOfMeasure": "1",
+      "retailPrice": 180.0,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2022-09-01T00:00:00Z",
+      "basis": "month"
+    },
+    "dns_rules": {
+      "meterId": "c13bdae8-ce98-58c4-9a48-b3c79a38a579",
+      "productName": "Azure DNS",
+      "meterName": "Private Resolver DNS Forwarding Ruleset",
+      "armRegionName": "Zone 1",
+      "unitOfMeasure": "1",
+      "retailPrice": 2.5,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2022-09-01T00:00:00Z",
+      "basis": "month"
+    },
+    "dns_zone": {
+      "meterId": "0b608a26-f611-4232-8192-ce81b6b57194",
+      "productName": "Azure DNS",
+      "meterName": "Private Zone",
+      "armRegionName": "Zone 1",
+      "unitOfMeasure": "1",
+      "retailPrice": 0.5,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2019-12-01T00:00:00Z",
+      "basis": "month_daily"
+    },
+    "blob_gb": {
+      "meterId": "10e5ee74-8fd6-4972-909f-65a83f92f0ce",
+      "productName": "General Block Blob v2",
+      "meterName": "Hot LRS Data Stored",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1 GB/Month",
+      "retailPrice": 0.0196,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2017-02-03T00:00:00Z",
+      "basis": "month"
+    },
+    "log_gb": {
+      "meterId": "e5626349-2f1f-4563-babc-dc9219884716",
+      "productName": "Log Analytics",
+      "meterName": "Analytics Logs Data Ingestion",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1 GB",
+      "retailPrice": 2.99,
+      "tierMinimumUnits": 5.0,
+      "effectiveStartDate": "2018-02-01T00:00:00Z",
+      "basis": "usage_daily"
+    },
+    "log_alert": {
+      "meterId": "6c7763d7-7804-51d1-86ad-da09ce51130a",
+      "productName": "Azure Monitor",
+      "meterName": "Alerts System Log Monitored at 1 Minute Frequency",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1/Month",
+      "retailPrice": 3.0,
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2021-04-01T00:00:00Z",
+      "basis": "month"
+    },
+    "metric_alert": {
+      "meterId": "6860c782-bbcc-41ed-a218-fb308dd0942e",
+      "productName": "Azure Monitor",
+      "meterName": "Alerts Metric Monitored",
+      "armRegionName": "westeurope",
+      "unitOfMeasure": "1/Month",
+      "retailPrice": 0.1,
+      "tierMinimumUnits": 10.0,
+      "effectiveStartDate": "2018-02-01T00:00:00Z",
+      "basis": "month"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "value": [
+    {
+      "addressPrefix": [
+        "0.0.0.0/0"
+      ],
+      "nextHopType": "Internet",
+      "source": "Default",
+      "state": "Active"
+    },
+    {
+      "addressPrefix": [
+        "10.0.0.0/8"
+      ],
+      "nextHopType": "None",
+      "source": "Default",
+      "state": "Active"
+    },
+    {
+      "addressPrefix": [
+        "10.13.0.0/16"
+      ],
+      "nextHopType": "VnetLocal",
+      "source": "Default",
+      "state": "Active"
+    },
+    {
+      "addressPrefix": [
+        "10.60.0.0/16"
+      ],
+      "nextHopType": "None",
+      "source": "User",
+      "state": "Active"
+    },
+    {
+      "addressPrefix": [
+        "10.13.1.10/32"
+      ],
+      "nextHopType": "None",
+      "source": "User",
+      "state": "Invalid"
+    }
+  ]
+}

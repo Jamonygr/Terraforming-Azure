@@ -1,14 +1,30 @@
 # TFA-006 — Collections and resource identity
 
-![Collections and resource identity teaching diagram](../../assets/diagrams/TFA-006.svg)
+<!-- lab-metadata:start -->
+**Phase 1:** Foundations
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-005 — References, locals, data sources, and outputs](../TFA-005/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-006 teaching diagram](../../assets/diagrams/TFA-006.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Compare count indexes with for_each keys and predict which identities survive collection changes.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-005](../TFA-005/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+count uses numeric positions as resource addresses; for_each uses stable keys. Removing the first element of an indexed list can shift later identities, while removing one map key should affect only that instance. Reordering display values is different from renaming an address key.
+
+Before running commands, write the expected result: **The keyed instance addresses preserve unaffected identities.** Then explain what would change in this controlled failure: Rename a key and predict destroy/create before introducing moved blocks later. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The example deliberately creates two indexed and two keyed empty resource groups
 
 Two count-indexed groups and a map of keyed groups share one region and lab tags. They are independent lifecycle objects, not nested groups.
 
-**Cost:** Low: four empty resource groups by default. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -90,9 +106,16 @@ Try changing workloads from a map to a list in terraform.tfvars. Terraform must 
 ## Cleanup and proof
 
 ```powershell
+$cleanupGroups = @(terraform output -json cleanup_group_names | ConvertFrom-Json)
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroups.Count) { throw 'Capture the exact owned groups before destruction.' }
 terraform destroy
-terraform state list
-az group list --tag lab=TFA-006 --subscription $env:TF_VAR_subscription_id --query '[].name' -o json
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+foreach ($groupName in $cleanupGroups) {
+    $groupExists = az group exists --name $groupName --subscription $env:TF_VAR_subscription_id
+    if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw "Owned group $groupName is not confirmed deleted." }
+}
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -105,3 +128,9 @@ Use stable business or topology keys. Avoid keys derived from mutable descriptio
 ## Navigation
 
 [Previous: TFA-005](../TFA-005/README.md) · [Curriculum](../../README.md) · [Next: TFA-007](../TFA-007/README.md)
+
+## Evidence contract
+
+Compare plans after removing a list member and a map key; inspect terraform state list. The keyed instance addresses preserve unaffected identities.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

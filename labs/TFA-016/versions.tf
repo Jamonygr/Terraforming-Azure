@@ -9,7 +9,12 @@ terraform {
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    storage {
+      # The account must finish before its scoped data-plane role can exist.
+      data_plane_available = false
+    }
+  }
   subscription_id                 = var.subscription_id
   resource_provider_registrations = "none"
   storage_use_azuread             = true

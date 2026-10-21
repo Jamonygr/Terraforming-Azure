@@ -1,14 +1,30 @@
 # TFA-005 — References, locals, data sources, and outputs
 
-![References, locals, data sources, and outputs teaching diagram](../../assets/diagrams/TFA-005.svg)
+<!-- lab-metadata:start -->
+**Phase 1:** Foundations
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-004 — Variables, types, and validation](../TFA-004/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-005 teaching diagram](../../assets/diagrams/TFA-005.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Build dependency edges through references and distinguish a managed resource from a read-only data source.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-004](../TFA-004/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+References express both values and dependencies. A data source reads an object owned elsewhere; it does not transfer that object into this state. locals centralize names and tags without creating resources, and outputs expose selected results without granting access.
+
+Before running commands, write the expected result: **Derived names agree and the data source is not destroyed by this root.** Then explain what would change in this controlled failure: Change a source naming input and predict every derived name affected. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ Locals name reusable expressions inside a module; they are not caller inputs. Ou
 
 Current Azure identity → one managed group → a dependent read of that group → a context output. The client-config data source also exposes the current tenant and subscription identifiers.
 
-**Cost:** Low: one resource group and control-plane reads. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -92,9 +108,13 @@ Change the data-source name to "group-that-does-not-exist-tfa005" and run a plan
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -107,3 +127,9 @@ Outputs should expose stable contracts rather than every internal object. Treat 
 ## Navigation
 
 [Previous: TFA-004](../TFA-004/README.md) · [Curriculum](../../README.md) · [Next: TFA-006](../TFA-006/README.md)
+
+## Evidence contract
+
+Read the derived name/tags output and compare the resource references with Terraform graph. Derived names agree and the data source is not destroyed by this root.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

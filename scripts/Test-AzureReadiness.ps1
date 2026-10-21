@@ -1,26 +1,60 @@
+#requires -Version 7.4
 [CmdletBinding()]
-param([switch]$LocalOnly, [string]$SubscriptionId, [string]$Location = 'westeurope')
-$ErrorActionPreference = 'Stop'
-$commands = @('pwsh','terraform','az','git','code')
-$missing = @()
-foreach ($command in $commands) {
-  $found = Get-Command $command -ErrorAction SilentlyContinue
-  if ($found) { Write-Output "PASS tool $command" } else { $missing += $command; Write-Warning "Missing: $command" }
+param(
+    [ValidateSet('Local','Fixture','AzureReadOnly')][string]$Mode='Local',
+    [switch]$LocalOnly,
+    [string]$FixturePath,
+    [string]$SubscriptionId,
+    [string]$Location='westeurope',
+    [ValidateSet('foundation','secure','applications','hybrid')][string]$Stage='foundation'
+)
+$ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSScriptRoot 'Infrastructure.Readiness.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'Infrastructure.Common.psm1') -Force
+if ($LocalOnly -and $Mode -ne 'Local') { throw '-LocalOnly cannot be combined with cloud or fixture modes.' }
+if ($FixturePath -and $Mode -ne 'Fixture') { throw 'Synthetic data requires -Mode Fixture.' }
+$versions=@{}; $cloud=$null; $source='local'
+if ($Mode -eq 'Fixture') {
+    if (-not $FixturePath) { throw 'Fixture mode requires -FixturePath; no real fallback is permitted.' }
+    $fixture=Get-Content -LiteralPath $FixturePath -Raw | ConvertFrom-Json -AsHashtable
+    if ($fixture.evidence_kind -ne 'synthetic') { throw 'Readiness fixture must be labelled synthetic.' }
+    $versions=$fixture.tools; $cloud=$fixture.cloud; $source='synthetic'
+} else {
+    $versions.pwsh=$PSVersionTable.PSVersion.ToString()
+    foreach ($name in @('terraform','az','git','code')) {
+        if (-not (Get-Command $name -ErrorAction SilentlyContinue)) { continue }
+        $argsList=if ($name -eq 'terraform') {@('version','-json')} elseif ($name -eq 'az') {@('version','-o','json')} else {@('--version')}
+        $result=Invoke-InfrastructureNative -Command $name -Arguments $argsList -TimeoutSeconds 30
+        if ($result.exit_code -ne 0) { continue }
+        try {
+            if ($name -eq 'terraform') { $versions[$name]=($result.output | ConvertFrom-Json).terraform_version }
+            elseif ($name -eq 'az') { $versions[$name]=($result.output | ConvertFrom-Json).'azure-cli' }
+            elseif ($result.output -match '(\d+\.\d+\.\d+)') { $versions[$name]=$Matches[1] }
+        } catch { $versions[$name]='invalid' }
+    }
+    if ($Mode -eq 'AzureReadOnly') {
+        $subscriptionGuid=[guid]::Empty
+        if (-not [guid]::TryParse($SubscriptionId,[ref]$subscriptionGuid)) { throw 'AzureReadOnly requires an explicit subscription UUID. The script never signs in or chooses an account.' }
+        $source='azure-read-only'
+        function AzJson([string[]]$Arguments) {
+            $result=Invoke-InfrastructureNative -Command az -Arguments ($Arguments+@('--subscription',$SubscriptionId,'-o','json','--only-show-errors')) -TimeoutSeconds 45
+            if ($result.exit_code -ne 0) { throw 'Azure query failed.' }
+            $result.output | ConvertFrom-Json -AsHashtable -ErrorAction Stop
+        }
+        try {
+            $cloud=@{account=(AzJson @('account','show'));providers=@{}}
+            $required=(Test-InfrastructureReadiness -Tools $versions -Stage $Stage).requirements.providers
+            foreach ($provider in $required) {
+                $details=AzJson @('provider','show','--namespace',$provider); $cloud.providers[$provider]=$details.registrationState
+                if ($provider -eq 'Microsoft.Network') { $cloud.network_types=$details.resourceTypes }
+            }
+            if ($Stage -in @('applications','hybrid')) {
+                $cloud.vm_skus=@(AzJson @('vm','list-skus','--location',$Location,'--size','Standard_B2s','--all'))
+                $cloud.usage=@(AzJson @('vm','list-usage','--location',$Location))
+            }
+        } catch { $cloud=@{_error='readiness collection failed'} }
+    }
 }
-if ($missing.Count) { throw "Install the missing tools from TFA-002: $($missing -join ', ')" }
-terraform version
-if ($LASTEXITCODE -ne 0) { throw 'Terraform toolchain failed.' }
-if ($LocalOnly) { return }
-if (-not $SubscriptionId) { throw 'Pass an explicit -SubscriptionId; this script never chooses one for you.' }
-$accountJson = az account show --subscription $SubscriptionId --output json --only-show-errors
-if ($LASTEXITCODE -ne 0) { throw 'Azure account lookup failed. Run az login first.' }
-$account = $accountJson | ConvertFrom-Json
-if ($account.id -ne $SubscriptionId -or $account.state -ne 'Enabled') { throw 'Subscription identity or status did not match.' }
-Write-Output "PASS explicit enabled subscription and tenant. Region to verify: $Location"
-$providers = @('Microsoft.Resources','Microsoft.Network','Microsoft.Compute','Microsoft.Storage','Microsoft.KeyVault','Microsoft.OperationalInsights','Microsoft.Insights','Microsoft.ManagedIdentity')
-foreach ($provider in $providers) {
-  $state = az provider show --subscription $SubscriptionId --namespace $provider --query registrationState --output tsv --only-show-errors
-  if ($LASTEXITCODE -ne 0) { throw "Cannot read provider $provider" }
-  if ($state -ne 'Registered') { Write-Warning "$provider is $state. Register only required providers deliberately before the chosen lab." }
-}
-Write-Output 'NEXT: inspect regional VM/SKU quota, policy restrictions, resource permissions, role-assignment permissions, and the current cost estimate. This read-only check cannot guarantee them.'
+$report=Test-InfrastructureReadiness -Tools $versions -Cloud $cloud -Stage $Stage -SubscriptionId $SubscriptionId -Location $Location -Source $source
+$report | ConvertTo-Json -Depth 20
+if ($report.summary.fail -gt 0) { throw 'Readiness has blocked checks. Inspect the JSON report; Azure runtime remains unverified.' }

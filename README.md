@@ -18,6 +18,10 @@ paths behave as designed.
 
 ## Start here
 
+New to these tools? Read [the conceptual introduction](labs/TFA-001/README.md),
+then follow [the Windows installation guide](labs/TFA-002/README.md) before running
+the commands below.
+
 ```powershell
 git clone https://github.com/Jamonygr/Terraforming-Azure.git
 Set-Location Terraforming-Azure
@@ -37,7 +41,7 @@ az login
 az account list --output table
 az account set --subscription '<your-subscription-id>'
 $env:TF_VAR_subscription_id = az account show --query id --output tsv
-./scripts/Test-AzureReadiness.ps1 -SubscriptionId $env:TF_VAR_subscription_id
+./scripts/Test-AzureReadiness.ps1 -Mode AzureReadOnly -SubscriptionId $env:TF_VAR_subscription_id
 ```
 
 Follow the selected lesson's commands, review a saved plan before applying, and
@@ -117,17 +121,23 @@ physical VPN appliance or real WAN conditions.
 
 ## Check the course locally
 
+Complete [contributor setup](CONTRIBUTING.md), then run the same checks as CI:
+
 ```powershell
 ./scripts/Test-Course.ps1
-py -3.12 -m pip install -r requirements-site.txt
-py -3.12 tools/build_site.py
-py -3.12 -m mkdocs build --strict
 ```
 
-The quality workflow runs without Azure credentials. Live Azure workflows are
-explicitly invoked and use OIDC. The website stores progress locally and never
-runs Terraform. See [contributing](CONTRIBUTING.md), [troubleshooting](docs/troubleshooting.md),
-[delivery](docs/delivery.md), and [backend setup](bootstrap/README.md).
+This covers Terraform validation and mocked stages, source policies, PowerShell
+behavior, local state exercises, metadata, the strict site build and browser
+regressions. A focused Windows lane runs `Test-Course.ps1 -WindowsOnly`.
+
+**Code and website validation do not establish Azure runtime behavior.** Live
+Azure passes are excluded from this overhaul and its release gates. The
+[manual learner lifecycle](docs/delivery.md) is a separate, explicitly configured
+OIDC workflow. The website stores progress locally and never deploys Azure.
+
+See [traffic evidence](docs/traffic-matrix.md), [dated costs](docs/cost-estimates.md),
+[troubleshooting](docs/troubleshooting.md), and [backend setup](bootstrap/README.md).
 
 Website tooling requires Python 3.12+. Terraform checks default to serial provider
 initialization to avoid cold-cache races; use `-Jobs 2` only with a prewarmed

@@ -1,0 +1,54 @@
+{
+  "evidence_origin": "synthetic offline fixture, not Azure observations",
+  "denied_resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-tfa032-fixture/providers/Microsoft.Network/networkSecurityGroups/nsg-policy-negative-test",
+  "denied_request": {
+    "error": {
+      "code": "RequestDisallowedByPolicy",
+      "message": "Resource denied by the required-course-tag policy.",
+      "additionalInfo": [
+        {
+          "type": "PolicyViolation",
+          "info": {
+            "policyAssignmentId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-tfa032-fixture/providers/Microsoft.Authorization/policyAssignments/require-course-tag"
+          }
+        }
+      ]
+    }
+  },
+  "budget": {
+    "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-tfa032-fixture/providers/Microsoft.Consumption/budgets/budget-tfa032",
+    "properties": {
+      "amount": 100,
+      "currentSpend": {
+        "amount": 85,
+        "unit": "USD"
+      },
+      "notifications": {
+        "actual80": {
+          "enabled": true,
+          "operator": "GreaterThanOrEqualTo",
+          "threshold": 80,
+          "contactEmails": [
+            "learner@example.invalid"
+          ]
+        }
+      }
+    }
+  },
+  "notification_event": {
+    "observed": true,
+    "budget_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-tfa032-fixture/providers/Microsoft.Consumption/budgets/budget-tfa032",
+    "recorded_utc": "2026-10-21T10:00:00Z"
+  },
+  "resource_still_exists_after_notification": true,
+  "locks_before": [
+    {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-tfa032-fixture/providers/Microsoft.Authorization/locks/protect-lab",
+      "properties": {
+        "level": "CanNotDelete"
+      }
+    }
+  ],
+  "locks_after": [],
+  "unlock_apply_exit_code": 0
+}

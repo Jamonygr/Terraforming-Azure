@@ -1,8 +1,14 @@
 # TFA-027 - Application Gateway WAF and private IIS
 
-[Course home](../../README.md) | [Previous lab](../TFA-026/README.md) | [Next lab](../TFA-028/README.md)
+<!-- lab-metadata:start -->
+**Phase 4:** Private platforms
 
-> **Mode:** Azure deployment | **Time:** 90-120 minutes plus WAF/VM provisioning | **Cost:** High: WAF_v2, a public IP, and two Windows VMs. A self-signed certificate is used only for this lab.
+**Learning target:** 120 minutes · **Cost tier:** High · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-026 — Inspected hub-and-spoke routing](../TFA-026/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-026/README.md) | [Next lab](../TFA-028/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ A public application entry point can terminate HTTPS and filter requests while i
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Serve HTTPS through WAF to healthy private IIS backends and prove a blocked request. Your evidence must distinguish configuration intent from the observed result: Expected IIS content is reachable while the deliberate WAF signature is blocked.
+
+## Predict the mechanism
+
+Application Gateway terminates client TLS and creates a separate backend connection. Backend probe success depends on the chosen protocol, port, host header and path. A deterministic custom WAF test should match one training header without depending on evolving managed-rule behavior.
+
+Before running commands, write the expected result: **Expected IIS content is reachable while the deliberate WAF signature is blocked.** Then explain what would change in this controlled failure: Change a probe path or service state, inspect backend health, then restore. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,15 +30,17 @@ Application Gateway terminates client TLS, applies its WAF policy, and forwards 
 
 ## Architecture
 
-![TFA-027 architecture](../../assets/diagrams/TFA-027.svg)
+<!-- lab-diagram:start -->
+![TFA-027 teaching diagram](../../assets/diagrams/TFA-027.svg)
+<!-- lab-diagram:end -->
 
 WAF_v2 in Prevention mode, an HTTPS host listener, a self-signed PFX, a health probe, two private IIS VMs, and a backend NSG. No public IIS VM or public RDP rule is created.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
 
-High: WAF_v2, a public IP, and two Windows VMs. A self-signed certificate is used only for this lab. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
+Charged resources include WAF_v2, a public IP, and two Windows VMs. A self-signed certificate is used only for this lab. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
 ## Step 1 - Read the implementation
 
@@ -86,18 +100,25 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 ## Cleanup
 
 ```powershell
+$cleanupGroup = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroup) { throw 'Capture the actual lab group before planning destruction.' }
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 # Check the Azure resource group no longer exists after successful destroy.
-az group exists --subscription $env:TF_VAR_subscription_id --name rg-tfa027
+$groupExists = az group exists --subscription $env:TF_VAR_subscription_id --name $cleanupGroup
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item Env:TF_VAR_admin_password -ErrorAction SilentlyContinue
 Remove-Item Env:TF_VAR_certificate_password -ErrorAction SilentlyContinue
 # Remove the generated .secrets directory only after confirming its contents are lab-only.
 ```
 
-A successful destroy and an empty state are the expected result. Verify the actual lab group name from the earlier output if you changed name_prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
+A successful destroy and an empty state are the expected result. The cleanup command uses the captured group, including a changed prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
 
 ## Completion criteria
 
@@ -109,3 +130,9 @@ A successful destroy and an empty state are the expected result. Verify the actu
 ## Continue learning
 
 [Official documentation](https://learn.microsoft.com/en-us/azure/application-gateway/configuration-infrastructure) | [Continue to TFA-028](../TFA-028/README.md)
+
+## Evidence contract
+
+Check public HTTPS, both backend health entries and the exact training WAF header yielding 403. Expected IIS content is reachable while the deliberate WAF signature is blocked.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

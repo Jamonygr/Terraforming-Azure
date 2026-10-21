@@ -3,34 +3,34 @@
     "id": "TFA-014-Q1",
     "prompt": "What is the purpose of a state lock?",
     "options": [
-      "Merge all competing plans automatically",
-      "Hide every output",
-      "Increase Azure vCPU quota",
-      "Prevent concurrent state writers from racing"
+      "Prevent Azure resources changing outside Terraform",
+      "Prevent concurrent state writers from racing",
+      "Merge concurrent updates into one state",
+      "Block all reads while a plan file exists"
     ],
-    "answer": 3,
+    "answer": 1,
     "explanation": "A lock serializes state-changing operations; it does not reconcile independent plans."
   },
   {
     "id": "TFA-014-Q2",
     "prompt": "A second plan fails while terminal A awaits apply approval. What should you do?",
     "options": [
+      "Force-unlock before checking the active operation",
       "Coordinate with terminal A and retry after its operation ends",
-      "Always use -lock=false",
-      "Delete both state files",
-      "Create a different subscription"
+      "Use -lock=false for the second plan",
+      "Remove the lock file while terminal A is waiting"
     ],
-    "answer": 0,
+    "answer": 1,
     "explanation": "Respect an active lock; bypassing it removes protection against concurrent operations."
   },
   {
     "id": "TFA-014-Q3",
     "prompt": "What does a state lineage identify?",
     "options": [
-      "A GitHub issue number",
+      "The current workspace's display name",
       "The state’s identity history",
-      "A VM SKU",
-      "A CIDR subnet size"
+      "The Git commit that last ran apply",
+      "The current state revision number"
     ],
     "answer": 1,
     "explanation": "Lineage helps distinguish state histories during migrations and recovery."
@@ -39,24 +39,24 @@
     "id": "TFA-014-Q4",
     "prompt": "What does a state serial help indicate?",
     "options": [
-      "Password strength",
-      "Number of README paragraphs",
-      "Saved state revisions",
-      "Number of Azure regions"
+      "The number of managed resources",
+      "The number of saved plan files",
+      "The Terraform CLI major version",
+      "Saved state revisions"
     ],
-    "answer": 2,
+    "answer": 3,
     "explanation": "The serial changes as state snapshots are saved; it is operational state metadata."
   },
   {
     "id": "TFA-014-Q5",
     "prompt": "What is safer than manually editing raw state JSON?",
     "options": [
-      "Delete arbitrary resource IDs",
-      "Copy another team’s state over it",
-      "Commit passwords to Git",
-      "Use supported state-aware commands and preserve a backup"
+      "Remove the binding before preserving its identifiers",
+      "Use supported state-aware commands and preserve a backup",
+      "Replace state with a similar environment's file",
+      "Edit the address and serial manually together"
     ],
-    "answer": 3,
+    "answer": 1,
     "explanation": "Supported operations preserve state structure more safely, and backups support recovery."
   }
 ]

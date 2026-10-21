@@ -1,0 +1,20 @@
+[
+  {
+    "properties": {
+      "essentials": {
+        "alertRule": "tfa028-synthetic-event",
+        "monitorCondition": "Fired",
+        "lastModifiedDateTime": "2026-10-21T10:00:00Z"
+      }
+    }
+  },
+  {
+    "properties": {
+      "essentials": {
+        "alertRule": "tfa028-synthetic-event",
+        "monitorCondition": "Resolved",
+        "lastModifiedDateTime": "2026-10-21T10:15:00Z"
+      }
+    }
+  }
+]

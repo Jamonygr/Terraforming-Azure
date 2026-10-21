@@ -7,8 +7,11 @@ tfplan.*
 *.tfvars
 !*.tfvars.example
 !labs/TFA-040/stages/*.tfvars
-*.auto.tfvars.json
+*.tfvars.json
+!*.tfvars.json.example
+!*.tfvars.example.json
 *.pfx
+*.p12
 *.pem
 *.key
 .secrets/
@@ -27,3 +30,9 @@ work/
 backend.local.hcl
 labs/TFA-040/backend.hcl
 bootstrap/bootstrap-state.backup.json
+state.json
+plan.json
+terraform-plan.json
+node_modules/
+playwright-report/
+test-results/

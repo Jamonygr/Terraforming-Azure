@@ -4,9 +4,9 @@
     "prompt": "What links azurerm_resource_group.lab to its Azure object?",
     "options": [
       "The Terraform state binding",
-      "The README title",
-      "The order of files",
-      "The terminal font"
+      "The provider lockfile entry",
+      "The source file containing the block",
+      "The resource's display name alone"
     ],
     "answer": 0,
     "explanation": "State records the object ID associated with the Terraform address."
@@ -15,48 +15,48 @@
     "id": "TFA-003-Q2",
     "prompt": "What is applied by terraform apply tfplan?",
     "options": [
-      "A new provider release",
       "The reviewed saved plan",
-      "Any future configuration automatically",
-      "Only README changes"
+      "Only the resources visible in terraform show",
+      "The latest state file without the reviewed actions",
+      "A new plan using the latest edited variables"
     ],
-    "answer": 1,
+    "answer": 0,
     "explanation": "A saved plan captures the planned action; changes require a new plan."
   },
   {
     "id": "TFA-003-Q3",
     "prompt": "What exit code means a change exists with plan -detailed-exitcode?",
     "options": [
-      "1",
-      "255 always",
       "2",
+      "The number of resources in the plan",
+      "1",
       "0"
     ],
-    "answer": 2,
+    "answer": 0,
     "explanation": "Detailed exit codes distinguish no changes (0), error (1), and changes (2)."
   },
   {
     "id": "TFA-003-Q4",
     "prompt": "Why review a resource-group name change before apply?",
     "options": [
-      "Names are always changed without effect",
-      "It disables every Azure bill automatically",
-      "It changes the signed-in tenant password",
-      "It can replace the lifecycle container"
+      "Only the Terraform address changes",
+      "Names are mutable tags with an in-place update",
+      "It can replace the lifecycle container",
+      "The group is renamed without affecting ownership"
     ],
-    "answer": 3,
+    "answer": 2,
     "explanation": "Changing an Azure resource group identity can require replacement; inspect the actual plan."
   },
   {
     "id": "TFA-003-Q5",
     "prompt": "What evidence proves cleanup more strongly than an empty terminal?",
     "options": [
+      "An empty terraform plan before destroy",
+      "The VM being deallocated",
       "Empty managed state plus Azure reporting the group absent",
-      "A closed VS Code window",
-      "An unchanged README",
-      "A stopped shell process"
+      "A successful deletion request without a final status check"
     ],
-    "answer": 0,
+    "answer": 2,
     "explanation": "Check both Terraform ownership and actual Azure resource existence."
   }
 ]

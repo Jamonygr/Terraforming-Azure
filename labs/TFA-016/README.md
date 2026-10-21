@@ -1,14 +1,30 @@
 # TFA-016 — Azure remote-state bootstrap
 
-![Azure remote-state bootstrap teaching diagram](../../assets/diagrams/TFA-016.svg)
+<!-- lab-metadata:start -->
+**Phase 3:** Terraform engineering
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-014 — State, addressing, and locking](../TFA-014/README.md), [TFA-015 — Drift, import, and refactoring](../TFA-015/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-016 teaching diagram](../../assets/diagrams/TFA-016.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Create a small backend from local state, migrate the same resource bindings to Azure Blob state, and migrate back before deleting that backend.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-015](../TFA-015/README.md). Earlier cloud labs should already be destroyed; this root deploys independently. You also need permission to create Storage accounts and assign the Storage Blob Data Contributor role to your signed-in principal.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block. You also need permission to create Storage accounts and assign the Storage Blob Data Contributor role to your signed-in principal.
+
+## Predict the mechanism
+
+Backend bootstrap begins with local state because storage cannot hold its own state before it exists. Account creation uses ARM without waiting for Blob access; then a scoped data role authorizes the operator. A bounded Blob readiness check must succeed before migrating, and cleanup reverses migration before deleting storage.
+
+Before running commands, write the expected result: **Entra-only storage has recovery protection; migration does not proceed on authorization timeout.** Then explain what would change in this controlled failure: Withhold Blob permission or use a failed-read fixture; retain local state and stop migration. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The container is private, anonymous blob access is disabled, shared-key authenti
 
 Local state → Storage account and tfstate container → Azure Entra authenticated blob backend using tfa016.terraform.tfstate and blob leasing. This isolated exercise is separate from the course’s long-lived ../../bootstrap backend.
 
-**Cost:** Low: LRS blob capacity, transactions, and retained versions. No VM or gateway. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -62,12 +78,20 @@ only untracked runtime files; do not put account keys or credentials in them.
 
 ```powershell
 $backend = terraform output -json backend_configuration | ConvertFrom-Json
+$deadline = (Get-Date).AddMinutes(10)
+do {
+    az storage container show --auth-mode login --account-name $backend.storage_account_name --name $backend.container_name --only-show-errors -o none
+    $ready = $LASTEXITCODE -eq 0
+    if (-not $ready -and (Get-Date) -lt $deadline) { Start-Sleep -Seconds 15 }
+} until ($ready -or (Get-Date) -ge $deadline)
+if (-not $ready) { throw 'Blob access is not ready after 10 minutes. Check identity, role scope and network access; keep local state and do not migrate.' }
 $backend.PSObject.Properties | ForEach-Object {
     $value = if ($_.Value -is [bool]) { $_.Value.ToString().ToLowerInvariant() } else { '"' + $_.Value + '"' }
     $_.Name + ' = ' + $value
 } | Set-Content backend.hcl
 Copy-Item backend.tf.example backend.tf
 terraform init -migrate-state -backend-config=backend.hcl
+if ($LASTEXITCODE -ne 0) { throw 'Migration failed. Retain both state copies and backend settings; investigate before continuing.' }
 terraform state list
 ```
 
@@ -84,7 +108,7 @@ terraform state pull | ConvertFrom-Json | Select-Object lineage,serial
 az storage blob show --auth-mode login --account-name $backend.storage_account_name --container-name $backend.container_name --name $backend.key --query "{name:name,size:properties.contentLength}" -o json
 ```
 
-**Expected:** After the migration steps below, Azure CLI finds the state blob using login authentication. The same resource addresses and state lineage are present. A subsequent plan has no changes.
+**Expected:** After the migration steps above, Azure CLI finds the state blob using login authentication. The same resource addresses and state lineage are present. A subsequent plan has no changes.
 
 For a deployable lesson, finish with terraform plan -detailed-exitcode: 0 means
 no changes, 2 means a change exists, and 1 means an error. A mock test checks
@@ -114,13 +138,18 @@ If initialization returns 403, inspect tenant/subscription, assigned blob-data r
 ```powershell
 # Keep backend.hcl values until migration is complete. Do not destroy remote storage first.
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 Rename-Item backend.tf backend.tf.remote
 terraform init -migrate-state
+if ($LASTEXITCODE -ne 0) { throw 'Reverse migration failed. Keep the remote backend and runtime files; do not destroy storage.' }
 terraform state list
 Remove-Item backend.tf.remote, backend.hcl -ErrorAction SilentlyContinue
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -133,3 +162,9 @@ Production backend ownership must outlive workload states. Use the canonical ../
 ## Navigation
 
 [Previous: TFA-015](../TFA-015/README.md) · [Curriculum](../../README.md) · [Next: TFA-017](../TFA-017/README.md)
+
+## Evidence contract
+
+Inspect ARM-only provider behavior and scoped role; follow bounded Blob readiness, migration and migration-back instructions. Entra-only storage has recovery protection; migration does not proceed on authorization timeout.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

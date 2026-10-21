@@ -1,8 +1,14 @@
 # TFA-022 - Azure DNS and private DNS
 
-[Course home](../../README.md) | [Previous lab](../TFA-021/README.md) | [Next lab](../TFA-023/README.md)
+<!-- lab-metadata:start -->
+**Phase 4:** Private platforms
 
-> **Mode:** Azure deployment | **Time:** 50-70 minutes | **Cost:** Low: public/private DNS zones and queries.
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-021 — Test Terraform behavior](../TFA-021/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-021/README.md) | [Next lab](../TFA-023/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ A network can route correctly while an application still fails because it resolv
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Resolve a private name and understand zone links and authoritative DNS boundaries. Your evidence must distinguish configuration intent from the observed result: The expected private address is returned from the linked resolver context.
+
+## Predict the mechanism
+
+A private DNS zone becomes visible through VNet links; creating its record alone is insufficient. The original query name and its eventual private answer are different facts when aliases are involved. A successful lookup is name resolution evidence, not proof that a service port or identity authorization works.
+
+Before running commands, write the expected result: **The expected private address is returned from the linked resolver context.** Then explain what would change in this controlled failure: Remove one VNet link, account for TTL/cache, then restore it. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,15 +30,17 @@ Azure DNS hosts an authoritative public zone. Creating that zone does not delega
 
 ## Architecture
 
-![TFA-022 architecture](../../assets/diagrams/TFA-022.svg)
+<!-- lab-diagram:start -->
+![TFA-022 teaching diagram](../../assets/diagrams/TFA-022.svg)
+<!-- lab-diagram:end -->
 
 One VNet, a public demonstration zone and A record, a private `.test` zone, an explicit VNet link, and a private A record.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
 
-Low: public/private DNS zones and queries. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
+Charged resources include public/private DNS zones and queries. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
 ## Step 1 - Read the implementation
 
@@ -83,15 +97,22 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 ## Cleanup
 
 ```powershell
+$cleanupGroup = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroup) { throw 'Capture the actual lab group before planning destruction.' }
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 # Check the Azure resource group no longer exists after successful destroy.
-az group exists --subscription $env:TF_VAR_subscription_id --name rg-tfa022
+$groupExists = az group exists --subscription $env:TF_VAR_subscription_id --name $cleanupGroup
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 ```
 
-A successful destroy and an empty state are the expected result. Verify the actual lab group name from the earlier output if you changed name_prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
+A successful destroy and an empty state are the expected result. The cleanup command uses the captured group, including a changed prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
 
 ## Completion criteria
 
@@ -103,3 +124,9 @@ A successful destroy and an empty state are the expected result. Verify the actu
 ## Continue learning
 
 [Official documentation](https://learn.microsoft.com/en-us/azure/dns/private-dns-overview) | [Continue to TFA-023](../TFA-023/README.md)
+
+## Evidence contract
+
+Resolve the exact private lab name from the linked network and compare with its record. The expected private address is returned from the linked resolver context.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

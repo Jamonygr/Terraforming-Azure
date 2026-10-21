@@ -3,21 +3,21 @@
     "id": "TFA-017-Q1",
     "prompt": "Where are child-module resources recorded in this lesson?",
     "options": [
-      "Only in the module README",
-      "In an automatically isolated backend per subnet",
-      "In the calling root’s state",
-      "In an automatic separate subscription"
+      "The module's own provider cache",
+      "An automatically generated workspace",
+      "A separate state beside each child module",
+      "In the calling root’s state"
     ],
-    "answer": 2,
+    "answer": 3,
     "explanation": "A module call is a code boundary, not an automatic state boundary."
   },
   {
     "id": "TFA-017-Q2",
     "prompt": "Who configures AzureRM authentication here?",
     "options": [
-      "Every child subnet resource separately",
-      "The quiz file",
-      "The GitHub repository title",
+      "Each child module's subnet block",
+      "The provider dependency lockfile",
+      "The caller's terraform output values",
       "The calling root module"
     ],
     "answer": 3,
@@ -27,22 +27,22 @@
     "id": "TFA-017-Q3",
     "prompt": "Which is an intended public module interface?",
     "options": [
+      "A child resource address copied into a caller",
       "subnet_ids output keyed by subnet name",
-      "The internal filename line number",
-      "An untracked tfplan path",
-      "The provider’s download folder"
+      "Internal resource block labels",
+      "The generated .terraform module path"
     ],
-    "answer": 0,
+    "answer": 1,
     "explanation": "Documented outputs are stable interfaces for callers; internal layout is not."
   },
   {
     "id": "TFA-017-Q4",
     "prompt": "Why learn direct resources before the module?",
     "options": [
-      "Because child modules use no state",
+      "Modules automatically validate Azure routing",
       "So the abstraction wraps understood Azure and Terraform behavior",
-      "Because modules cannot create VNets",
-      "Because output values are forbidden"
+      "Modules remove the need to understand dependencies",
+      "Modules isolate all resources into independent states"
     ],
     "answer": 1,
     "explanation": "Understanding the underlying resources makes module tradeoffs and failures easier to diagnose."
@@ -51,12 +51,12 @@
     "id": "TFA-017-Q5",
     "prompt": "Does a local source path provide release governance by itself?",
     "options": [
-      "Yes, it removes the need for review",
-      "Yes, it grants role assignments",
-      "No; versioning, review, tests, and migrations still need design",
-      "Yes, it pins every future commit automatically"
+      "Yes, because Git pins every local source automatically",
+      "Yes, because no remote download occurs",
+      "Yes, because compatible inputs cannot change behavior",
+      "No; versioning, review, tests, and migrations still need design"
     ],
-    "answer": 2,
+    "answer": 3,
     "explanation": "A filesystem source supplies reuse but not an immutable release process."
   }
 ]

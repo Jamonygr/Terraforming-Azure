@@ -1,0 +1,953 @@
+{
+  "schema_version": 1,
+  "validation_scope": "offline_source_mock_local_fixture_only",
+  "labs": [
+    {
+      "id": "TFA-001",
+      "outcome": "Explain Azure hierarchy, desired state, providers, and the Terraform resource graph.",
+      "mechanism": "Configuration expresses desired state; a provider translates its graph into API operations. State records object bindings and is not a second source of desired configuration. A tenant contains identities, while a subscription owns resource billing and access boundaries.",
+      "sources": [
+        "labs/TFA-001/README.md",
+        "labs/TFA-001/main.tf",
+        "labs/TFA-001/versions.tf"
+      ],
+      "probe": "Inspect the local terraform_data output and explain which hierarchy fields are labels, then change one input and read its plan.",
+      "expected": "The plan changes the recorded input; no Azure resource is created.",
+      "failure_and_repair": "Change an input and explain an update versus deleting state.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-002",
+      "outcome": "Verify your tools, tenant, subscription, permissions, quota, and regional availability.",
+      "mechanism": "PATH determines which executable runs. Authentication, subscription selection, provider registration, regional service availability and quota are separate readiness questions. A local version check can establish only the workstation part.",
+      "sources": [
+        "labs/TFA-002/README.md",
+        "labs/TFA-002/main.tf",
+        "labs/TFA-002/versions.tf"
+      ],
+      "probe": "./scripts/Test-AzureReadiness.ps1 -Mode Local; inspect Get-Command terraform -All and each version.",
+      "expected": "Local checks identify exact supported tools; cloud permission/quota checks remain unresolved.",
+      "failure_and_repair": "Use a fixture with a missing tool or a mismatched version; repair the installed path.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-003",
+      "outcome": "Create, change, inspect, and destroy a resource group through a reviewed plan.",
+      "mechanism": "A resource group has its own lifecycle even when empty. init installs the declared provider, validate checks configuration structure, and a saved plan records the intended action. apply creates the real binding in state, while destroy removes that managed group.",
+      "sources": [
+        "labs/TFA-003/README.md",
+        "labs/TFA-003/main.tf",
+        "labs/TFA-003/versions.tf"
+      ],
+      "probe": "terraform plan -out=lab.tfplan; terraform show lab.tfplan; terraform state list.",
+      "expected": "One resource group address is tracked after apply; repeat plan is empty.",
+      "failure_and_repair": "Change a mutable tag, compare the plan, then restore it.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-004",
+      "outcome": "Reject invalid inputs and explain variable precedence before changing resources.",
+      "mechanism": "Terraform validates typed inputs before creating resources. TF_VAR environment values can be overridden by an explicit tfvars file, so changing the shell alone may not change the plan. Validation should explain a domain rule, such as an allowed environment, instead of relying on an Azure API error.",
+      "sources": [
+        "labs/TFA-004/README.md",
+        "labs/TFA-004/main.tf",
+        "labs/TFA-004/versions.tf"
+      ],
+      "probe": "Plan with valid inputs, then supply an invalid environment and read the variable error.",
+      "expected": "Invalid inputs fail before resource creation; explicit variable precedence is visible.",
+      "failure_and_repair": "Set a value of the wrong type or outside the allowed values, then restore it.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-005",
+      "outcome": "Use references and data sources to compose names, tags, dependencies, and outputs.",
+      "mechanism": "References express both values and dependencies. A data source reads an object owned elsewhere; it does not transfer that object into this state. locals centralize names and tags without creating resources, and outputs expose selected results without granting access.",
+      "sources": [
+        "labs/TFA-005/README.md",
+        "labs/TFA-005/main.tf",
+        "labs/TFA-005/versions.tf"
+      ],
+      "probe": "Read the derived name/tags output and compare the resource references with Terraform graph.",
+      "expected": "Derived names agree and the data source is not destroyed by this root.",
+      "failure_and_repair": "Change a source naming input and predict every derived name affected.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-006",
+      "outcome": "Choose stable resource addresses using collection types, count, and for_each.",
+      "mechanism": "count uses numeric positions as resource addresses; for_each uses stable keys. Removing the first element of an indexed list can shift later identities, while removing one map key should affect only that instance. Reordering display values is different from renaming an address key.",
+      "sources": [
+        "labs/TFA-006/README.md",
+        "labs/TFA-006/main.tf",
+        "labs/TFA-006/versions.tf"
+      ],
+      "probe": "Compare plans after removing a list member and a map key; inspect terraform state list.",
+      "expected": "The keyed instance addresses preserve unaffected identities.",
+      "failure_and_repair": "Rename a key and predict destroy/create before introducing moved blocks later.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-007",
+      "outcome": "Design non-overlapping network ranges and allocate explicit subnets.",
+      "mechanism": "A VNet prefix contains subnet prefixes; subnets in the same VNet cannot overlap. Azure reserves the first four and last address in each subnet. A /24 contains 256 addresses but 251 usable addresses, and the gateway address cannot be assigned to a VM.",
+      "sources": [
+        "labs/TFA-007/README.md",
+        "labs/TFA-007/main.tf",
+        "labs/TFA-007/versions.tf"
+      ],
+      "probe": "Compare network/subnet prefixes and calculate containment and usable counts before planning.",
+      "expected": "The segmented subnets fit the VNet without overlap.",
+      "failure_and_repair": "Propose overlapping prefixes, explain the rejection, then restore disjoint ranges.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-007/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure",
+      "coverage_notes": "Four mocked plan runs prove the generated contained /24 allocation and reject malformed CIDR, wrong allocation size and noncanonical host bits. They do not simulate Azure overlap errors for arbitrary subnet maps."
+    },
+    {
+      "id": "TFA-008",
+      "outcome": "Prove allow and deny decisions using priorities, NSGs, and application security groups.",
+      "mechanism": "An ASG is a label attached to NIC IP configurations. An allow rule referencing an empty ASG matches no destination. Rules are evaluated by ascending priority and NSGs are stateful, so prove a policy change using a fresh connection rather than an already-established session.",
+      "sources": [
+        "labs/TFA-008/README.md",
+        "labs/TFA-008/main.tf",
+        "labs/TFA-008/versions.tf",
+        "labs/TFA-008/probes.tf"
+      ],
+      "probe": "Optional Windows probes: start TCP 443 listener; remove and restore server ASG membership; test fresh client connections.",
+      "expected": "With probes enabled, TCP 443 is true, then false, then true; default mode has no VM packet proof.",
+      "failure_and_repair": "web_membership_enabled=false removes the target label while the deny rule remains.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-008/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-009",
+      "outcome": "Provide a deliberate outbound path with NAT Gateway and private workload subnets.",
+      "mechanism": "NAT Gateway translates outbound connections from its associated subnet to a selected public source address. The NAT public IP is not a public IP on the VM and creates no inbound listener. A subnet can exist with NAT configured before any workload proves outbound behavior.",
+      "sources": [
+        "labs/TFA-009/README.md",
+        "labs/TFA-009/main.tf",
+        "labs/TFA-009/versions.tf"
+      ],
+      "probe": "Inspect subnet/NAT/public-IP associations; use the later private Windows workload to observe actual egress.",
+      "expected": "Configuration attaches one explicit egress path; no inbound public VM endpoint is implied.",
+      "failure_and_repair": "Remove the NAT subnet association in a reviewed plan and identify the missing egress dependency.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-010",
+      "outcome": "Bootstrap a private Windows/IIS server and verify it through the Azure control plane.",
+      "mechanism": "The private VM needs a guest agent and an explicit outbound path for bootstrap operations. Terraform VM provisioning, extension provisioning and an HTTP200 response are three different milestones. The page body should identify the intended VM, not just return any reachable website.",
+      "sources": [
+        "labs/TFA-010/README.md",
+        "labs/TFA-010/main.tf",
+        "labs/TFA-010/versions.tf",
+        "labs/TFA-010/Bootstrap-Iis.ps1"
+      ],
+      "probe": "Run the authored VM command and inspect the IIS HTTP response and identifying page body.",
+      "expected": "A private NIC, successful extension and expected local HTTP page are separate checks.",
+      "failure_and_repair": "Stop IIS or alter the page, distinguish service status from VM existence, then restore.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "fixture_contract",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "tests/Test-IisBootstrap.ps1",
+        "labs/TFA-010/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure",
+      "coverage_notes": "The actual authored Bootstrap-Iis.ps1 executes locally with stubbed feature/service/HTTP commands and a temporary webroot: unsuccessful install, restart required, repeated success, bad HTTP status and wrong body are tested. No Windows feature/service or Azure guest was touched. A mocked provider plan also decodes the extension command and proves it runs that exact rehearsed script with a private NIC."
+    },
+    {
+      "id": "TFA-011",
+      "outcome": "Administer Windows over Bastion without a public VM address or public RDP rule.",
+      "mechanism": "Bastion terminates the administrative session in its dedicated subnet and reaches the VM privately. The VM therefore does not need a public IP or public RDP allowance. Bastion service health alone does not prove that the guest accepts credentials and an RDP connection.",
+      "sources": [
+        "labs/TFA-011/README.md",
+        "labs/TFA-011/main.tf",
+        "labs/TFA-011/versions.tf"
+      ],
+      "probe": "Use the authored Bastion browser connection to the private Windows VM and inspect its NIC.",
+      "expected": "Administration succeeds through Bastion while the VM has no public IP.",
+      "failure_and_repair": "Inspect an intentionally missing guest or NSG allowance; restore only the required path.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-012",
+      "outcome": "Demonstrate direct peering connectivity and the limit of non-transitive peering.",
+      "mechanism": "Peering is represented by two directional resource configurations. Two networks each peered to a hub do not acquire a transitive route to each other. allow_forwarded_traffic permits traffic that a real forwarding device has already handled; it does not create that device or its routes.",
+      "sources": [
+        "labs/TFA-012/README.md",
+        "labs/TFA-012/main.tf",
+        "labs/TFA-012/versions.tf",
+        "labs/TFA-012/probes.tf"
+      ],
+      "probe": "Optional three-host exercise: spoke→hub, hub→isolated and spoke→isolated, with guest ICMP explicitly allowed.",
+      "expected": "The two direct pairs succeed; the leaf-to-leaf path fails without transit.",
+      "failure_and_repair": "Predict the missing route before adding a forwarding design in TFA-026.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-012/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-013",
+      "outcome": "Predict longest-prefix route selection and inspect the effective next hop.",
+      "mechanism": "Azure selects the longest matching destination prefix before considering equal-prefix route precedence. A default route cannot override a more-specific private path. A route with next hop None deliberately discards matching traffic and differs from a blocked NSG or a stopped service.",
+      "sources": [
+        "labs/TFA-013/README.md",
+        "labs/TFA-013/main.tf",
+        "labs/TFA-013/versions.tf",
+        "labs/TFA-013/Test-RouteEvidence.ps1"
+      ],
+      "probe": "Read the effective route/next-hop evidence in the exercise and compare the selected destination prefix.",
+      "expected": "The deliberate discard is identified as routing, not DNS or guest failure.",
+      "failure_and_repair": "Restore the wrong next hop and compare the exact same source/destination.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "fixture_contract"
+      ],
+      "test_sources": [
+        "tests/Test-RouteGovernanceFixtures.ps1"
+      ],
+      "runtime_validation": "not_run_azure",
+      "coverage_notes": "Synthetic effective-route and Network Watcher responses exercise longest-prefix selection, inactive-route exclusion, local versus discard decisions and mismatched response rejection. These are parser contracts, not observed Azure routes or packet paths."
+    },
+    {
+      "id": "TFA-014",
+      "outcome": "Explain state addresses, ownership, locking, and the limits of local state.",
+      "mechanism": "A Terraform address identifies a configured instance, while the ID inside state identifies its managed object. State locking serializes writers but is not a backup. In PowerShell a keyed address must be single-quoted so its embedded double quotes reach Terraform intact.",
+      "sources": [
+        "labs/TFA-014/README.md",
+        "labs/TFA-014/main.tf",
+        "labs/TFA-014/versions.tf"
+      ],
+      "probe": "terraform state show 'terraform_data.service[\"web\"]'; tests/Test-LessonLocal.ps1 replays this exact line.",
+      "expected": "The keyed local object is shown; repeat plan has no changes and destroy leaves empty state.",
+      "failure_and_repair": "Compare an incorrect unquoted address with the correct literal without deleting state.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "local_rehearsal"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-015",
+      "outcome": "Detect drift, import ownership, and preserve resource addresses while refactoring.",
+      "mechanism": "Drift is a difference observed during refresh; Terraform configuration still determines the intended target. Import binds an existing object to an address but does not invent a well-matched configuration. A moved block preserves an existing binding during a declared address refactor.",
+      "sources": [
+        "labs/TFA-015/README.md",
+        "labs/TFA-015/main.tf",
+        "labs/TFA-015/versions.tf"
+      ],
+      "probe": "Inspect the refresh/import/moved plans and ensure the refactor does not destroy the existing object.",
+      "expected": "The intended existing object is bound once and moves address without replacement.",
+      "failure_and_repair": "Remove or mismatch the moved declaration, compare the destructive plan, then restore.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-016",
+      "outcome": "Bootstrap a protected Azure backend, migrate state, and rehearse reverse cleanup.",
+      "mechanism": "Backend bootstrap begins with local state because storage cannot hold its own state before it exists. Account creation uses ARM without waiting for Blob access; then a scoped data role authorizes the operator. A bounded Blob readiness check must succeed before migrating, and cleanup reverses migration before deleting storage.",
+      "sources": [
+        "labs/TFA-016/README.md",
+        "labs/TFA-016/main.tf",
+        "labs/TFA-016/versions.tf"
+      ],
+      "probe": "Inspect ARM-only provider behavior and scoped role; follow bounded Blob readiness, migration and migration-back instructions.",
+      "expected": "Entra-only storage has recovery protection; migration does not proceed on authorization timeout.",
+      "failure_and_repair": "Withhold Blob permission or use a failed-read fixture; retain local state and stop migration.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Migrate backend state back to local before destroying its storage.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-016/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-017",
+      "outcome": "Refactor a concrete network into a reusable module with useful outputs.",
+      "mechanism": "A child module groups resources behind input/output contracts; it does not get its own state file automatically. Moving a resource into a module changes its address. A refactor therefore needs an explicit moved declaration when preserving a previously deployed binding.",
+      "sources": [
+        "labs/TFA-017/README.md",
+        "labs/TFA-017/main.tf",
+        "labs/TFA-017/versions.tf"
+      ],
+      "probe": "Read the root/module interface and compare resource addresses before and after refactoring.",
+      "expected": "Callers receive useful outputs without copying internal resource logic.",
+      "failure_and_repair": "Rename an internal resource without a move and explain the proposed replacement.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-018",
+      "outcome": "Define module contracts and predict replacement, lifecycle, and validation behavior.",
+      "mechanism": "Validation checks the contract domain, while lifecycle behavior controls how Terraform responds to change. A typed input can still be operationally unsafe if it allows overlapping networks or names that force replacement. A useful output describes a stable capability, such as a subnet ID, rather than an internal implementation detail.",
+      "sources": [
+        "labs/TFA-018/README.md",
+        "labs/TFA-018/main.tf",
+        "labs/TFA-018/versions.tf"
+      ],
+      "probe": "Run the module contract tests and inspect a deliberate invalid-input or replacement plan.",
+      "expected": "Invalid inputs fail early; replacement-producing changes are visible before apply.",
+      "failure_and_repair": "Supply an invalid module input and repair the contract or caller deliberately.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-018/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure",
+      "coverage_notes": "Three mocked plan runs cover stable output keys and empty/malformed subnet rejection. Key renaming, replacement and default lifecycle behavior remain authored plan exercises, not runtime or lifecycle simulation."
+    },
+    {
+      "id": "TFA-019",
+      "outcome": "Separate environment configuration, state keys, and operational ownership.",
+      "mechanism": "Separate roots isolate backend configuration, permissions and deployment cadence. Workspaces select another state instance for the same root configuration; they are not an authorization boundary. An environment name in a tag does not prevent a caller from choosing the wrong backend.",
+      "sources": [
+        "labs/TFA-019/README.md",
+        "labs/TFA-019/main.tf",
+        "labs/TFA-019/versions.tf"
+      ],
+      "probe": "Compare development/test roots or workspace outputs and record their state/backend identities.",
+      "expected": "Environment data is isolated in distinct intended state locations.",
+      "failure_and_repair": "Deliberately inspect the wrong workspace before planning and switch back before any apply.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-020",
+      "outcome": "Compose multiple networks from typed maps without hiding their relationships.",
+      "mechanism": "Structured input maps let the caller name each spoke and its subnets. Transformations should preserve meaningful keys so resource identity remains stable. dynamic blocks generate repeated nested arguments; they do not replace for_each when independently addressed resources are required.",
+      "sources": [
+        "labs/TFA-020/README.md",
+        "labs/TFA-020/main.tf",
+        "labs/TFA-020/versions.tf"
+      ],
+      "probe": "Run the structured-input example and inspect a plan that adds exactly one named spoke.",
+      "expected": "Existing keyed spokes remain unchanged while only the new key is added.",
+      "failure_and_repair": "Change a key versus its value and explain the different address consequences.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked"
+      ],
+      "test_sources": [],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-021",
+      "outcome": "Test input validation and planned behavior with mocked providers and assertions.",
+      "mechanism": "Mock providers replace cloud responses while retaining Terraform expressions and schema checks. They can prove validation, conditional resources and relationships but cannot prove connectivity or Azure service readiness. A useful negative test fails for one intended reason and then passes after repair.",
+      "sources": [
+        "labs/TFA-021/README.md",
+        "labs/TFA-021/main.tf",
+        "labs/TFA-021/versions.tf"
+      ],
+      "probe": "terraform test; inspect positive and negative contract assertions and expected_failures.",
+      "expected": "Mocked plans reject invalid values and preserve tested relationships without Azure access.",
+      "failure_and_repair": "Break one relationship, observe the focused failing assertion, restore it.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-021/tests/network.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-022",
+      "outcome": "Resolve a private name and understand zone links and authoritative DNS boundaries.",
+      "mechanism": "A private DNS zone becomes visible through VNet links; creating its record alone is insufficient. The original query name and its eventual private answer are different facts when aliases are involved. A successful lookup is name resolution evidence, not proof that a service port or identity authorization works.",
+      "sources": [
+        "labs/TFA-022/README.md",
+        "labs/TFA-022/main.tf",
+        "labs/TFA-022/versions.tf"
+      ],
+      "probe": "Resolve the exact private lab name from the linked network and compare with its record.",
+      "expected": "The expected private address is returned from the linked resolver context.",
+      "failure_and_repair": "Remove one VNet link, account for TTL/cache, then restore it.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-022/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-023",
+      "outcome": "Resolve Blob Storage to a private endpoint and disable its public service path.",
+      "mechanism": "A private endpoint creates a private NIC for one service subresource. Blob clients still use the original storage hostname and its public-to-private DNS alias chain. Disabling public service access closes that path but does not grant the client a data role or guarantee a private route.",
+      "sources": [
+        "labs/TFA-023/README.md",
+        "labs/TFA-023/main.tf",
+        "labs/TFA-023/versions.tf"
+      ],
+      "probe": "Resolve the Blob hostname to the output endpoint IP and compare public access configuration.",
+      "expected": "The original name reaches the exact private endpoint; public service access is disabled.",
+      "failure_and_repair": "Break the zone link, compare wrong resolution with endpoint existence, then restore.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-023/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-024",
+      "outcome": "Use managed identity and scoped RBAC to access private sample data.",
+      "mechanism": "Managed identity gives a VM a service principal without distributing a reusable client secret. A scoped Key Vault data role authorizes only selected operations. Sensitive Terraform values can still appear in state, so sample secret seeding belongs on a private authorized client rather than in ordinary Terraform outputs.",
+      "sources": [
+        "labs/TFA-024/README.md",
+        "labs/TFA-024/main.tf",
+        "labs/TFA-024/versions.tf"
+      ],
+      "probe": "Use the authored VM identity request and read only the designated sample secret.",
+      "expected": "The intended identity can read the scoped sample; normal outputs expose no secret values.",
+      "failure_and_repair": "Remove the data role or request a forbidden operation and diagnose authorization separately.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-024/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-025",
+      "outcome": "Build a Firewall Policy and distinguish network rules from application rules.",
+      "mechanism": "Firewall network rules match IP/port/protocol and application rules understand supported application names. DNS proxy and policy DNS settings influence name-based enforcement. A default deny is meaningful only when a packet actually traverses the Firewall and logging identifies the selected rule or denial.",
+      "sources": [
+        "labs/TFA-025/README.md",
+        "labs/TFA-025/main.tf",
+        "labs/TFA-025/versions.tf"
+      ],
+      "probe": "Compare one allowed and one denied authored flow, then query the matching Firewall evidence.",
+      "expected": "Allowed and prohibited destinations differ according to policy, not accidental direct routing.",
+      "failure_and_repair": "Remove the intended allow rule, observe a policy denial, restore it.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-025/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-026",
+      "outcome": "Inspect selected spoke and outbound traffic without creating asymmetric routing.",
+      "mechanism": "Peering system routes are more specific than a default route. Inspected interspoke traffic therefore needs destination-specific UDRs as well as an egress default. A stateful Firewall also needs a compatible return path; one-way inspection can fail or bypass the intended policy.",
+      "sources": [
+        "labs/TFA-026/README.md",
+        "labs/TFA-026/main.tf",
+        "labs/TFA-026/versions.tf"
+      ],
+      "probe": "Inspect workload UDRs and compare allowed/denied interspoke probes with Firewall logs.",
+      "expected": "Forward and return paths traverse the intended inspection point.",
+      "failure_and_repair": "Remove a destination route and distinguish bypass or asymmetry from a policy denial.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-026/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-027",
+      "outcome": "Serve HTTPS through WAF to healthy private IIS backends and prove a blocked request.",
+      "mechanism": "Application Gateway terminates client TLS and creates a separate backend connection. Backend probe success depends on the chosen protocol, port, host header and path. A deterministic custom WAF test should match one training header without depending on evolving managed-rule behavior.",
+      "sources": [
+        "labs/TFA-027/README.md",
+        "labs/TFA-027/main.tf",
+        "labs/TFA-027/versions.tf"
+      ],
+      "probe": "Check public HTTPS, both backend health entries and the exact training WAF header yielding 403.",
+      "expected": "Expected IIS content is reachable while the deliberate WAF signature is blocked.",
+      "failure_and_repair": "Change a probe path or service state, inspect backend health, then restore.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-027/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-028",
+      "outcome": "Collect diagnostics and guest telemetry, query evidence, and validate an alert.",
+      "mechanism": "The agent sends selected guest events through a DCR to a workspace; platform diagnostic settings collect a different source. A scheduled query rule evaluates recently ingested records on a cadence. A synthetic marker lets the learner distinguish missing collection from a wrong query and from an alert that simply has not evaluated yet.",
+      "sources": [
+        "labs/TFA-028/README.md",
+        "labs/TFA-028/main.tf",
+        "labs/TFA-028/versions.tf",
+        "labs/TFA-028/alerts.tf"
+      ],
+      "probe": "Emit one named Application event; query it; inspect the scheduled rule Fired then Resolved instance.",
+      "expected": "Heartbeat, exact event row and alert lifecycle are separate evidence items.",
+      "failure_and_repair": "Change only the query marker, compare ingested records with no match, restore it.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract",
+        "fixture_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-028/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-029",
+      "outcome": "Explain IPsec, gateway transit, propagation, route selection, and BGP purpose.",
+      "mechanism": "Gateway transit exposes an existing hub gateway to a peered spoke when both peering sides are configured appropriately. Route propagation distributes reachable prefixes; it does not encrypt arbitrary traffic by itself. BGP can exchange routes dynamically, while a simpler static exercise still requires non-overlapping addresses.",
+      "sources": [
+        "labs/TFA-029/README.md",
+        "labs/TFA-029/main.tf",
+        "labs/TFA-029/versions.tf"
+      ],
+      "probe": "Read the local VPN/routing model and explain gateway ownership, propagation and learned prefixes.",
+      "expected": "The model distinguishes a tunnel, a route and peering transit settings.",
+      "failure_and_repair": "Predict the missing return prefix or overlapping range before building gateways.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-029/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-030",
+      "outcome": "Prove an encrypted connection to an Azure-hosted simulated on-premises network.",
+      "mechanism": "Two Azure VPN gateways can form a repeatable VNet-to-VNet IPsec exercise. Both reciprocal connections must refer to the other gateway and share the intended key. Connected control-plane status is necessary, but a guest traffic probe and a return route are still required to prove the tunnel is useful.",
+      "sources": [
+        "labs/TFA-030/README.md",
+        "labs/TFA-030/main.tf",
+        "labs/TFA-030/versions.tf"
+      ],
+      "probe": "Inspect both VPN connection states and execute the authored cross-network private probe.",
+      "expected": "Both connections report Connected and the intended private traffic succeeds.",
+      "failure_and_repair": "Use a mismatched shared key, diagnose the tunnel failure, restore matching keys.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-030/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-031",
+      "outcome": "Resolve Azure private services and corporate lab names across the VPN.",
+      "mechanism": "Hybrid DNS has two independent directions. The corporate server forwards original Azure service namespaces to the resolver inbound IP; an Azure-linked outbound ruleset forwards only the corporate suffix back to corporate DNS. Keep suffix ownership explicit to avoid forwarding loops and compare answers to exact expected endpoint addresses.",
+      "sources": [
+        "labs/TFA-031/README.md",
+        "labs/TFA-031/main.tf",
+        "labs/TFA-031/versions.tf",
+        "labs/TFA-031/reverse-dns.tf"
+      ],
+      "probe": "From corporate DNS resolve the original Blob name; from Azure probe resolve files.corp.tfa.internal.",
+      "expected": "Blob resolves to its exact private endpoint and the corporate record resolves to 10.131.2.4.",
+      "failure_and_repair": "Disable only the corporate rule, clear/expire caches, verify one-direction failure and restore.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract",
+        "fixture_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-031/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-032",
+      "outcome": "Apply practical permissions, policy, budget notifications, and resource locks.",
+      "mechanism": "RBAC assigns actions to principals at a scope; Azure Policy evaluates resource properties against governance rules. A deletion lock blocks accidental removal but is not a backup or a defense against an authorized lock remover. A budget alert reports a threshold and does not suspend billable resources.",
+      "sources": [
+        "labs/TFA-032/README.md",
+        "labs/TFA-032/main.tf",
+        "labs/TFA-032/versions.tf",
+        "labs/TFA-032/Test-GovernanceEvidence.ps1"
+      ],
+      "probe": "Inspect the scoped assignment, policy, budget and lock; follow the explicit unlock-before-destroy sequence.",
+      "expected": "Each control addresses a distinct question and cleanup removes the lock deliberately.",
+      "failure_and_repair": "Attempt the documented policy violation or deletion with a lock, then repair the exact control.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract",
+        "fixture_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-032/tests/lesson.tftest.hcl",
+        "tests/Test-RouteGovernanceFixtures.ps1"
+      ],
+      "runtime_validation": "not_run_azure",
+      "coverage_notes": "Existing provider mocks cover default lock opt-in and Reader name. Synthetic governance response cases additionally verify exact scoped policy denial, calculated budget threshold plus separately observed notification, resource persistence, successful unlock and six invalid evidence cases. Actual policy enforcement, email delivery, billing and lock behavior remain unverified."
+    },
+    {
+      "id": "TFA-033",
+      "outcome": "Map provider aliases explicitly and understand cross-subscription prerequisites.",
+      "mechanism": "An aliased provider is a distinct configuration passed explicitly into a child module. Using two aliases in one subscription practices mapping without pretending to establish a cross-subscription boundary. A real second subscription additionally needs credentials, permissions, registration and state separation appropriate to that scope.",
+      "sources": [
+        "labs/TFA-033/README.md",
+        "labs/TFA-033/main.tf",
+        "labs/TFA-033/versions.tf"
+      ],
+      "probe": "Run the alias mapping tests and inspect which provider configuration each module receives.",
+      "expected": "Both explicit mappings work in the training subscription without hidden defaults.",
+      "failure_and_repair": "Omit the required provider mapping and restore the declared interface.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-033/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-034",
+      "outcome": "Diagnose a broken service by following DNS, routes, enforcement, and application health.",
+      "mechanism": "An HTTP failure can originate in name resolution, route selection, policy or the guest service. Probe the expected private IP separately from the hostname and inspect the chosen route before editing security rules. The selected incident changes one layer so the evidence can isolate cause instead of encouraging broad permission changes.",
+      "sources": [
+        "labs/TFA-034/README.md",
+        "labs/TFA-034/main.tf",
+        "labs/TFA-034/versions.tf",
+        "labs/TFA-034/incidents.tf"
+      ],
+      "probe": "Compare hostname, direct-IP TCP, effective route/NSG and W3SVC across four selectable incidents.",
+      "expected": "dns-wrong, route-drop, nsg-block and app-stopped have different decisive evidence.",
+      "failure_and_repair": "Select each fault once; restore healthy between cases and re-probe HTTP.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract",
+        "fixture_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-034/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-035",
+      "outcome": "Review infrastructure changes through credential-free pull-request quality checks.",
+      "mechanism": "A pull-request check should validate source without acquiring deployment credentials. Formatting, schema validation, mocked contracts and static security checks examine different failure classes. Documentation and catalog checks are part of the interface because a syntactically valid root can still have unusable instructions.",
+      "sources": [
+        "labs/TFA-035/README.md",
+        "labs/TFA-035/main.tf",
+        "labs/TFA-035/versions.tf"
+      ],
+      "probe": "Run the credential-free check commands and inspect .github/workflows/ci.yml.",
+      "expected": "Formatting, tests and document checks fail on their respective controlled errors.",
+      "failure_and_repair": "Introduce one formatting or broken-link defect, observe the exact check, restore.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-035/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-036",
+      "outcome": "Configure a federated managed identity for GitHub Actions and backend access.",
+      "mechanism": "OIDC federation matches issuer, audience and an exact subject before Azure authorization is considered. The GitHub environment named in the job must match the configured subject. A successfully exchanged token does not automatically grant Blob backend access or permission to deploy outside this lesson resource group.",
+      "sources": [
+        "labs/TFA-036/README.md",
+        "labs/TFA-036/main.tf",
+        "labs/TFA-036/versions.tf",
+        "labs/TFA-036/federation.workflow.yml.example"
+      ],
+      "probe": "Inspect the inactive minimal workflow and mock subject tests; optional later dispatch reads only the lesson RG.",
+      "expected": "Offline checks establish the trust contract; actual token exchange is explicitly unverified.",
+      "failure_and_repair": "Mismatch an environment in a fixture, explain federation rejection, restore the exact subject.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract",
+        "fixture_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-036/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-037",
+      "outcome": "Review a saved plan and use an explicitly invoked protected deployment workflow.",
+      "mechanism": "A saved plan is the artifact reviewed for a particular operation and state snapshot. Replanning at apply time can invalidate that review. The local rehearsal binds root, operation, source hashes, plan hash and age, while a protected real workflow adds authentication, backend locking and controlled artifact access.",
+      "sources": [
+        "labs/TFA-037/README.md",
+        "labs/TFA-037/main.tf",
+        "labs/TFA-037/versions.tf",
+        "labs/TFA-037/Demo-SavedPlan.ps1"
+      ],
+      "probe": "Run Demo-SavedPlan.ps1 plan/apply/plan-destroy/destroy on the local contract and reject altered plans.",
+      "expected": "The exact reviewed artifact applies; tampered and wrong-operation artifacts fail before Terraform apply.",
+      "failure_and_repair": "Alter a disposable plan byte or manifest operation and observe a rejected apply.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract",
+        "local_rehearsal"
+      ],
+      "test_sources": [
+        "labs/TFA-037/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-038",
+      "outcome": "Recover ownership and state, resume interrupted work, and review provider upgrades.",
+      "mechanism": "An interrupted apply can leave both real resources and partial state, so recovery starts by observing rather than blindly rerunning destructive commands. Restoring state affects bindings and must be reconciled with actual resources. Provider upgrades require lockfile review and a plan because schema compatibility does not guarantee unchanged behavior.",
+      "sources": [
+        "labs/TFA-038/README.md",
+        "labs/TFA-038/main.tf",
+        "labs/TFA-038/versions.tf"
+      ],
+      "probe": "Rehearse the local recovery example and compare version/lockfile changes with a fresh plan.",
+      "expected": "Recovery preserves the intended object bindings and exposes changes before upgrade apply.",
+      "failure_and_repair": "Use an interrupted or stale local state fixture, inspect it, then restore the known binding.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-038/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-039",
+      "outcome": "Complete the address plan, traffic matrix, permissions, cost review, and readiness gate.",
+      "mechanism": "The capstone plan must connect addressing, traffic policy, DNS ownership and costs before resources are created. A traffic row needs both forward and return routes and an enforcement point. Local readiness can check structure and tools, while actual quota, permissions and service support require deliberately collected Azure evidence later.",
+      "sources": [
+        "labs/TFA-039/README.md",
+        "labs/TFA-039/main.tf",
+        "labs/TFA-039/versions.tf"
+      ],
+      "probe": "Complete address, traffic, DNS, cost and permission worksheets; run local and fixture readiness modes.",
+      "expected": "All design decisions have named evidence or explicit unverified status before a live learner deployment.",
+      "failure_and_repair": "Find an overlapping CIDR or unsupported readiness fixture and repair the design.",
+      "cleanup": "Destroy only this local lesson state and verify an empty resource list; no Azure cleanup is implied.",
+      "cleanup_dependency": "Independent root; prerequisites teach concepts and do not retain infrastructure.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-039/tests/lesson.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    },
+    {
+      "id": "TFA-040",
+      "outcome": "Integrate and prove the complete staged regional hub-and-spoke architecture.",
+      "mechanism": "The cumulative capstone preserves stable module addresses while stage features are enabled in order. The application ingress path, inspected egress, private-service path, administration and hybrid DNS each need their own evidence. Offline mocks and fixtures test those contracts; only a deliberately executed deployment could establish runtime behavior.",
+      "sources": [
+        "labs/TFA-040/README.md",
+        "labs/TFA-040/main.tf",
+        "labs/TFA-040/versions.tf"
+      ],
+      "probe": "Read Test-Capstone and stage mock tests; follow the authored exact-IP and full traffic-matrix runtime probes later.",
+      "expected": "All four stages have explicit offline evidence; Azure runtime is recorded as not run in this overhaul.",
+      "failure_and_repair": "Use the documented DNS, route and policy fixtures; restore the healthy stage contract.",
+      "cleanup": "Use this root's documented whole-root destroy; capture its actual group name first, stop on errors, and verify no managed objects remain.",
+      "cleanup_dependency": "TFA-040 depends on the separate bootstrap backend; destroy capstone before migrating bootstrap state locally and destroying that backend.",
+      "offline_evidence": [
+        "authored_source",
+        "static_checked",
+        "mocked_contract",
+        "fixture_contract"
+      ],
+      "test_sources": [
+        "labs/TFA-040/tests/stages.tftest.hcl"
+      ],
+      "runtime_validation": "not_run_azure"
+    }
+  ]
+}

@@ -1,8 +1,14 @@
 # TFA-039 - Capstone architecture workshop
 
-[Course home](../../README.md) | [Previous lab](../TFA-038/README.md) | [Next lab](../TFA-040/README.md)
+<!-- lab-metadata:start -->
+**Phase 6:** Delivery & capstone
 
-> **Mode:** Local Terraform / workflow learning | **Time:** 60-100 minutes | **Cost:** Local workbook only. Its readiness flags do not deploy Azure or approve spending.
+**Learning target:** 75 minutes · **Cost tier:** None · **Run mode:** `local`
+
+**Prerequisites:** [TFA-038 — Recovery and controlled upgrades](../TFA-038/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-038/README.md) | [Next lab](../TFA-040/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ The final build should start with agreed interfaces, routes, names, costs, and e
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Complete the address plan, traffic matrix, permissions, cost review, and readiness gate. Your evidence must distinguish configuration intent from the observed result: All design decisions have named evidence or explicit unverified status before a live learner deployment.
+
+## Predict the mechanism
+
+The capstone plan must connect addressing, traffic policy, DNS ownership and costs before resources are created. A traffic row needs both forward and return routes and an enforcement point. Local readiness can check structure and tools, while actual quota, permissions and service support require deliberately collected Azure evidence later.
+
+Before running commands, write the expected result: **All design decisions have named evidence or explicit unverified status before a live learner deployment.** Then explain what would change in this controlled failure: Find an overlapping CIDR or unsupported readiness fixture and repair the design. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,13 +30,15 @@ This workbook turns the capstone's decisions into an inspectable local output. T
 
 ## Architecture
 
-![TFA-039 architecture](../../assets/diagrams/TFA-039.svg)
+<!-- lab-diagram:start -->
+![TFA-039 teaching diagram](../../assets/diagrams/TFA-039.svg)
+<!-- lab-diagram:end -->
 
 A five-network address plan and explicit readiness flags for cost, quota, and cleanup ownership, plus a capstone traffic/evidence worksheet.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts.
 
 Local workbook only. Its readiness flags do not deploy Azure or approve spending. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
@@ -53,9 +67,9 @@ Record what Terraform creates, which values are unknown until apply, and which r
 
 ```powershell
 terraform output workshop_decisions
-../../scripts/Test-AzureReadiness.ps1 -LocalOnly
+../../scripts/Test-AzureReadiness.ps1 -Mode Local
 # Optional read-only Azure preflight; requires a deliberate sandbox subscription.
-../../scripts/Test-AzureReadiness.ps1 -SubscriptionId (Read-Host 'Capstone subscription ID') -Location westeurope
+../../scripts/Test-AzureReadiness.ps1 -Mode AzureReadOnly -Stage hybrid -SubscriptionId (Read-Host 'Capstone subscription ID') -Location westeurope
 terraform plan -var='cost_reviewed=true' -var='quota_reviewed=true' -var='cleanup_owner_confirmed=true' -out=readiness.tfplan
 terraform apply readiness.tfplan
 terraform output workshop_decisions
@@ -81,9 +95,13 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 
 ```powershell
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 ```
 
 A successful destroy and an empty state are the expected result. Do not remove files or state from another lab. Do not commit generated plans or state as evidence.
@@ -98,3 +116,9 @@ A successful destroy and an empty state are the expected result. Do not remove f
 ## Continue learning
 
 [Official documentation](https://learn.microsoft.com/en-us/azure/architecture/networking/architecture/hub-spoke) | [Continue to TFA-040](../TFA-040/README.md)
+
+## Evidence contract
+
+Complete address, traffic, DNS, cost and permission worksheets; run local and fixture readiness modes. All design decisions have named evidence or explicit unverified status before a live learner deployment.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

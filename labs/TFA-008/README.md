@@ -1,14 +1,30 @@
 # TFA-008 — NSGs and application security groups
 
-![NSGs and application security groups teaching diagram](../../assets/diagrams/TFA-008.svg)
+<!-- lab-metadata:start -->
+**Phase 2:** Azure networks
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-007 — IP addressing, CIDR, VNets, and subnets](../TFA-007/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-008 teaching diagram](../../assets/diagrams/TFA-008.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Read NSG priorities and service tags, distinguish ASG membership from filtering, and attach the NSG to the intended subnet.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-007](../TFA-007/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+An ASG is a label attached to NIC IP configurations. An allow rule referencing an empty ASG matches no destination. Rules are evaluated by ascending priority and NSGs are stateful, so prove a policy change using a fresh connection rather than an already-established session.
+
+Before running commands, write the expected result: **With probes enabled, TCP 443 is true, then false, then true; default mode has no VM packet proof.** Then explain what would change in this controlled failure: web_membership_enabled=false removes the target label while the deny rule remains. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ An ASG groups NIC IP configurations for rule targeting; it does not attach to an
 
 One VNet/workload subnet → one associated NSG. Priority 100 allows TCP/443 from VirtualNetwork to web-ASG members; priority 200 denies other VNet inbound traffic. The ASG has no NIC members yet.
 
-**Cost:** Low: network objects only; no VMs are created. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -80,6 +96,36 @@ configuration behavior; it is not a network connectivity test.
 
 Temporarily change the allow priority to 200, matching the deny. Review the conflict and restore unique priorities before apply. Then explain why an unattached NSG or empty ASG can invalidate an otherwise plausible security claim.
 
+## Optional packet exercise after TFA-010
+
+The default remains a low-cost configuration inspection. This optional mode creates two **private Windows VMs, disks, one NAT Gateway and one public NAT IP**. Review [cost and cleanup](../../docs/cost-and-cleanup.md) first. The small shared VM pattern wraps the Windows resources explained in TFA-010; TFA-017 explains that module interface. No VM public IP or inbound public RDP is added.
+
+```powershell
+$env:TF_VAR_enable_probes = 'true'
+$env:TF_VAR_probe_admin_password = Read-Host 'Unique Windows password (14+ characters)' -MaskInput
+terraform init -lockfile=readonly
+terraform plan -out=probes.tfplan
+terraform show probes.tfplan
+terraform apply probes.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Probe deployment failed. Keep state and inspect the error.' }
+$rg = terraform output -raw resource_group_name
+$targets = terraform output -json probe_targets | ConvertFrom-Json
+$listener = Get-Content -Raw ./Start-ProbeListener.ps1
+az vm run-command invoke -g $rg -n $targets.server.name --command-id RunPowerShellScript --scripts $listener
+az vm run-command invoke -g $rg -n $targets.client.name --command-id RunPowerShellScript --scripts "Test-NetConnection $($targets.server.ip) -Port 443"
+terraform plan -var='web_membership_enabled=false' -out=remove-membership.tfplan
+terraform show remove-membership.tfplan
+terraform apply remove-membership.tfplan
+az vm run-command invoke -g $rg -n $targets.client.name --command-id RunPowerShellScript --scripts "Test-NetConnection $($targets.server.ip) -Port 443"
+terraform plan -var='web_membership_enabled=true' -out=restore-membership.tfplan
+terraform apply restore-membership.tfplan
+az vm run-command invoke -g $rg -n $targets.client.name --command-id RunPowerShellScript --scripts "Test-NetConnection $($targets.server.ip) -Port 443"
+```
+
+Expected learner evidence is fresh TCP connections **true → false → true** while the server's private IP and listener stay unchanged. The port 443 listener accepts TCP only; it does not perform TLS or serve a website. Removing ASG membership prevents the priority 100 allow from matching, so priority 200 denies the traffic. A connection opened before a policy change can remain established; use a new `Test-NetConnection` invocation. The scripted listener is a scheduled task inside the disposable server and disappears with VM destruction. Do not claim packet success from the mocked tests: these prove the planned association and rules only.
+
+Keep `TF_VAR_enable_probes=true` and the password available for the documented whole-root destroy. After successful cleanup, remove `Env:TF_VAR_enable_probes` and `Env:TF_VAR_probe_admin_password`. Do not delete state to turn off the probe topology.
+
 ## Troubleshooting
 
 | Symptom | Investigation |
@@ -92,9 +138,13 @@ Temporarily change the allow priority to 200, matching the deny. Review the conf
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -107,3 +157,9 @@ Validate real application traffic using representative endpoints and effective s
 ## Navigation
 
 [Previous: TFA-007](../TFA-007/README.md) · [Curriculum](../../README.md) · [Next: TFA-009](../TFA-009/README.md)
+
+## Evidence contract
+
+Optional Windows probes: start TCP 443 listener; remove and restore server ASG membership; test fresh client connections. With probes enabled, TCP 443 is true, then false, then true; default mode has no VM packet proof.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.
