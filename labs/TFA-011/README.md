@@ -1,14 +1,30 @@
 # TFA-011 — Private administration with Bastion
 
-![Private administration with Bastion teaching diagram](../../assets/diagrams/TFA-011.svg)
+<!-- lab-metadata:start -->
+**Phase 2:** Azure networks
+
+**Learning target:** 120 minutes · **Cost tier:** High · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-010 — Private Windows VM and IIS](../TFA-010/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-011 teaching diagram](../../assets/diagrams/TFA-011.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Administer a VM over its private IP through Azure Bastion while restricting RDP to the Bastion subnet.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-010](../TFA-010/README.md). Earlier cloud labs should already be destroyed; this root deploys independently. Confirm regional Windows VM SKU/vCPU quota. Use a unique password and protect local state.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block. Confirm regional Windows VM SKU/vCPU quota. Use a unique password and protect local state.
+
+## Predict the mechanism
+
+Bastion terminates the administrative session in its dedicated subnet and reaches the VM privately. The VM therefore does not need a public IP or public RDP allowance. Bastion service health alone does not prove that the guest accepts credentials and an RDP connection.
+
+Before running commands, write the expected result: **Administration succeeds through Bastion while the VM has no public IP.** Then explain what would change in this controlled failure: Inspect an intentionally missing guest or NSG allowance; restore only the required path. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The VM subnet NSG explicitly allows TCP/3389 from AzureBastionSubnet and then de
 
 Browser HTTPS → Basic Bastion in AzureBastionSubnet (10.11.0.0/26) → private Windows VM. A separate NAT path supplies VM outbound connectivity.
 
-**Cost:** High: Bastion has a continuing hourly charge, plus VM, disk, NAT, and public IPv4 addresses. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -94,9 +110,13 @@ After a successful session, temporarily change allow-bastion-rdp destination por
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 Remove-Item Env:TF_VAR_admin_password -ErrorAction SilentlyContinue
 Remove-Variable securePassword -ErrorAction SilentlyContinue
@@ -111,3 +131,9 @@ Select supported zones, capacity/SKU, session controls, audit, identity, and app
 ## Navigation
 
 [Previous: TFA-010](../TFA-010/README.md) · [Curriculum](../../README.md) · [Next: TFA-012](../TFA-012/README.md)
+
+## Evidence contract
+
+Use the authored Bastion browser connection to the private Windows VM and inspect its NIC. Administration succeeds through Bastion while the VM has no public IP.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

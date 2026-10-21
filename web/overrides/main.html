@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block extrahead %}
+  {{ super() }}
+  {% set social_title = config.site_name if page.is_homepage else page.title ~ ' · ' ~ config.site_name %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ social_title | e }}">
+  <meta property="og:description" content="{{ config.site_description | e }}">
+  <meta property="og:url" content="{{ page.canonical_url | e }}">
+  <meta property="og:image" content="{{ config.site_url }}assets/illustrations/terraforming-azure-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ social_title | e }}">
+  <meta name="twitter:description" content="{{ config.site_description | e }}">
+  <meta name="twitter:image" content="{{ config.site_url }}assets/illustrations/terraforming-azure-cover.png">
+{% endblock %}

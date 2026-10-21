@@ -7,5 +7,9 @@
   "mkdocs": "1.6.1",
   "mkdocs_material": "9.6.20",
   "tflint": "0.63.1",
-  "actionlint": "1.7.12"
+  "actionlint": "1.7.12",
+  "node": "24",
+  "playwright": "1.64.1",
+  "python_hcl2": "8.1.4",
+  "pillow": "13.0.0"
 }

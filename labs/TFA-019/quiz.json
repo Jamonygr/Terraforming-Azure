@@ -3,22 +3,22 @@
     "id": "TFA-019-Q1",
     "prompt": "What actually isolates the two local environments in this lesson?",
     "options": [
+      "Different variable defaults in one shared root",
+      "Distinct resource-group names alone",
       "Separate roots with separate state files",
-      "A map key named prod in one shared state",
-      "A different terminal color",
-      "A resource tag alone"
+      "Separate environment tags in one state"
     ],
-    "answer": 0,
+    "answer": 2,
     "explanation": "Directory roots and independent state files establish the demonstrated operational boundary."
   },
   {
     "id": "TFA-019-Q2",
     "prompt": "Applying revision=2 only in dev should do what to prod?",
     "options": [
-      "Move prod to dev’s CIDR",
+      "Switch prod to the dev workspace automatically",
       "Leave prod state and its plan unchanged",
-      "Automatically apply the same change to prod",
-      "Delete prod state"
+      "Update both states when the provider refreshes",
+      "Apply the same revision automatically to prod"
     ],
     "answer": 1,
     "explanation": "Separate state operations do not propagate merely because the code lives in one repository."
@@ -27,10 +27,10 @@
     "id": "TFA-019-Q3",
     "prompt": "What should the two local state lineages look like?",
     "options": [
-      "Absent from every Terraform state",
-      "Equal to the same password",
+      "Equal because the Terraform version is shared",
+      "Equal because both roots use local backends",
       "Different because they are independent state histories",
-      "Identical because directory names differ"
+      "Equal because the provider is shared"
     ],
     "answer": 2,
     "explanation": "Independent initialized states have distinct lineages."
@@ -39,12 +39,12 @@
     "id": "TFA-019-Q4",
     "prompt": "Why is an environment variable alone insufficient for isolation?",
     "options": [
-      "Variables cannot be strings",
-      "Only a README can isolate state",
-      "All Azure regions share one mandatory state",
-      "One state may still own and change all resources together"
+      "All roots automatically share a subscription state",
+      "One state may still own and change all resources together",
+      "Environment names automatically create workspaces",
+      "TF_VAR values always override explicit tfvars"
     ],
-    "answer": 3,
+    "answer": 1,
     "explanation": "Input selection and state ownership are separate design concerns."
   },
   {
@@ -52,9 +52,9 @@
     "prompt": "Does a Terraform workspace alone create an authorization boundary?",
     "options": [
       "No",
-      "Yes, it assigns a separate Entra role automatically",
-      "Yes, it buys a separate subscription",
-      "Yes, it encrypts every caller differently"
+      "Yes, it automatically assigns a different Azure role",
+      "Yes, it denies access to other workspaces' backends",
+      "Yes, its name becomes an Entra security boundary"
     ],
     "answer": 0,
     "explanation": "Workspace state selection does not by itself change backend access, identities, or permissions."

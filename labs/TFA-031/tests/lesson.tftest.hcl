@@ -1,4 +1,10 @@
 mock_provider "azurerm" {
+  mock_resource "azurerm_private_dns_resolver_outbound_endpoint" {
+    defaults = { id = "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-mock/providers/Microsoft.Network/dnsResolvers/mock/outboundEndpoints/outbound" }
+  }
+  mock_resource "azurerm_private_dns_resolver_dns_forwarding_ruleset" {
+    defaults = { id = "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-mock/providers/Microsoft.Network/dnsForwardingRulesets/mock" }
+  }
   override_during = plan
   mock_data "azurerm_client_config" {
     defaults = { tenant_id = "11111111-1111-1111-1111-111111111111", client_id = "11111111-1111-1111-1111-111111111111", object_id = "11111111-1111-1111-1111-111111111111", subscription_id = "11111111-1111-1111-1111-111111111111" }
@@ -91,5 +97,21 @@ run "architecture_contract" {
   assert {
     condition     = azurerm_storage_account.lab.public_network_access_enabled == false
     error_message = "The hybrid query must resolve a genuinely private-only account."
+  }
+}
+
+run "bidirectional_dns_contract" {
+  command = plan
+  assert {
+    condition     = azurerm_private_dns_resolver_forwarding_rule.corp.domain_name == "corp.tfa.internal." && one(azurerm_private_dns_resolver_forwarding_rule.corp.target_dns_servers).ip_address == "10.131.2.4"
+    error_message = "Corporate queries must forward to Windows DNS across VPN, not back into the Azure inbound endpoint."
+  }
+  assert {
+    condition     = azurerm_private_dns_resolver_virtual_network_link.azure.virtual_network_id == azurerm_virtual_network.azure.id && azurerm_subnet.resolver_outbound.address_prefixes == tolist(["10.31.1.16/28"])
+    error_message = "Azure clients require a ruleset link and a dedicated outbound subnet."
+  }
+  assert {
+    condition     = anytrue([for rule in azurerm_network_security_group.dns.security_rule : rule.source_address_prefix == "10.31.1.16/28" && rule.destination_port_range == "53" && rule.access == "Allow"])
+    error_message = "Corporate DNS must permit both UDP/TCP resolver queries."
   }
 }

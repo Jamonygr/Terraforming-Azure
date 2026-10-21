@@ -4,6 +4,7 @@ import argparse
 import concurrent.futures
 import os
 import subprocess
+from check_offline_tests import check_folder
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -18,10 +19,15 @@ def roots():
 
 def check(folder,skip_tests):
     relative=folder.relative_to(ROOT).as_posix()
+    if not skip_tests:
+        issues=check_folder(folder)
+        if issues:return relative,False,'\n'.join(issues)
     commands=[['terraform','init','-backend=false','-input=false','-lockfile=readonly','-no-color'],['terraform','validate','-no-color']]
     if not skip_tests and (folder/'tests').is_dir():commands.append(['terraform','test','-no-color'])
     for command in commands:
-        result=subprocess.run(command,cwd=folder,capture_output=True,text=True,encoding='utf-8',errors='replace',env={**os.environ,'TF_IN_AUTOMATION':'true'})
+        # Test suites must not inherit cloud credentials or caller-supplied Terraform arguments.
+        environment={k:v for k,v in os.environ.items() if not k.startswith(('ARM_','AZURE_','TF_VAR_','TF_CLI_ARGS'))}
+        result=subprocess.run(command,cwd=folder,capture_output=True,text=True,encoding='utf-8',errors='replace',env={**environment,'TF_IN_AUTOMATION':'true'},timeout=600)
         if result.returncode:return relative,False,result.stdout+result.stderr
     return relative,True,f'{len(commands)} checks'
 

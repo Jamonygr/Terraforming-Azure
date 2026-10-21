@@ -189,13 +189,14 @@ resource "azurerm_private_endpoint" "blob" {
 }
 
 module "dns" {
+  depends_on          = [azurerm_subnet_nat_gateway_association.probe, azurerm_nat_gateway_public_ip_association.probe]
   source              = "../../modules/patterns/windows-vm"
   name                = "${var.name_prefix}-dns"
   resource_group_name = azurerm_resource_group.lab.name
   location            = azurerm_resource_group.lab.location
   subnet_id           = azurerm_subnet.onprem_workload.id
   admin_password      = var.admin_password
-  bootstrap_command   = "Install-WindowsFeature DNS -IncludeManagementTools; Add-DnsServerConditionalForwarderZone -Name 'blob.core.windows.net' -MasterServers 10.31.1.4; Add-DnsServerConditionalForwarderZone -Name 'privatelink.blob.core.windows.net' -MasterServers 10.31.1.4"
+  bootstrap_command   = "Install-WindowsFeature DNS -IncludeManagementTools; if (-not (Get-DnsServerZone -Name 'corp.tfa.internal' -ErrorAction SilentlyContinue)) { Add-DnsServerPrimaryZone -Name 'corp.tfa.internal' -ZoneFile 'corp.tfa.internal.dns' }; if (-not (Get-DnsServerResourceRecord -ZoneName 'corp.tfa.internal' -Name 'files' -ErrorAction SilentlyContinue)) { Add-DnsServerResourceRecordA -ZoneName 'corp.tfa.internal' -Name 'files' -IPv4Address '10.131.2.4' }; foreach ($zone in @('blob.core.windows.net','privatelink.blob.core.windows.net')) { if (-not (Get-DnsServerZone -Name $zone -ErrorAction SilentlyContinue)) { Add-DnsServerConditionalForwarderZone -Name $zone -MasterServers 10.31.1.4 } }; if (-not (Get-NetFirewallRule -DisplayName 'TFA corporate DNS' -ErrorAction SilentlyContinue)) { New-NetFirewallRule -DisplayName 'TFA corporate DNS' -Direction Inbound -Action Allow -Protocol UDP -LocalPort 53 -RemoteAddress 10.31.1.16/28,10.131.0.0/16; New-NetFirewallRule -DisplayName 'TFA corporate DNS TCP' -Direction Inbound -Action Allow -Protocol TCP -LocalPort 53 -RemoteAddress 10.31.1.16/28,10.131.0.0/16 }"
   private_ip_address  = "10.131.2.4"
   tags                = local.tags
 }
@@ -213,6 +214,18 @@ resource "azurerm_network_security_group" "dns" {
     source_port_range          = "*"
     destination_port_range     = "53"
     source_address_prefix      = "10.131.0.0/16"
+    destination_address_prefix = "10.131.2.4"
+  }
+
+  security_rule {
+    name                       = "allow-resolver-outbound-dns"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "53"
+    source_address_prefix      = "10.31.1.16/28"
     destination_address_prefix = "10.131.2.4"
   }
 

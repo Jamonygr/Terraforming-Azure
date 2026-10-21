@@ -1,0 +1,21 @@
+{
+  "corporate_to_azure": [
+    {
+      "Name": "training.blob.core.windows.net",
+      "Type": "CNAME",
+      "NameHost": "training.privatelink.blob.core.windows.net"
+    },
+    {
+      "Name": "training.privatelink.blob.core.windows.net",
+      "Type": "A",
+      "IPAddress": "10.31.2.4"
+    }
+  ],
+  "azure_to_corporate": [
+    {
+      "Name": "files.corp.tfa.internal",
+      "Type": "A",
+      "IPAddress": "10.131.2.4"
+    }
+  ]
+}

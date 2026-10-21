@@ -1,8 +1,14 @@
 # TFA-037 - Reviewed plan, apply, and destroy workflows
 
-[Course home](../../README.md) | [Previous lab](../TFA-036/README.md) | [Next lab](../TFA-038/README.md)
+<!-- lab-metadata:start -->
+**Phase 6:** Delivery & capstone
 
-> **Mode:** Local Terraform / workflow learning | **Time:** 60-90 minutes | **Cost:** Local contract exercise is free; actual workflow cloud operations incur the selected lab's charges.
+**Learning target:** 75 minutes · **Cost tier:** None · **Run mode:** `local`
+
+**Prerequisites:** [TFA-036 — GitHub Actions authentication with OIDC](../TFA-036/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-036/README.md) | [Next lab](../TFA-038/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ A review is useful only if the operation executed is the one the reviewer inspec
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Review a saved plan and use an explicitly invoked protected deployment workflow. Your evidence must distinguish configuration intent from the observed result: The exact reviewed artifact applies; tampered and wrong-operation artifacts fail before Terraform apply.
+
+## Predict the mechanism
+
+A saved plan is the artifact reviewed for a particular operation and state snapshot. Replanning at apply time can invalidate that review. The local rehearsal binds root, operation, source hashes, plan hash and age, while a protected real workflow adds authentication, backend locking and controlled artifact access.
+
+Before running commands, write the expected result: **The exact reviewed artifact applies; tampered and wrong-operation artifacts fail before Terraform apply.** Then explain what would change in this controlled failure: Alter a disposable plan byte or manifest operation and observe a rejected apply. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,13 +30,15 @@ The actual deployment workflow lives at `.github/workflows/azure.yml`; the Terra
 
 ## Architecture
 
-![TFA-037 architecture](../../assets/diagrams/TFA-037.svg)
+<!-- lab-diagram:start -->
+![TFA-037 teaching diagram](../../assets/diagrams/TFA-037.svg)
+<!-- lab-diagram:end -->
 
 A local workflow contract plus inspection and a guided manual run of the repository Azure workflow against a selected capstone stage. No cloud operation is triggered by this lab's local apply.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts.
 
 Local contract exercise is free; actual workflow cloud operations incur the selected lab's charges. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
@@ -63,6 +77,27 @@ The local contract reports a plan operation by default. A manually dispatched re
 
 Save a short local evidence note with the time, exact probe, observed result, and your explanation. Resource existence, DNS, routing, authorization, and application success are different kinds of evidence.
 
+## Run a minimal saved-plan rehearsal locally
+
+The four Terraform files in this lesson use only built-in `terraform_data`. [Demo-SavedPlan.ps1](Demo-SavedPlan.ps1) runs the actual local plan/apply cycle and rejects changed artifacts, changed sources, a mismatched root/operation and plans older than 24 hours. It does not read Azure credentials or request a GitHub token.
+
+```powershell
+./Demo-SavedPlan.ps1 -Operation Plan
+terraform show ./rehearsal.tfplan
+./Demo-SavedPlan.ps1 -Operation Apply -AcknowledgeReviewedPlan
+terraform plan -detailed-exitcode
+# Expected exit 0 after applying exactly the saved local plan.
+./Demo-SavedPlan.ps1 -Operation PlanDestroy
+terraform show ./rehearsal.tfplan
+./Demo-SavedPlan.ps1 -Operation Destroy -AcknowledgeReviewedPlan
+terraform state list
+# Expected empty state after successful destruction.
+```
+
+For the controlled failure, copy the saved plan before applying, alter one byte in the disposable copy and try the corresponding rehearsal apply: its SHA-256 must fail. Restore the unchanged original only to complete cleanup. The repository regression runs this in an isolated temporary directory and additionally checks an operation mismatch. A hash stored beside a file is an accidental-change check; somebody who can alter both can forge it. The production workflow therefore also binds protected review, source commit, state/backend identity, encryption and same-run artifact ownership.
+
+Read the full capstone workflow after completing this local exercise. Its Azure effects remain explicitly separate from the local rehearsal. Remove `rehearsal.manifest.json` and saved plans only after cleanup; no secrets belong in the local contract.
+
 ## Troubleshooting
 
 A saved plan from another commit, state snapshot, Terraform/provider version, or variable set is stale and must not be applied. Check target/backend identity before approving destruction. A budget does not shut down a forgotten deployment.
@@ -79,9 +114,13 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 
 ```powershell
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 ```
 
 A successful destroy and an empty state are the expected result. Do not remove files or state from another lab. Do not commit generated plans or state as evidence.
@@ -96,3 +135,9 @@ A successful destroy and an empty state are the expected result. Do not remove f
 ## Continue learning
 
 [Official documentation](https://developer.hashicorp.com/terraform/cli/commands/plan#out-filename) | [Continue to TFA-038](../TFA-038/README.md)
+
+## Evidence contract
+
+Run Demo-SavedPlan.ps1 plan/apply/plan-destroy/destroy on the local contract and reject altered plans. The exact reviewed artifact applies; tampered and wrong-operation artifacts fail before Terraform apply.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

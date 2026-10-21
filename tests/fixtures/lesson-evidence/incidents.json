@@ -1,0 +1,62 @@
+[
+  {
+    "name": "healthy",
+    "expected_diagnosis": "healthy",
+    "expected_ip": "10.34.2.4",
+    "dns_answers": [
+      "10.34.2.4"
+    ],
+    "selected_next_hop": "VnetLocal",
+    "nsg_access": "Allow",
+    "w3svc_status": "Running",
+    "tcp_succeeded": true
+  },
+  {
+    "name": "dns-wrong",
+    "expected_diagnosis": "dns-wrong",
+    "expected_ip": "10.34.2.4",
+    "dns_answers": [
+      "10.34.2.99"
+    ],
+    "selected_next_hop": "VnetLocal",
+    "nsg_access": "Allow",
+    "w3svc_status": "Running",
+    "tcp_succeeded": true
+  },
+  {
+    "name": "route-drop",
+    "expected_diagnosis": "route-drop",
+    "expected_ip": "10.34.2.4",
+    "dns_answers": [
+      "10.34.2.4"
+    ],
+    "selected_next_hop": "None",
+    "nsg_access": "Allow",
+    "w3svc_status": "Running",
+    "tcp_succeeded": false
+  },
+  {
+    "name": "nsg-block",
+    "expected_diagnosis": "nsg-block",
+    "expected_ip": "10.34.2.4",
+    "dns_answers": [
+      "10.34.2.4"
+    ],
+    "selected_next_hop": "VnetLocal",
+    "nsg_access": "Deny",
+    "w3svc_status": "Running",
+    "tcp_succeeded": false
+  },
+  {
+    "name": "app-stopped",
+    "expected_diagnosis": "app-stopped",
+    "expected_ip": "10.34.2.4",
+    "dns_answers": [
+      "10.34.2.4"
+    ],
+    "selected_next_hop": "VnetLocal",
+    "nsg_access": "Allow",
+    "w3svc_status": "Stopped",
+    "tcp_succeeded": false
+  }
+]

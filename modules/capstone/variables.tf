@@ -56,9 +56,9 @@ variable "operator_cidrs" {
   type        = list(string)
   validation {
     condition = length(var.operator_cidrs) > 0 && alltrue([
-      for prefix in var.operator_cidrs : can(cidrhost(prefix, 0)) && can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", prefix)) && prefix != "0.0.0.0/0"
+      for prefix in var.operator_cidrs : try(cidrhost(prefix, 0) == split("/", prefix)[0] && tostring(tonumber(split("/", prefix)[1])) == split("/", prefix)[1] && tonumber(split("/", prefix)[1]) >= 1 && tonumber(split("/", prefix)[1]) <= 32 && can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", prefix)), false)
     ])
-    error_message = "Provide specific operator CIDRs; a world-open /0 is not accepted."
+    error_message = "Provide canonical IPv4 operator networks with prefixes /1 through /32; use your public /32. All /0 forms and host bits are rejected."
   }
 }
 

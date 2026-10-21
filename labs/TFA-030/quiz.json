@@ -3,9 +3,9 @@
     "id": "TFA-030-Q1",
     "prompt": "What represents the remote site in this lab?",
     "options": [
-      "A physical office router",
-      "A Local Network Gateway resource alone",
-      "A public IIS endpoint",
+      "A physical remote router configured by Terraform",
+      "A peered spoke using the hub's gateway",
+      "A Local Network Gateway object without a device",
       "A second Azure VNet with its own VPN gateway"
     ],
     "answer": 3,
@@ -15,22 +15,22 @@
     "id": "TFA-030-Q2",
     "prompt": "What connects the two sites here?",
     "options": [
-      "Two directional VNet-to-VNet connection resources",
       "Direct VNet peering",
-      "An Application Gateway listener",
-      "A DNS zone link"
+      "A private DNS VNet link",
+      "Two directional VNet-to-VNet connection resources",
+      "A pair of Local Network Gateway records only"
     ],
-    "answer": 0,
+    "answer": 2,
     "explanation": "Each gateway has a peer connection; there is deliberately no peering shortcut."
   },
   {
     "id": "TFA-030-Q3",
     "prompt": "Why do both directions use the same shared key?",
     "options": [
-      "It makes DNS records propagate",
+      "The shared key authorizes guest OS access",
       "Both VPN peers must authenticate with compatible tunnel settings",
-      "It grants VM Contributor",
-      "It changes the VNet address space"
+      "The shared key distributes static routes",
+      "The shared key enables BGP propagation"
     ],
     "answer": 1,
     "explanation": "The shared key participates in IPsec authentication and must match."
@@ -39,10 +39,10 @@
     "id": "TFA-030-Q4",
     "prompt": "What evidence goes beyond provisioningState Succeeded?",
     "options": [
-      "A formatted Terraform file",
-      "A resource-group tag",
+      "Both gateway resources reporting Succeeded",
+      "Both gateway public IPs existing",
       "Connected tunnel status plus successful cross-site traffic",
-      "A public IP existing"
+      "The configured shared-key variables matching"
     ],
     "answer": 2,
     "explanation": "A gateway resource can exist while its tunnel or guest path is unusable."
@@ -51,9 +51,9 @@
     "id": "TFA-030-Q5",
     "prompt": "What happens to gateway charges when you close PowerShell?",
     "options": [
-      "They stop immediately",
-      "Only the shared key remains charged",
-      "Terraform automatically destroys everything",
+      "They stop when Terraform releases its state lock",
+      "They stop when the tunnel is idle",
+      "They stop when the VMs are deallocated",
       "They continue until the charged resources are removed"
     ],
     "answer": 3,

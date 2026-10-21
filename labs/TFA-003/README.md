@@ -1,14 +1,30 @@
 # TFA-003 — Your first Azure deployment
 
-![Your first Azure deployment teaching diagram](../../assets/diagrams/TFA-003.svg)
+<!-- lab-metadata:start -->
+**Phase 1:** Foundations
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-002 — Prepare your workstation and subscription](../TFA-002/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-003 teaching diagram](../../assets/diagrams/TFA-003.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Create and remove one Azure resource group while learning init, fmt, validate, plan, apply, refresh, and destroy.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-002](../TFA-002/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+A resource group has its own lifecycle even when empty. init installs the declared provider, validate checks configuration structure, and a saved plan records the intended action. apply creates the real binding in state, while destroy removes that managed group.
+
+Before running commands, write the expected result: **One resource group address is tracked after apply; repeat plan is empty.** Then explain what would change in this controlled failure: Change a mutable tag, compare the plan, then restore it. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ An apply can create billable resources in later lessons; a saved plan is therefo
 
 One isolated resource group, tagged with its course, lab, and learning purpose. No VNet, storage account, or VM is created.
 
-**Cost:** Low: a resource group has no direct hourly fee. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -92,9 +108,13 @@ Temporarily set the location variable to an unsupported region name and run terr
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -107,3 +127,9 @@ Shared environments require reviewed changes, protected remote state, an appropr
 ## Navigation
 
 [Previous: TFA-002](../TFA-002/README.md) · [Curriculum](../../README.md) · [Next: TFA-004](../TFA-004/README.md)
+
+## Evidence contract
+
+terraform plan -out=lab.tfplan; terraform show lab.tfplan; terraform state list. One resource group address is tracked after apply; repeat plan is empty.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

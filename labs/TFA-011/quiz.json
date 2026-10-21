@@ -3,22 +3,22 @@
     "id": "TFA-011-Q1",
     "prompt": "Where does the VM’s public IP live in this Bastion design?",
     "options": [
+      "NAT translates inbound RDP to the VM",
       "The VM has none; Bastion owns the administration public endpoint",
-      "On every workload NIC",
-      "Inside Terraform’s variable name",
-      "On the administrator password"
+      "The VM owns a hidden public IP created by Bastion",
+      "The VM NIC shares the Bastion public IP"
     ],
-    "answer": 0,
+    "answer": 1,
     "explanation": "Browser access reaches the managed Bastion service, which then connects to the VM privately."
   },
   {
     "id": "TFA-011-Q2",
     "prompt": "What subnet name is required for this Bastion deployment?",
     "options": [
-      "Any subnet named after the VM",
+      "AzureGatewaySubnet",
       "AzureBastionSubnet",
-      "default",
-      "internet"
+      "A subnet name chosen by the operator",
+      "GatewaySubnet"
     ],
     "answer": 1,
     "explanation": "The Bastion service uses the dedicated AzureBastionSubnet name."
@@ -27,10 +27,10 @@
     "id": "TFA-011-Q3",
     "prompt": "Why add deny-other-rdp after the Bastion RDP allow?",
     "options": [
-      "To enable anonymous RDP",
-      "To publish port 3389 through NAT",
+      "The allow rule automatically removes all default rules",
+      "The default VNet allow already denies lateral RDP",
       "To restrict other sources including broad default VNet access",
-      "To deny Bastion before allowing it"
+      "The deny must have a lower number than the allow"
     ],
     "answer": 2,
     "explanation": "The more specific allow is evaluated first; the following deny blocks other RDP sources."
@@ -39,24 +39,24 @@
     "id": "TFA-011-Q4",
     "prompt": "Which administration workflow matches Basic SKU here?",
     "options": [
-      "Assume native-client tunnelling is configured",
-      "Direct Internet RDP to the VM",
-      "SSH to the NAT Gateway",
-      "Portal browser Bastion session"
+      "Portal browser Bastion session",
+      "Direct RDP to the Bastion public IP",
+      "Native-client tunnelling without changing SKU",
+      "Direct RDP to the VM through the NAT public IP"
     ],
-    "answer": 3,
+    "answer": 0,
     "explanation": "This lesson uses browser-based Bastion; native tunnelling requires a supported SKU and configuration."
   },
   {
     "id": "TFA-011-Q5",
     "prompt": "Why destroy the lesson rather than just stop the VM?",
     "options": [
-      "Bastion, NAT, public IPs, and disks can keep accruing charges",
-      "A stopped VM deletes the whole VNet",
-      "Stopping a VM clears all state",
-      "NSG names become invalid"
+      "A Terraform plan suspends charges until apply",
+      "Stopping the VM also stops Bastion billing",
+      "Deallocation deletes the managed disk",
+      "Bastion, NAT, public IPs, and disks can keep accruing charges"
     ],
-    "answer": 0,
+    "answer": 3,
     "explanation": "Charges can continue for supporting services and disks after the VM stops."
   }
 ]

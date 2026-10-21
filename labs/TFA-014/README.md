@@ -1,14 +1,30 @@
 # TFA-014 — State, addressing, and locking
 
-![State, addressing, and locking teaching diagram](../../assets/diagrams/TFA-014.svg)
+<!-- lab-metadata:start -->
+**Phase 3:** Terraform engineering
+
+**Learning target:** 75 minutes · **Cost tier:** None · **Run mode:** `local`
+
+**Prerequisites:** [TFA-013 — Routes, next hops, and Network Watcher](../TFA-013/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-014 teaching diagram](../../assets/diagrams/TFA-014.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Read resource identities in local state and demonstrate lock contention safely with two terminals.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-013](../TFA-013/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+A Terraform address identifies a configured instance, while the ID inside state identifies its managed object. State locking serializes writers but is not a backup. In PowerShell a keyed address must be single-quoted so its embedded double quotes reach Terraform intact.
+
+Before running commands, write the expected result: **The keyed local object is shown; repeat plan has no changes and destroy leaves empty state.** Then explain what would change in this controlled failure: Compare an incorrect unquoted address with the correct literal without deleting state. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ Locking protects a state snapshot from concurrent writers when the backend suppo
 
 Two keyed terraform_data resources share one local state file and its local lock. No cloud credentials or AzureRM provider are needed.
 
-**Cost:** None Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -53,7 +69,7 @@ logs, or secret-bearing command output. Keep dependency lockfiles in source cont
 
 ```powershell
 terraform state list
-terraform state show terraform_data.service["web"]
+terraform state show 'terraform_data.service["web"]'
 terraform state pull | ConvertFrom-Json | Select-Object lineage,serial
 terraform output -json service_ids
 ```
@@ -87,7 +103,9 @@ If the second terminal fails to acquire the lock, identify the first process and
 
 ```powershell
 terraform destroy
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -100,3 +118,9 @@ Use a supported remote backend, controlled access, encryption, versioning, recov
 ## Navigation
 
 [Previous: TFA-013](../TFA-013/README.md) · [Curriculum](../../README.md) · [Next: TFA-015](../TFA-015/README.md)
+
+## Evidence contract
+
+terraform state show 'terraform_data.service["web"]'; tests/Test-LessonLocal.ps1 replays this exact line. The keyed local object is shown; repeat plan has no changes and destroy leaves empty state.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

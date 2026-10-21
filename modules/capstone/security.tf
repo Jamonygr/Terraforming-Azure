@@ -55,13 +55,6 @@ resource "azurerm_firewall_policy_rule_collection_group" "lab" {
       destination_addresses = [local.subnets.app.prefix]
       destination_ports     = ["80"]
     }
-    rule {
-      name                  = "resolver-to-corp-dns"
-      protocols             = ["UDP", "TCP"]
-      source_addresses      = [local.subnets.dns_out.prefix]
-      destination_addresses = [local.corp_dns_ip]
-      destination_ports     = ["53"]
-    }
   }
   application_rule_collection {
     name     = "private-data-and-platform"

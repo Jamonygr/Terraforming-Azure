@@ -1,6 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
-<title id="title">TFA-012 VNet peering and its limits</title><desc id="desc">VNet A → Direct peering → VNet B → No implicit transit</desc>
-<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0a1023"/><stop offset="1" stop-color="#151433"/></linearGradient><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#fff" stroke-opacity=".035"/></pattern></defs>
-<rect width="100%" height="100%" rx="24" fill="url(#bg)"/><rect width="100%" height="100%" rx="24" fill="url(#grid)"/>
-<text x="54" y="63" fill="#54c8ff" font-family="Segoe UI,Arial,sans-serif" font-size="17" letter-spacing="3">TERRAFORMING AZURE / LEARN BY BUILDING</text>
-<text x="54" y="125" fill="#f2f5ff" font-family="Segoe UI,Arial" font-size="26" font-weight="700">TFA-012 / VNet peering and its limits</text><text x="54" y="175" fill="#aab8d4" font-family="Segoe UI,Arial" font-size="18">TEACHING FLOW · read the lesson for the actual resources and packet paths</text><path d="M297 323h30m-8-7 8 7-8 7" stroke="#54c8ff" stroke-width="2" fill="none"/><rect x="50" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#54c8ff"/><text x="67" y="293" fill="#54c8ff" font-family="Segoe UI,Arial" font-size="14">01</text><text x="67" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">VNet A</text><path d="M582 323h30m-8-7 8 7-8 7" stroke="#54c8ff" stroke-width="2" fill="none"/><rect x="335" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#54c8ff"/><text x="352" y="293" fill="#54c8ff" font-family="Segoe UI,Arial" font-size="14">02</text><text x="352" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">Direct peering</text><path d="M867 323h30m-8-7 8 7-8 7" stroke="#54c8ff" stroke-width="2" fill="none"/><rect x="620" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#54c8ff"/><text x="637" y="293" fill="#54c8ff" font-family="Segoe UI,Arial" font-size="14">03</text><text x="637" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">VNet B</text><rect x="905" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#54c8ff"/><text x="922" y="293" fill="#54c8ff" font-family="Segoe UI,Arial" font-size="14">04</text><text x="922" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">No implicit transit</text><text x="54" y="466" fill="#b1c1dc" font-family="Segoe UI,Arial" font-size="20">Demonstrate direct peering connectivity and the limit of non-transitive peering.</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="600" viewBox="0 0 1280 600" role="img" aria-labelledby="title desc">
+<title id="title">TFA-012: Two hub peerings do not make leaf-to-leaf transit</title>
+<desc id="desc">Peering is represented by two directional resource configurations. Two networks each peered to a hub do not acquire a transitive route to each other. allow_forwarded_traffic permits traffic that a real forwarding device has already handled; it does not create that device or its routes. The two direct pairs succeed; the leaf-to-leaf path fails without transit.</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#55caff"/></marker></defs>
+<rect width="1280" height="600" rx="24" fill="#091625"/>
+<text x="40" y="52" font-family="Arial,sans-serif" font-size="26" fill="#f4f8ff">TFA-012 | Two hub peerings do not make leaf-to-leaf transit</text>
+<rect x="450" y="105" width="380" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="468" y="139" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Hub 10.12.0.0/16</text>
+<text x="468" y="170" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Direct peer with each leaf</text>
+<text x="468" y="194" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">No forwarding appliance</text>
+<rect x="70" y="330" width="390" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="88" y="364" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Spoke 10.13.0.0/16</text>
+<text x="88" y="395" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Private optional Windows probe</text>
+<text x="88" y="419" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Direct hub test succeeds</text>
+<rect x="820" y="330" width="390" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="838" y="364" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Isolated 10.14.0.0/16</text>
+<text x="838" y="395" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Optional hub peering + probe</text>
+<text x="838" y="419" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Hub test succeeds</text>
+<line x1="450" y1="210" x2="300" y2="330" stroke="#55caff" stroke-width="3" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<text x="375.0" y="258.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#e0e7fa">direct pair</text>
+<line x1="830" y1="210" x2="980" y2="330" stroke="#55caff" stroke-width="3" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<text x="905.0" y="258.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#e0e7fa">direct pair</text>
+<line x1="460" y1="400" x2="820" y2="400" stroke="#ff8499" stroke-width="3" stroke-dasharray="9 8"/>
+<text x="640" y="390" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#ff8499">No transitive route</text>
+<text x="40" y="510" font-family="Arial,sans-serif" font-size="18" fill="#bca4ff">Default: hub↔spoke only. Optional mode: three probes and both hub pairs. Guest ICMP is allowed; spoke→isolated still fails</text>
+<text x="40" y="537" font-family="Arial,sans-serif" font-size="18" fill="#bca4ff">without routing.</text>
+<text x="40" y="580" font-family="Arial,sans-serif" font-size="15" fill="#a4b5cc">Terraforming Azure • Authored topology and expected learner evidence • Azure runtime not executed in this overhaul</text></svg>

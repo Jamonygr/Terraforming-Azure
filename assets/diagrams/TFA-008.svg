@@ -1,6 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
-<title id="title">TFA-008 NSGs and application security groups</title><desc id="desc">Source + destination → NSG priority → ASG membership → Allow or deny</desc>
-<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0a1023"/><stop offset="1" stop-color="#151433"/></linearGradient><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#fff" stroke-opacity=".035"/></pattern></defs>
-<rect width="100%" height="100%" rx="24" fill="url(#bg)"/><rect width="100%" height="100%" rx="24" fill="url(#grid)"/>
-<text x="54" y="63" fill="#54c8ff" font-family="Segoe UI,Arial,sans-serif" font-size="17" letter-spacing="3">TERRAFORMING AZURE / LEARN BY BUILDING</text>
-<text x="54" y="125" fill="#f2f5ff" font-family="Segoe UI,Arial" font-size="26" font-weight="700">TFA-008 / NSGs and application security groups</text><text x="54" y="175" fill="#aab8d4" font-family="Segoe UI,Arial" font-size="18">TEACHING FLOW · read the lesson for the actual resources and packet paths</text><path d="M297 323h30m-8-7 8 7-8 7" stroke="#54c8ff" stroke-width="2" fill="none"/><rect x="50" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#54c8ff"/><text x="67" y="293" fill="#54c8ff" font-family="Segoe UI,Arial" font-size="14">01</text><text x="67" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">Source + destination</text><path d="M582 323h30m-8-7 8 7-8 7" stroke="#54c8ff" stroke-width="2" fill="none"/><rect x="335" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#54c8ff"/><text x="352" y="293" fill="#54c8ff" font-family="Segoe UI,Arial" font-size="14">02</text><text x="352" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">NSG priority</text><path d="M867 323h30m-8-7 8 7-8 7" stroke="#54c8ff" stroke-width="2" fill="none"/><rect x="620" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#54c8ff"/><text x="637" y="293" fill="#54c8ff" font-family="Segoe UI,Arial" font-size="14">03</text><text x="637" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">ASG membership</text><rect x="905" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#54c8ff"/><text x="922" y="293" fill="#54c8ff" font-family="Segoe UI,Arial" font-size="14">04</text><text x="922" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">Allow or deny</text><text x="54" y="466" fill="#b1c1dc" font-family="Segoe UI,Arial" font-size="20">Prove allow and deny decisions using priorities, NSGs, and application security groups.</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="600" viewBox="0 0 1280 600" role="img" aria-labelledby="title desc">
+<title id="title">TFA-008: ASG membership selects the first matching NSG rule</title>
+<desc id="desc">An ASG is a label attached to NIC IP configurations. An allow rule referencing an empty ASG matches no destination. Rules are evaluated by ascending priority and NSGs are stateful, so prove a policy change using a fresh connection rather than an already-established session. With probes enabled, TCP 443 is true, then false, then true; default mode has no VM packet proof.</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#55caff"/></marker></defs>
+<rect width="1280" height="600" rx="24" fill="#091625"/>
+<text x="40" y="52" font-family="Arial,sans-serif" font-size="26" fill="#f4f8ff">TFA-008 | ASG membership selects the first matching NSG rule</text>
+<rect x="40" y="210" width="240" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="58" y="244" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Client</text>
+<text x="58" y="275" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">10.8.1.0/24</text>
+<text x="58" y="299" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">New TCP 443 connection</text>
+<rect x="440" y="120" width="380" height="160" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="458" y="154" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Priority 100: allow HTTPS</text>
+<text x="458" y="185" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Source: VirtualNetwork</text>
+<text x="458" y="209" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Destination: NIC in web ASG</text>
+<text x="458" y="233" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">TCP destination port 443</text>
+<rect x="1000" y="120" width="240" height="150" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="1018" y="154" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Private server</text>
+<text x="1018" y="185" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">ASG member → allowed</text>
+<text x="1018" y="209" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">TCP listener, not TLS</text>
+<rect x="440" y="350" width="380" height="120" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="458" y="384" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Priority 200: deny</text>
+<text x="458" y="415" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">No ASG match → deny</text>
+<text x="458" y="439" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Same server and listener</text>
+<line x1="280" y1="250" x2="440" y2="210" stroke="#55caff" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="360.0" y="218.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#e0e7fa">evaluate</text>
+<line x1="820" y1="195" x2="1000" y2="195" stroke="#55caff" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="910.0" y="183.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#e0e7fa">matches</text>
+<line x1="620" y1="280" x2="620" y2="350" stroke="#55caff" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="620.0" y="303.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#e0e7fa">no match</text>
+<text x="40" y="510" font-family="Arial,sans-serif" font-size="18" fill="#bca4ff">Optional probes demonstrate true → false → true as membership is removed and restored. Baseline mode has no VMs or packet</text>
+<text x="40" y="537" font-family="Arial,sans-serif" font-size="18" fill="#bca4ff">evidence.</text>
+<text x="40" y="580" font-family="Arial,sans-serif" font-size="15" fill="#a4b5cc">Terraforming Azure • Authored topology and expected learner evidence • Azure runtime not executed in this overhaul</text></svg>

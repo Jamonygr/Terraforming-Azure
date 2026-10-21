@@ -1,14 +1,30 @@
 # TFA-021 — Test Terraform behavior
 
-![Test Terraform behavior teaching diagram](../../assets/diagrams/TFA-021.svg)
+<!-- lab-metadata:start -->
+**Phase 3:** Terraform engineering
+
+**Learning target:** 75 minutes · **Cost tier:** None · **Run mode:** `mock`
+
+**Prerequisites:** [TFA-020 — Compose a network from structured inputs](../TFA-020/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-021 teaching diagram](../../assets/diagrams/TFA-021.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Run real terraform test assertions against an AzureRM mock and distinguish tested configuration contracts from cloud acceptance.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-020](../TFA-020/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+Mock providers replace cloud responses while retaining Terraform expressions and schema checks. They can prove validation, conditional resources and relationships but cannot prove connectivity or Azure service readiness. A useful negative test fails for one intended reason and then passes after repair.
+
+Before running commands, write the expected result: **Mocked plans reject invalid values and preserve tested relationships without Azure access.** Then explain what would change in this controlled failure: Break one relationship, observe the focused failing assertion, restore it. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The lesson root calls the learning-network module, but the documented workflow r
 
 terraform test → mocked AzureRM provider → planned network configuration → assertions. No actual Azure resources are created by these tests.
 
-**Cost:** None in the documented mock-test workflow. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -96,3 +112,9 @@ Mock tests do not prove SKU availability, Azure policy compliance, permissions, 
 ## Navigation
 
 [Previous: TFA-020](../TFA-020/README.md) · [Curriculum](../../README.md) · [Next: TFA-022](../TFA-022/README.md)
+
+## Evidence contract
+
+terraform test; inspect positive and negative contract assertions and expected_failures. Mocked plans reject invalid values and preserve tested relationships without Azure access.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

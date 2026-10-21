@@ -1,0 +1,14 @@
+{# Material's storage helpers must tolerate denied storage and malformed JSON.
+   Keep this small compatibility override covered by browser tests on upgrades. #}
+<script>
+window.__md_scope = new URL({{ (config.extra.scope | d(base_url)) | tojson }}, location);
+window.__md_hash = text => [...text].reduce((hash, letter) => (hash << 5) - hash + letter.charCodeAt(0), 0);
+window.__md_get = (key, storage, scope) => {
+  try { return JSON.parse((storage || window.localStorage).getItem((scope || window.__md_scope).pathname + '.' + key)); }
+  catch { return null; }
+};
+window.__md_set = (key, value, storage, scope) => {
+  try { (storage || window.localStorage).setItem((scope || window.__md_scope).pathname + '.' + key, JSON.stringify(value)); }
+  catch { /* Theme/search continue without persistence. Course progress explains its own storage status. */ }
+};
+</script>

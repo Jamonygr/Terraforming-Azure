@@ -1,5 +1,17 @@
 # TFA-040 · Build the complete hub-and-spoke platform
 
+<!-- lab-metadata:start -->
+**Phase 6:** Delivery & capstone
+
+**Learning target:** 480 minutes · **Cost tier:** High · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-039 — Capstone architecture workshop](../TFA-039/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-040 teaching diagram](../../assets/diagrams/TFA-040.svg)
+<!-- lab-diagram:end -->
+
 [← TFA-039](../TFA-039/README.md) · [Course home](../../README.md) · [Architecture](../../docs/architecture.md)
 
 ![The final platform: hub, spokes, and simulated on-premises](../../assets/diagrams/capstone-topology.svg)
@@ -8,9 +20,8 @@
 prove its traffic paths. A successful `terraform apply` is the beginning of the
 verification, not the finish line.
 
-**Level:** capstone · **Time:** several focused sessions, plus Azure provisioning
-waits · **Cost:** high when the full architecture is running · **Run mode:** one
-root, one remote state, four cumulative stages. Complete all four to graduate.
+Allow several focused sessions plus Azure provisioning waits. This capstone uses
+one root, one remote state and four cumulative stages. Complete all four to graduate.
 
 ## Before you start
 
@@ -26,14 +37,24 @@ subscription. Review [cost and cleanup](../../docs/cost-and-cleanup.md).
 From the repository root:
 
 ```powershell
+./scripts/Test-AzureReadiness.ps1 -Mode Local
+# The commands below explicitly enter your own Azure lab session.
 az login
 az account set --subscription '<your-training-subscription-id>'
 $env:TF_VAR_subscription_id = az account show --query id --output tsv
-./scripts/Test-AzureReadiness.ps1 -SubscriptionId $env:TF_VAR_subscription_id
+./scripts/Test-AzureReadiness.ps1 -Mode AzureReadOnly -Stage hybrid -SubscriptionId $env:TF_VAR_subscription_id
 Set-Location labs/TFA-040
 Copy-Item ./lab.auto.tfvars.example ./lab.auto.tfvars
 Copy-Item ./backend.hcl.example ./backend.hcl
 ```
+
+Local readiness enforces PowerShell 7.4+, Terraform 1.15.8, Azure CLI 2.60+, Git
+2.40+, and VS Code 1.90+ within their supported major versions. It performs no
+Azure account query. The explicit `AzureReadOnly` mode checks the selected account,
+provider registration, regional service declarations, VM SKU restrictions and fresh
+deployment vCPU headroom. Permissions, policy effects and service capacity remain
+`SKIP` until established in a separately authorized deployment; no readiness report
+certifies that an apply will succeed.
 
 Edit the two local copies. Replace the subscription, state-account settings, and
 documentation-only `203.0.113.10/32` with your actual public IPv4 `/32`. That address
@@ -134,7 +155,7 @@ Create the ignored local certificate using the repository helper:
 terraform plan -var-file=stages/applications.tfvars -out=tfplan.applications
 terraform show tfplan.applications
 terraform apply tfplan.applications
-./scripts/Test-Capstone.ps1
+./scripts/Test-Capstone.ps1 -Mode AzureReadOnly
 ```
 
 **Cost gate:** this adds WAF_v2, three Windows B2s VMs/disks, private endpoints and
@@ -144,7 +165,10 @@ Data Collection Endpoint. Approved HTTPS monitoring egress is public; this is
 separate from the private workload data services. IIS uses W3C logs with hourly
 rollover; log-file collection is not instantaneous.
 
-The acceptance script expects public HTTPS `200`, a custom `X-Lab-Block: true`
+The explicit Azure collector gathers control-plane observations and public ingress
+responses. Guest DNS, managed-identity data reads, effective traffic inspection,
+log arrival and alert recovery remain `SKIP` unless separately collected; a zero
+exit code with skipped checks is incomplete acceptance. The script checks public HTTPS `200`, a custom `X-Lab-Block: true`
 request returning WAF `403`, two healthy IIS backends, and no NIC public IPs. It
 uses `curl.exe --resolve` to supply the training hostname without modifying your
 hosts file. `--insecure` is deliberate only for this self-signed demonstration.
@@ -156,19 +180,29 @@ operations VM's managed identity has Blob Data Contributor and Key Vault Secrets
 Officer. The application and corp identities have read-only data roles.
 
 Seed synthetic data **from ops01** using Run Command. Allow several minutes for
-RBAC/private DNS propagation; the helper retries transient failures:
+RBAC/private DNS propagation. The helper polls each original service FQDN until
+its only IPv4 answer matches the exact private endpoint IP from Terraform. Missing,
+public, mixed and wrong-private answers are retried before any token or data
+request. Each loop is bounded by `MaxAttempts` (default 20) and
+`RetryDelaySeconds` (default 15); HTTP calls have a 30-second timeout. Transient
+403/429/503 responses retry, while fatal errors are sanitized and stop.
+
+Pass both expected addresses explicitly:
 
 ```powershell
 $rg = terraform output -raw resource_group_name
 $vms = terraform output -json vm_names | ConvertFrom-Json
 $storage = terraform output -raw storage_account_name
 $vault = terraform output -raw key_vault_name
+$pe = terraform output -json private_endpoint_ips | ConvertFrom-Json
 az vm run-command invoke --resource-group $rg --name $vms.ops01 `
   --command-id RunPowerShellScript --scripts '@scripts/Initialize-PrivateData.ps1' `
-  --parameters "StorageAccountName=$storage" "KeyVaultName=$vault" 'Mode=Seed'
+  --parameters "StorageAccountName=$storage" "KeyVaultName=$vault" `
+    "ExpectedBlobIp=$($pe.blob)" "ExpectedVaultIp=$($pe.vault)" 'Mode=Seed'
 az vm run-command invoke --resource-group $rg --name $vms.iis01 `
   --command-id RunPowerShellScript --scripts '@scripts/Initialize-PrivateData.ps1' `
-  --parameters "StorageAccountName=$storage" "KeyVaultName=$vault" 'Mode=Probe'
+  --parameters "StorageAccountName=$storage" "KeyVaultName=$vault" `
+    "ExpectedBlobIp=$($pe.blob)" "ExpectedVaultIp=$($pe.vault)" 'Mode=Probe'
 ```
 
 **Checkpoint:** original Blob and Key Vault FQDNs resolve to `10.20.*` addresses;
@@ -190,7 +224,7 @@ $env:TF_VAR_vpn_shared_key = [System.Net.NetworkCredential]::new('', $vpnSecret)
 terraform plan -var-file=stages/hybrid.tfvars -out=tfplan.hybrid
 terraform show tfplan.hybrid
 terraform apply tfplan.hybrid
-./scripts/Test-Capstone.ps1
+./scripts/Test-Capstone.ps1 -Mode AzureReadOnly
 ```
 
 There are two reciprocal VNet-to-VNet connections using the same secret. Hub
@@ -219,13 +253,28 @@ az vm run-command invoke --resource-group $rg --name $vms.corp01 `
   --command-id RunPowerShellScript --scripts 'Resolve-DnsName iis01.azure.terraforming-azure.test -DnsOnly; (Invoke-WebRequest http://iis01.azure.terraforming-azure.test/ -UseBasicParsing).StatusCode'
 az vm run-command invoke --resource-group $rg --name $vms.corp01 `
   --command-id RunPowerShellScript --scripts '@scripts/Initialize-PrivateData.ps1' `
-  --parameters "StorageAccountName=$storage" "KeyVaultName=$vault" 'Mode=Probe'
+  --parameters "StorageAccountName=$storage" "KeyVaultName=$vault" `
+    "ExpectedBlobIp=$($pe.blob)" "ExpectedVaultIp=$($pe.vault)" 'Mode=Probe'
 az network vpn-connection list --resource-group $rg --output table
 ```
 
 **Checkpoint:** both VPN connections are `Connected`, tunnel counters increase,
 corp names resolve from Azure, Azure private names resolve from corp01, private
 IIS returns `200` across the tunnel, and private data reads succeed.
+
+The resolver outbound subnet reaches corporate DNS directly over the VPN. Its
+return path is the learned hub route; no Firewall UDR is attached to that subnet.
+The corporate NSG allows TCP/UDP 53 from the outbound resolver subnet. This path
+has no Firewall rule or Firewall-log requirement. Workload HTTPS and IIS flows use
+the inspected paths described below.
+
+For corp01 administration, use **Bastion IP-based connection** to `192.168.1.4`
+(or the custom address in `vm_private_ips`). Standard Bastion enables this feature
+and native-client tunneling. A VM resource selection used for peered spokes is not
+the corporate VPN connection path. The Bastion subnet and corporate VM exchange
+RDP over the VPN directly, enforced by the corporate NSG and guest firewall.
+Record a successful RDP session separately; configuration and connected gateways
+alone cannot establish administration success.
 
 ## Prove the traffic contract
 
@@ -352,12 +401,40 @@ terraform -chdir=../../modules/capstone init -backend=false -lockfile=readonly
 terraform -chdir=../../modules/capstone test
 ```
 
-Mock-provider tests exercise all four plans, actual resource counts, routing
+Mock-provider tests execute four cumulative **mock applies**, then inspect resource
+relationships. These applies run entirely inside mocked providers; they do not
+contact Azure. Distinct fabricated IDs make wrong subnet, gateway and identity
+relationships visible. The suite checks actual resource counts, routing
 boundaries, private-only data/VMs and invalid inputs without deploying Azure.
 They do **not** prove service quotas, regional SKU availability, permission
 propagation, Azure API acceptance, gateway connectivity or live traffic. Complete
 the live acceptance checklist in your own subscription. The test fixture is text,
 not a real certificate, and cannot be used for an Azure apply.
+
+### Exercise the evidence runner without Azure
+
+From this lab directory, generate a fabricated hybrid response and evaluate it:
+
+```powershell
+$fixture = Join-Path ([IO.Path]::GetTempPath()) 'terraforming-azure-synthetic.json'
+./tests/New-SyntheticSnapshot.ps1 -Stage hybrid |
+  ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $fixture
+./scripts/Test-Capstone.ps1 -Mode Fixture -FixturePath $fixture
+./tests/Test-InfrastructureBehavior.ps1
+# Use the pinned contributor Python 3.12+:
+python ../../tools/test_capstone_mutations.py
+Remove-Item -LiteralPath $fixture
+```
+
+Every evidence row includes `PASS`, `FAIL` or `SKIP`, a target, stage, source and
+collection time. `synthetic` identifies fixtures; it never means Azure passed.
+A contradictory or malformed observation fails. Missing observations skip. The
+report always keeps `azure_runtime_certified = false`: a human must still review
+the full traffic, recovery, no-change-plan and cleanup evidence. Fixture mode is
+the default and requires an explicit fixture file; it has no Azure fallback.
+
+See [the offline test contract](tests/README.md) for mutation cases, probe bounds,
+and the distinction between authored runtime adapters and measured runtime results.
 
 ## Primary references
 
@@ -369,3 +446,5 @@ not a real certificate, and cannot be used for an Azure apply.
 - [VNet-to-VNet versus actual S2S](https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-howto-vnet-vnet-resource-manager-portal)
 - [Terraform Azure backend](https://developer.hashicorp.com/terraform/language/backend/azurerm)
 - [Azure Monitor agent egress endpoints](https://learn.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-network-configuration)
+
+- [Bastion IP-based connections over VPN](https://learn.microsoft.com/en-us/azure/bastion/connect-ip-address)

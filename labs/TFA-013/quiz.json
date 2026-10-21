@@ -3,10 +3,10 @@
     "id": "TFA-013-Q1",
     "prompt": "What does next_hop_type=None mean for the matching user route?",
     "options": [
-      "Send to any available VM",
-      "Resolve a DNS name first",
+      "Forward to the closest matching subnet",
+      "Send through the local VNet gateway",
       "Discard matching traffic",
-      "Use a NAT Gateway automatically"
+      "Use the default route instead"
     ],
     "answer": 2,
     "explanation": "None is an intentional blackhole next hop."
@@ -15,48 +15,48 @@
     "id": "TFA-013-Q2",
     "prompt": "Which route generally matches 10.60.1.4 most specifically?",
     "options": [
-      "10.60.0.0/16",
-      "10.0.0.0/8",
       "0.0.0.0/0",
-      "10.60.1.0/24"
+      "10.60.1.0/24",
+      "10.60.0.0/16",
+      "10.0.0.0/8"
     ],
-    "answer": 3,
+    "answer": 1,
     "explanation": "Longest-prefix matching chooses the most specific matching prefix before equal-prefix source precedence."
   },
   {
     "id": "TFA-013-Q3",
     "prompt": "Why inspect effective routes on the NIC?",
     "options": [
+      "Effective routes also prove the guest firewall permits traffic",
+      "The route-table resource includes propagated routes",
       "They combine applicable route sources and actual attachment",
-      "The table definition always includes every route source",
-      "They create new UDRs automatically",
-      "They replace all NSG checks"
+      "An effective route is equivalent to a successful request"
     ],
-    "answer": 0,
+    "answer": 2,
     "explanation": "Effective routes reveal the route set applied to the NIC rather than only intended table contents."
   },
   {
     "id": "TFA-013-Q4",
     "prompt": "A route table exists but has no workload-subnet association. What can you conclude?",
     "options": [
-      "It makes peering transitive",
-      "Its existence does not prove it affects the workload",
-      "Its rules apply to the entire subscription",
-      "It automatically filters every port"
+      "The VNet inherits it automatically",
+      "Naming it after the subnet attaches it",
+      "It applies subscription-wide by default",
+      "Its existence does not prove it affects the workload"
     ],
-    "answer": 1,
+    "answer": 3,
     "explanation": "The path must be associated with the routing policy before that policy affects it."
   },
   {
     "id": "TFA-013-Q5",
     "prompt": "Why not create and destroy a shared regional Network Watcher blindly?",
     "options": [
-      "Effective routing is impossible without deleting it",
-      "It belongs to the VM operating system",
+      "Each VM should own a separate regional watcher",
       "It may be a pre-existing shared diagnostic capability",
-      "Its name is a password"
+      "A route-table resource owns the watcher lifecycle",
+      "Deleting the watcher removes only this lesson's state"
     ],
-    "answer": 2,
+    "answer": 1,
     "explanation": "Shared diagnostic infrastructure has ownership beyond the isolated lesson; verify prerequisites instead."
   }
 ]

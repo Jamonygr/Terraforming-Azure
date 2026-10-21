@@ -1,0 +1,8 @@
+{
+  "repository": "Jamonygr/Terraforming-Azure",
+  "environment": "wrong-environment",
+  "issuer": "https://token.actions.githubusercontent.com",
+  "audience": "api://AzureADTokenExchange",
+  "subject": "repo:Jamonygr/Terraforming-Azure:environment:azure-plan",
+  "id_token_permission": "write"
+}

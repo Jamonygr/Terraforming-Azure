@@ -1,14 +1,30 @@
 # TFA-017 — Your first reusable module
 
-![Your first reusable module teaching diagram](../../assets/diagrams/TFA-017.svg)
+<!-- lab-metadata:start -->
+**Phase 3:** Terraform engineering
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-016 — Azure remote-state bootstrap](../TFA-016/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-017 teaching diagram](../../assets/diagrams/TFA-017.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Replace repeated network declarations with a small child module whose public inputs and outputs are clear.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-016](../TFA-016/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+A child module groups resources behind input/output contracts; it does not get its own state file automatically. Moving a resource into a module changes its address. A refactor therefore needs an explicit moved declaration when preserving a previously deployed binding.
+
+Before running commands, write the expected result: **Callers receive useful outputs without copying internal resource logic.** Then explain what would change in this controlled failure: Rename an internal resource without a move and explain the proposed replacement. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ You already built the underlying resource group, VNet, and subnet resources dire
 
 Lab root → learning-network child → one resource group, VNet 10.17.0.0/16, and web/app subnets. The child inherits the root’s AzureRM provider configuration.
 
-**Cost:** Low: one VNet and two subnets, with no workloads or gateways. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -92,9 +108,13 @@ Temporarily misspell the module source directory and run terraform init. Initial
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -107,3 +127,9 @@ Reusable modules need explicit ownership, documented constraints, versioning, te
 ## Navigation
 
 [Previous: TFA-016](../TFA-016/README.md) · [Curriculum](../../README.md) · [Next: TFA-018](../TFA-018/README.md)
+
+## Evidence contract
+
+Read the root/module interface and compare resource addresses before and after refactoring. Callers receive useful outputs without copying internal resource logic.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

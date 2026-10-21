@@ -82,3 +82,19 @@ run "architecture_contract" {
     error_message = "Platform resource audit logs need a configured destination distinct from guest telemetry."
   }
 }
+
+run "synthetic_alert_contract" {
+  command = plan
+  assert {
+    condition     = one(azurerm_monitor_scheduled_query_rules_alert_v2.synthetic_event.criteria).threshold == 1 && azurerm_monitor_scheduled_query_rules_alert_v2.synthetic_event.window_duration == "PT5M"
+    error_message = "One synthetic event must meet the five-minute alert threshold."
+  }
+  assert {
+    condition     = strcontains(one(azurerm_monitor_scheduled_query_rules_alert_v2.synthetic_event.criteria).query, "TFA-028 monitoring evidence") && azurerm_monitor_scheduled_query_rules_alert_v2.synthetic_event.auto_mitigation_enabled
+    error_message = "The alert must select only the authored event and resolve after the signal expires."
+  }
+  assert {
+    condition     = azurerm_monitor_scheduled_query_rules_alert_v2.synthetic_event.scopes == tolist([azurerm_log_analytics_workspace.lab.id])
+    error_message = "The synthetic event query must target this lab's workspace."
+  }
+}

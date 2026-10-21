@@ -22,3 +22,8 @@ output "addresses" {
   description = "Index and key identities can be compared with terraform state list."
   value       = { indexed = azurerm_resource_group.indexed[*].name, keyed = { for key, group in azurerm_resource_group.keyed : key => group.name } }
 }
+
+output "cleanup_group_names" {
+  description = "Capture the exact groups owned by this root before destruction."
+  value       = concat(azurerm_resource_group.indexed[*].name, [for group in azurerm_resource_group.keyed : group.name])
+}

@@ -3,9 +3,9 @@
     "id": "TFA-034-Q1",
     "prompt": "What should you capture before injecting a controlled fault?",
     "options": [
-      "Only a screenshot of the README",
-      "A new subscription Owner assignment",
-      "A public IP for the server",
+      "A VM provisioning state without a workload probe",
+      "A passing format check only",
+      "The planned resource count only",
       "A healthy baseline using the same repeatable probe"
     ],
     "answer": 3,
@@ -15,34 +15,34 @@
     "id": "TFA-034-Q2",
     "prompt": "Which layer does incident=nsg-block change?",
     "options": [
+      "The private DNS A record",
       "The subnet NSG HTTP rule",
-      "The IIS installation",
-      "The VM image version",
-      "The VPN shared key"
+      "The client route-table association",
+      "The IIS service state"
     ],
-    "answer": 0,
+    "answer": 1,
     "explanation": "The isolated fault makes the hypothesis testable."
   },
   {
     "id": "TFA-034-Q3",
     "prompt": "VM Run Command still works while HTTP fails. What does that imply?",
     "options": [
-      "The HTTP probe must be wrong",
       "Control-plane management success does not prove application traffic success",
-      "NSGs cannot block traffic",
-      "The VM has been deleted"
+      "The private endpoint's DNS is necessarily correct",
+      "Run Command uses the same NSG path as the HTTP probe",
+      "An HTTP application path must also be healthy"
     ],
-    "answer": 1,
+    "answer": 0,
     "explanation": "Management and application paths are different signals."
   },
   {
     "id": "TFA-034-Q4",
-    "prompt": "What evidence identifies the intended block?",
+    "prompt": "The effective NSG shows Deny for client-to-server TCP 80 and a fresh TCP probe fails. Which evidence identifies nsg-block?",
     "options": [
-      "Only resource existence",
-      "Only a DNS A record",
+      "Only a configured Allow rule before reading effective routes",
+      "Only the expected DNS address",
       "The effective NSG rule plus a failed TCP probe",
-      "Only terraform fmt passing"
+      "Only the server provisioning state"
     ],
     "answer": 2,
     "explanation": "Transport evidence and effective enforcement should support the same diagnosis."
@@ -51,12 +51,12 @@
     "id": "TFA-034-Q5",
     "prompt": "What is the appropriate repair?",
     "options": [
-      "Delete state to hide the rule",
-      "Open all inbound ports",
-      "Add an unrelated peer",
-      "Restore healthy through a reviewed Terraform plan and retest"
+      "Remove the affected resource from state",
+      "Restore healthy through a reviewed Terraform plan and retest",
+      "Broaden every inbound rule until traffic works",
+      "Change the application IP without identifying the failed layer"
     ],
-    "answer": 3,
+    "answer": 1,
     "explanation": "The smallest code repair preserves the lab's private architecture and demonstrates cause and effect."
   }
 ]

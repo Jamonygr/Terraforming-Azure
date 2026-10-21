@@ -1,8 +1,14 @@
 # TFA-029 - VPN and hybrid routing foundations
 
-[Course home](../../README.md) | [Previous lab](../TFA-028/README.md) | [Next lab](../TFA-030/README.md)
+<!-- lab-metadata:start -->
+**Phase 5:** Hybrid operations
 
-> **Mode:** Local Terraform / workflow learning | **Time:** 35-50 minutes | **Cost:** Local only: no Azure resources, credentials, gateways, or charges.
+**Learning target:** 75 minutes · **Cost tier:** None · **Run mode:** `local`
+
+**Prerequisites:** [TFA-028 — Monitoring and diagnostic evidence](../TFA-028/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-028/README.md) | [Next lab](../TFA-030/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ Before paying for two gateways, make the address plan and route choice understan
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Explain IPsec, gateway transit, propagation, route selection, and BGP purpose. Your evidence must distinguish configuration intent from the observed result: The model distinguishes a tunnel, a route and peering transit settings.
+
+## Predict the mechanism
+
+Gateway transit exposes an existing hub gateway to a peered spoke when both peering sides are configured appropriately. Route propagation distributes reachable prefixes; it does not encrypt arbitrary traffic by itself. BGP can exchange routes dynamically, while a simpler static exercise still requires non-overlapping addresses.
+
+Before running commands, write the expected result: **The model distinguishes a tunnel, a route and peering transit settings.** Then explain what would change in this controlled failure: Predict the missing return prefix or overlapping range before building gateways. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,13 +30,15 @@ This is a local Terraform simulation using `terraform_data`. It assumes the list
 
 ## Architecture
 
-![TFA-029 architecture](../../assets/diagrams/TFA-029.svg)
+<!-- lab-diagram:start -->
+![TFA-029 teaching diagram](../../assets/diagrams/TFA-029.svg)
+<!-- lab-diagram:end -->
 
 A local address/route decision artifact with an explicit GatewaySubnet reservation and a validation guard against an ambiguous best route.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts.
 
 Local only: no Azure resources, credentials, gateways, or charges. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
@@ -80,9 +94,13 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 
 ```powershell
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 ```
 
 A successful destroy and an empty state are the expected result. Do not remove files or state from another lab. Do not commit generated plans or state as evidence.
@@ -97,3 +115,9 @@ A successful destroy and an empty state are the expected result. Do not remove f
 ## Continue learning
 
 [Official documentation](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview) | [Continue to TFA-030](../TFA-030/README.md)
+
+## Evidence contract
+
+Read the local VPN/routing model and explain gateway ownership, propagation and learned prefixes. The model distinguishes a tunnel, a route and peering transit settings.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

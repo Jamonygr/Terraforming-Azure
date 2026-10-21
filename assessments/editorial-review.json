@@ -1,0 +1,1206 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-21",
+  "questions": [
+    {
+      "id": "TFA-001-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "13c3b3f62f8d6393d2f24aa3eac9ba94b9967780ff514089e2df6cd2066bad3a"
+    },
+    {
+      "id": "TFA-001-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "89b05bc4f1b6f4faa465ca4c1b2d1b9ddbeb300643189b2c63612a49c62c11e7"
+    },
+    {
+      "id": "TFA-001-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "f63df90f5a71554d6036560e00a0521b694ef7b2ad332fb8d62994d5e9e8d696"
+    },
+    {
+      "id": "TFA-001-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e557207906522f91171c5276fb74050040d5f9eaa070405dfd5c2f6e83c499eb"
+    },
+    {
+      "id": "TFA-001-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "8b98acbfe548f4b5a0f8db6645041410a00edfe7177ce5181d5a31817634b30c"
+    },
+    {
+      "id": "TFA-002-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "74c7273f7d041b18551f5db363be4b0ab33e298a9c8f2f3b4fd76cf323f215b3"
+    },
+    {
+      "id": "TFA-002-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "0c4aada23dfd811e893eb2d3f07869af896c6794926822307d84b1b388035569"
+    },
+    {
+      "id": "TFA-002-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "c6b1d510f1b1afb6d404449d6511d618adcde6c5fb6d3989b4a808e489308b95"
+    },
+    {
+      "id": "TFA-002-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "608dd01842aee6f61731cc1b9307ce4248c36f6c8bbb77374d8715409d283bd8"
+    },
+    {
+      "id": "TFA-002-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "6b5fa0b76f7a49a5448554d002901479850977cae3100cc84145833810c02109"
+    },
+    {
+      "id": "TFA-003-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "296acd9044f8a6dff98f3155d2316d76d5fad34d7f5f59c8a4f634d7dfbb916e"
+    },
+    {
+      "id": "TFA-003-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "db123e88f1407cb950bdf80234d3166d46b71c2e39dbbf49ce84b10c0e297b83"
+    },
+    {
+      "id": "TFA-003-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "85276a9f7f666872279ab188cd1470372015fb115ab53689a5c7366641277ad0"
+    },
+    {
+      "id": "TFA-003-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "fa2de689fb8f7afe39c8daa8d0a52dbf2bb9329536de118b273f69dfbe6f03d2"
+    },
+    {
+      "id": "TFA-003-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "90fbddd40a93f79d9544863243bd7a3868bd05b0c6ef74519d599a5df7485b68"
+    },
+    {
+      "id": "TFA-004-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "9401b8380a9589a8c51fd30be7276d241a9a9b561b9baee77a25a1c659280774"
+    },
+    {
+      "id": "TFA-004-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e1e9d4cc4febb63fb11114dfe6d059f4d4a1a2df7643a4e1eb989c662d5a0ae4"
+    },
+    {
+      "id": "TFA-004-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "aac2adb24fb9acbc0738a8978f0e869df683feae7f994377e6de4b19a8073d72"
+    },
+    {
+      "id": "TFA-004-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "ffc930c539ca2e743c18c60e4cbe01425df74c195a6a2c360ae854533fe0cca9"
+    },
+    {
+      "id": "TFA-004-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "03f18793bc9b71af0c8f96b831cddefa4893ccf6e8023490253efdc00d6bb8ae"
+    },
+    {
+      "id": "TFA-005-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "7dbe9f59b305aa89c5cec1f80b785d66f754c7b3b1cbf47764e0c0cc65b8c829"
+    },
+    {
+      "id": "TFA-005-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "92b96558889875f97cb4806af31b75246ce22554e23f7e5b8b0a35ab12e09461"
+    },
+    {
+      "id": "TFA-005-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "06e1964b66c2da3329c95397404f4503a52b65da8b42ee446f2f88f187afdf6d"
+    },
+    {
+      "id": "TFA-005-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "d17634ed2281b41aed4e5f306fe8fc6f0b48bbf01b593cb876ba9f5ca2b5ae5c"
+    },
+    {
+      "id": "TFA-005-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "3ea74b7d8f481cc3e9242ce4212797e7d0ad8947c496f347cb9fd617d2a6f5a6"
+    },
+    {
+      "id": "TFA-006-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "7fa5937b5f3407e2a6bf3f574eb18a2334735cefdcd1717af459f42bc594eec2"
+    },
+    {
+      "id": "TFA-006-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "1cfd6c5e74edcf3c38ef508b6c2c7569b6d7e3fa17c1447ddc6848fd31d84b40"
+    },
+    {
+      "id": "TFA-006-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "d21092569397644e0a2a8209a182dbc04b302a196094eb4777d4d494354e2722"
+    },
+    {
+      "id": "TFA-006-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "64e9fbf5c35d490bef7254c626ad37f39279c9d4ea644e9e6647e75be8cee052"
+    },
+    {
+      "id": "TFA-006-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "331e1f1d10c6d219af2eb796c84985855f8462e2b0db04dafdef9db082f8362e"
+    },
+    {
+      "id": "TFA-007-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "056bdac48eec17daa17eafacdbd657d45cd70be090d5bdfd010e6ab02566b2f5"
+    },
+    {
+      "id": "TFA-007-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "d28f88e584211424dd73604c9fc52c401410474406608392c2a647ec5148240b"
+    },
+    {
+      "id": "TFA-007-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "d14818f148655d06418f0be7b53577fe4c3d6381917432a0e955e39ed17ce684"
+    },
+    {
+      "id": "TFA-007-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "5eccc5e4fe4328030129c2db0c6c3fb9b7be9d497dc1bdbfbf57402f0829ad64"
+    },
+    {
+      "id": "TFA-007-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "df71c0e297522fc8eee8cd77549d17ba04904327ac42a4055d32eb4c1168f589"
+    },
+    {
+      "id": "TFA-008-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "a9f4ec9ab6165c871f684bc1d715537b2168e066e03c075dbad7e271bf5036a6"
+    },
+    {
+      "id": "TFA-008-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "3d6570f5faeb85782bb800995baf5090248426dc45731dc63432dc127896216e"
+    },
+    {
+      "id": "TFA-008-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "ff45c6155413f23d79547ea2311b6b10502c890793831f9a1a6290a2466a4bc6"
+    },
+    {
+      "id": "TFA-008-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "1fe934e09d7595a3488b0cbdb05de20128ae39ebc584a386461226dd30ec6b87"
+    },
+    {
+      "id": "TFA-008-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "d15567d0da615ce9ee1233ef44da0f27770c2f71eacfafb0a177b2ca1224cc39"
+    },
+    {
+      "id": "TFA-009-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "2e23d430b916a55771a58f43da999a35c3de82235d8f688a978aa48e5ba15090"
+    },
+    {
+      "id": "TFA-009-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "cdf02e5f9d8c6ad66dc74e32efe7fe50a98269c93d506c557f88429f493dd3fd"
+    },
+    {
+      "id": "TFA-009-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "0d45c1fa9d12357c9a13856c3fe06f3db4735b8308005fcfbd6ccae8c4e60006"
+    },
+    {
+      "id": "TFA-009-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "90ced23c6f753196c4515c77fbc3fa81cd2f778a14b72e6ec16ba067d68a320c"
+    },
+    {
+      "id": "TFA-009-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "d2aaa1768eaf0ec7f02ac8fc167324f14dea1e8927674fe8d226536bef7d42e2"
+    },
+    {
+      "id": "TFA-010-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "6c4c22a5fc41cf2f11b022f482374fecfc38ea6d134551568495baec55f488ce"
+    },
+    {
+      "id": "TFA-010-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "89315fc2d0a7a3b3d5f4f94db81e6fc9bc8d07899fc24bd3f4271456f82b6e78"
+    },
+    {
+      "id": "TFA-010-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "28a6f2f8d78f6c793d2c20eb9ef19d8e98053ef5951e8fefac7b8cdb9ae7a440"
+    },
+    {
+      "id": "TFA-010-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "fd46729e4a0573c2a529f2e1f0343a4388a2c0010720b74e980e15f5e923c8f7"
+    },
+    {
+      "id": "TFA-010-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "fe0456cfee170c6af79aef7b648f1cdf5e99e0c11daefb64519e82a1b8a96489"
+    },
+    {
+      "id": "TFA-011-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "49b39cb9dab38279dba01e0c859f04c1d51d9c077aa2e3ab2e519b9224ae557b"
+    },
+    {
+      "id": "TFA-011-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "b5f886bc3524903e943e0ad5179487ca0f3d9a6faecb28e05ccd63b0dcc05a91"
+    },
+    {
+      "id": "TFA-011-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "127645b3cd83b9976e26fef89bcfbf14416facd01668d7fee83b621ee7ba1568"
+    },
+    {
+      "id": "TFA-011-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "acb7f89440e78c21e1e36cf1293c0332ad11369dfe2cc2637a17cad1fba500ec"
+    },
+    {
+      "id": "TFA-011-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "282dda02611d757814fddd7c4cee9ceb6ce6f62ad40dc24188b7d32a88b113f4"
+    },
+    {
+      "id": "TFA-012-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "4197d979eca00fcaacce00a34f56b30690f0412211d8657f77faa0e4d18efcef"
+    },
+    {
+      "id": "TFA-012-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "74fd2424d59621c131369355fcc957681305f68b0dc0e0ce5d9d869d37a62f5e"
+    },
+    {
+      "id": "TFA-012-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "5c892d0f1a3c45f6b0c6268f4bd4abc83326283478bcbcce0d438e24cf28b445"
+    },
+    {
+      "id": "TFA-012-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "1c00e3608d9ae26a2dea3838b4f7e7c4257532f7ae2e041ff06a3e0358446510"
+    },
+    {
+      "id": "TFA-012-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "2f298d77d88cf590c676ba935e6c361a45ce3474a8e4e93903a6099264e15015"
+    },
+    {
+      "id": "TFA-013-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "1d992d27e3a45eb5eb85cbb75deaed27eb6c8cbd80afd989a7e04188d8899526"
+    },
+    {
+      "id": "TFA-013-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "99a77f1b6955273c75152102fd224444c087198e9fbc0694b465ff056ffd05a5"
+    },
+    {
+      "id": "TFA-013-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "a884ce7a391e9b78daffd983004f4502736bd9d4202dbba17e1e458fc7adfc92"
+    },
+    {
+      "id": "TFA-013-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "efbf60becc368db2945b9b62b67fa42b14447d30b8db686369c8e3a87cae7d36"
+    },
+    {
+      "id": "TFA-013-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "622c1bf13d2899bac54ea32a97da79564c488d19e204da61e25c6fe6d856575c"
+    },
+    {
+      "id": "TFA-014-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "9daa2b1327851cacfb0787a10f3d44ba554754f8e1c7cf6d4ff14900a959d968"
+    },
+    {
+      "id": "TFA-014-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "f09e881e82411e989a26b111ebee6da0bd14bd22296b83a9f7d531f007d8b433"
+    },
+    {
+      "id": "TFA-014-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "6cf1b01ce5df2d5d812973d9ab2a63ab8c8cef55021540e71972403d18ebe851"
+    },
+    {
+      "id": "TFA-014-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "10a6ed2c5aa0028acd19763ba699be6bcc3dfbe3890aeb5890de38e167eed247"
+    },
+    {
+      "id": "TFA-014-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "f8d9f03d295072a3192ea98e9450f757cda6c76c6c22eccf3e7853c708359fd3"
+    },
+    {
+      "id": "TFA-015-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "76bcff75f4d9cdc4e8abf94117420beb1a83f3c177dcd568af9a866cfae3828b"
+    },
+    {
+      "id": "TFA-015-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "ec1771f9adf56be7fc0974408b1a9270c16af114aed591db2f73bf1f0b679f19"
+    },
+    {
+      "id": "TFA-015-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "483468f9cd3c636f1b3b3929f9d33adac6968c709343c7962ca1922af20f589e"
+    },
+    {
+      "id": "TFA-015-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "9591ad70642c9738dcce6e20f88b8ce06497d102618d9aa16dd6c54fddb582a6"
+    },
+    {
+      "id": "TFA-015-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "1b76e578dbca7e31ec63239225a4b7751888e6e793e2e6f0409b94c237430f3e"
+    },
+    {
+      "id": "TFA-016-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "a5b503fa462d74ede36a0dc9fe109987f199057919282de56991ee163286203b"
+    },
+    {
+      "id": "TFA-016-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "f761b8089d2aea59b555f70d05303071a563558693543913a36d83ea1dc4489c"
+    },
+    {
+      "id": "TFA-016-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "781c6d05843f13a5bb63091dbb69102ed8c231799a2f407be55959645a21c9de"
+    },
+    {
+      "id": "TFA-016-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "a601c7e0013bb32d8fa23923796b0f38e00d58b39ade52a76f23cfc77a4b9ab8"
+    },
+    {
+      "id": "TFA-016-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "3cb8b6bb318c5ea397a9c50e42c92fab5d068659c09f9783a81cb64df91a63f2"
+    },
+    {
+      "id": "TFA-017-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "c27a2a9bdf9bb2221dba8509f14925c310e06baff102a148abc9b4bf5e5416a9"
+    },
+    {
+      "id": "TFA-017-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "7cb9939ab5672cbc6415d1f654c78074aafe5e253cb05d818b4f87f28d1ea10c"
+    },
+    {
+      "id": "TFA-017-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "9f8dff960328fcaf9574e5ba8c3b7a131e7abd9b6ab8991b75e544e731746de1"
+    },
+    {
+      "id": "TFA-017-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "d8bf914425daeccf631e48c039294683c0a2d1ce5aa51a414209bebfc5bcfca5"
+    },
+    {
+      "id": "TFA-017-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "0befa8e534aa9977720ef7709ca52d42c0d6ca1ddcbb819aaba8cd745e189324"
+    },
+    {
+      "id": "TFA-018-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "24a01d54ebbbb33ea363888a5dad16d4095c9133455ad0e8c95f792388f4df12"
+    },
+    {
+      "id": "TFA-018-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e094c53941ab85d4a15589adbf602581eec0062df6cacbca9a214ee2b5be2782"
+    },
+    {
+      "id": "TFA-018-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "b2aa530f2b2f54933ecf8550d99129c8598937cefb5fe04aac680d05fb981997"
+    },
+    {
+      "id": "TFA-018-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "68765c8a91c4a3d7c2da09068493f51927d029e0c7d4972b4aa2f95eb0c5437d"
+    },
+    {
+      "id": "TFA-018-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "073ce03be7b6b253a1aee97d8901fa3fecd81c2583c8fe417f76a9fe4b9379f4"
+    },
+    {
+      "id": "TFA-019-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "1fb2829dfdf8846a3e4b9bb950d13d3741402433879c02cb9ef93acc4cbdd2bf"
+    },
+    {
+      "id": "TFA-019-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "2361653ed6682b73ffba71563dadaef5c19cb2bd2fe30e79f8a8c29a2c44eb94"
+    },
+    {
+      "id": "TFA-019-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "cd9f4e873c5470c4313b94f68c4d27824400a3410750fcf74ff3cd0a13b0322f"
+    },
+    {
+      "id": "TFA-019-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "40858898483f4a86f5c11babc625928a31d642f819f2937dc60f81a65b6db19d"
+    },
+    {
+      "id": "TFA-019-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "83ddaf9c6a827ac87f513901802e54f539087466f135f03ed819d97770606386"
+    },
+    {
+      "id": "TFA-020-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "fac36f692e7fcd2e2b7671770b0f1ddf351659003bb0e9e67278a9b1c1d4d11f"
+    },
+    {
+      "id": "TFA-020-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "7cbe6329b506d875b528d10f7c48572649b20adfedc2f5a367446e422e25fa8c"
+    },
+    {
+      "id": "TFA-020-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "9f71b38d824f141a3e366d24da107f94217c54449fd3729e73f26a285f6098df"
+    },
+    {
+      "id": "TFA-020-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "c444f04e1cb03d6ed996501680430c067a4964903e68826bd96cac92b42ff9d5"
+    },
+    {
+      "id": "TFA-020-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "7609eb12ee6d5923ff7f01b6bc905e27084f12c04fa042918c62ff7883140970"
+    },
+    {
+      "id": "TFA-021-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "038194381cea2c8be3bd75764d3cd0032f346018d6b35805226789a64860527a"
+    },
+    {
+      "id": "TFA-021-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e9c1c4216e28887fe4b3c0dfed3abcb85a164711be75cd99457a863661faa197"
+    },
+    {
+      "id": "TFA-021-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "99c8cc05b88a067bb6090968c423d69de3b3a20b03cf1a5525a64b4abf35ffcb"
+    },
+    {
+      "id": "TFA-021-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "3d3e15ae9d7768040de2d200c2f3267dfc977af0b8edb6fb5226f8c795e7ea8d"
+    },
+    {
+      "id": "TFA-021-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "45705bf6fcc1365b1277c25b95a35ab499d3629ce4894f9074b7b23f2124f132"
+    },
+    {
+      "id": "TFA-022-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "0604ea1603ea9888809f0edf3ef7121db17dab5c04512c5ff6a4f654404d1350"
+    },
+    {
+      "id": "TFA-022-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "0309e5a07d78330648ae2684e23769a39f459f554a125cf3cabdde14c72d0679"
+    },
+    {
+      "id": "TFA-022-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e476c1b7b010458d769e09ab848e9c161c968e950e2ff8eab4d59e6ce20a594a"
+    },
+    {
+      "id": "TFA-022-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "daca2b26e6712b9f50143b979f15a241a2ae2702e6c15c88d98bf371b1691e6e"
+    },
+    {
+      "id": "TFA-022-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "6828b97422be5e3211f915da001db69f13a82620a3a2d861e35f12a2ea58dd4b"
+    },
+    {
+      "id": "TFA-023-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "0e9e811239350e83b6c7a7d16a3f4134515c9a7fce0a69416c40243ff549b28e"
+    },
+    {
+      "id": "TFA-023-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "105f6da5e591780d9a6e1268ab985635d2e7e1a147b7d4d2c2393f7ad7acc4b6"
+    },
+    {
+      "id": "TFA-023-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "cbbee1de18b111968f9cb2996e5190a73ddad3467ed7a4519906329afbb11c2f"
+    },
+    {
+      "id": "TFA-023-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "0e55422602b9ca373b8f9355c886d50d9ba4103f099f41e0676f26863da53250"
+    },
+    {
+      "id": "TFA-023-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "a775906c9237b008e953d9125981ff29e96e9606cbfe03f0d351a608ec18d2ef"
+    },
+    {
+      "id": "TFA-024-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e2a4d8c714d0316f9946844fdd122f7c55daa51dc24e0fabc989f645e0f61306"
+    },
+    {
+      "id": "TFA-024-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "3841d5dc01a907cdefdc643c90c89008b45d185a365380c624bb464ed6c26ae9"
+    },
+    {
+      "id": "TFA-024-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "4a238c15f99c7072decd61d7ce311433ad3af56a089e5a5f80695593ab4622b5"
+    },
+    {
+      "id": "TFA-024-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "de978b10637e1f5b90d2d6e702771788b5ba0652738c33c926d55509baabf815"
+    },
+    {
+      "id": "TFA-024-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "5000dfea0b773bdd7ecfcdc9972d0cafd7850585847508aa06ae8469696f18d1"
+    },
+    {
+      "id": "TFA-025-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "85af6a29a2ca3403f61540645797633aaa57c816900410b2b5a7d02ea5f6d983"
+    },
+    {
+      "id": "TFA-025-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "a843e49d4740c43c9c547acd44543a1371fefa7f5e4036c9c7387275fa4af8d3"
+    },
+    {
+      "id": "TFA-025-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "954811790d7841a92d55b646e57fc90cbd26d42292d23265487f170cf0319b53"
+    },
+    {
+      "id": "TFA-025-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "fbc198985ac217d61e1631432499462a14aec1729b8628c12893812d400b8b1a"
+    },
+    {
+      "id": "TFA-025-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "4afb9947823b6c95d27bc43a0f12a291f767413e323e0705df097458ad4d839f"
+    },
+    {
+      "id": "TFA-026-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "9aa9c0e99321f828fcb5a742290d4b8b91287653d0ecfa1b0a6d868f06b137d5"
+    },
+    {
+      "id": "TFA-026-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "40ada3afae5f407c7dd7173348b41c881619d3e1a1d527b17d2d8a3a26a447b2"
+    },
+    {
+      "id": "TFA-026-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "123f7a8587341b087246f153c2dec428b0c5330a3ecb5c227ae2cc0bdabc3db2"
+    },
+    {
+      "id": "TFA-026-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "86aa406bb24da23081954ca89311d0a29779b62938a1f54c407d1031da492db8"
+    },
+    {
+      "id": "TFA-026-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "07237fa7e11ab5781f17644355caaf0306b53111d4ad1dfe8b687d2313f61025"
+    },
+    {
+      "id": "TFA-027-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "88ee5b4875d04b7a5f2e28cf6f98867154d330fa4a1718c3f704508901f70ebc"
+    },
+    {
+      "id": "TFA-027-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "35d7675b4653e28a149330acabdec74dbdca0870f1c5bdcf01a4dc37c5a17914"
+    },
+    {
+      "id": "TFA-027-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "9c7a2a160b5dcfec742a14aff3dc1b5c6fb63dba34553b0b106e48ab90a4b8b8"
+    },
+    {
+      "id": "TFA-027-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "ad78420b545a55d48d2a120cfe9c986e02c501ea2ae16047ae56a4a89d255a01"
+    },
+    {
+      "id": "TFA-027-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "2b8c7257cb3d28911370d43b284d89fecaf36f34806fb7f4fb66b24091e8fb5a"
+    },
+    {
+      "id": "TFA-028-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "ceeb9d0f7de6ddbe4ae7b0b8a6524a81846613222e4906674ddfe49c90f8ee19"
+    },
+    {
+      "id": "TFA-028-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "4eb3b8600f2c4341f400d3f115773dd425379e1ab1b0892ca0a065eb1962c491"
+    },
+    {
+      "id": "TFA-028-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "6363029d8ff29653fb5a50ac3e0a695e8cad8a099e79097e52aec647888364d2"
+    },
+    {
+      "id": "TFA-028-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "9dbeacb4f70beaaa88c953b7f76dcfb2bf6a6e34ee77ac8b03001760fd839f79"
+    },
+    {
+      "id": "TFA-028-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "40bf361595fd1bea024f45a8363792c8aba456bddafc86c8280343601fb09c9b"
+    },
+    {
+      "id": "TFA-029-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "ceee6f526a45bc070d65a4c1813cce9a226719f7143a98f6df7702aa2118e19c"
+    },
+    {
+      "id": "TFA-029-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "30fbe959e13f4302ef2a067eaba226374c53a75d6cdb5d87af3611194e4f909e"
+    },
+    {
+      "id": "TFA-029-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "b0b0db03877e75c8a3000366c1aac9abd8f6ec15c061bb814559b63a09efb970"
+    },
+    {
+      "id": "TFA-029-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "69071be71cf1c6b4b368151955393441ba0a804bc3addad1430fff90be9b88fb"
+    },
+    {
+      "id": "TFA-029-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e80a7bc9f5180612ad094ff95593bb362789e9ce08bdc7e5cfa0cf96599a7616"
+    },
+    {
+      "id": "TFA-030-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "6d002b2511d5a42db3fd206ba70b95ba523afd9bf7cc3554484688c3f2798f8c"
+    },
+    {
+      "id": "TFA-030-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "5b02044bc44f4621d434db22590102df98ec11c8ded20c2e4b58bbbfbd4421a3"
+    },
+    {
+      "id": "TFA-030-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "acfb4fb456224f908901704c58b1327baede5815b751da9c230bcc50f558efa3"
+    },
+    {
+      "id": "TFA-030-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "045840c23df22e1b2a40296798bd8b62458f6c6eab4f99c0bf30ff1ebeebd751"
+    },
+    {
+      "id": "TFA-030-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "6b7bc7855c1a6e52b6180af4cc7075b3c77aa2a51a50ada827a7965c9a3af21f"
+    },
+    {
+      "id": "TFA-031-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "f11ee08ef849bd9067a09169d7e048625aa8d1bb9bce4ca26c749c26d7cca10a"
+    },
+    {
+      "id": "TFA-031-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "1a03da6cfb17f800798971c8ea8bf2b1c526c8f4ab5d0e981b1db3265975f592"
+    },
+    {
+      "id": "TFA-031-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "25e44223d258c29f46d0b8b35bf70badc384324981c32f81695e74d02e2b8273"
+    },
+    {
+      "id": "TFA-031-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "5746691657ed5f9012c7f8f10d1d654aacc281fc9e893487a5871e18505fc459"
+    },
+    {
+      "id": "TFA-031-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "2992b4929509548691dfd0b286505506ee7037e92f021a9cb5671ad66195006b"
+    },
+    {
+      "id": "TFA-032-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "6affc125bc46f4682e2f932ea5e55d6e24e525642074794ed58de92e70be1456"
+    },
+    {
+      "id": "TFA-032-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "d088721544c3ff9ab44d0dbb872514562baa79cdc22012fb54666df185fbc1d6"
+    },
+    {
+      "id": "TFA-032-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "44bd1c701d8155740dbd888b4efe67f0f493af1c76ba4e3275a1f7e354e0b0a6"
+    },
+    {
+      "id": "TFA-032-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "7f257f0f1d77163aa3ea68e59380b757e1b6c29d6b4bc4f0478468022252b912"
+    },
+    {
+      "id": "TFA-032-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "d0ddacadb08fe0fd97d86a424d7abd547cfed4978c40f9f388cb44aac4fd2a16"
+    },
+    {
+      "id": "TFA-033-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "9ebd14a850f925c62fd04f9a440aa218a11053558fc1897635adc8e38686b031"
+    },
+    {
+      "id": "TFA-033-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "53ba84bfcaef34815437b8b340f9c83a950a8d49789b5b2208de4c423e6db4db"
+    },
+    {
+      "id": "TFA-033-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "7c5f23a7891a0b6e54f77fb40d8127e643279b68f0b37cb2103abbe7eb8420b3"
+    },
+    {
+      "id": "TFA-033-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "dfab886cbee49cc57164716186098e7cf7c054a55368a1df83df84a389e02a2f"
+    },
+    {
+      "id": "TFA-033-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "49d0702d802d00d3d1c505f0b679c4cf4b034e09755ca4b8dd6b9ecd96300465"
+    },
+    {
+      "id": "TFA-034-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "862e48299c9b154ca48ae3fab4484b34bb3cf1f6060761b3782cdd8ab53389f8"
+    },
+    {
+      "id": "TFA-034-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "bb5d6bf8eccb09c55bc937d64d3481bc2e4150230f5b8111211fca37bc9af1c3"
+    },
+    {
+      "id": "TFA-034-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "748916cd15272b6dca5e5e8d4136593ffd27cf5ed2b6a21eafd53381480bd0bf"
+    },
+    {
+      "id": "TFA-034-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "5746fc2f06ffbabb71f539063bb0058849bd68e3a89c66dcafe7156e099bd4ed"
+    },
+    {
+      "id": "TFA-034-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "ca967792cfbf3b4319c56b6228c1396272e3ae2f51be4ee6e2ad08d803988777"
+    },
+    {
+      "id": "TFA-035-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "21ac4f68548a9dabbb70f05e5207b44167c82d4e553d2b2c94e144b1b3cc25ff"
+    },
+    {
+      "id": "TFA-035-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e2aa9a52fff6fd314abcb1839815d39ab2c671e6236ac6386bc7f3f1a24c19d5"
+    },
+    {
+      "id": "TFA-035-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "49a09b74ef86760142d5b62fbc6398b7dc0f537a727856e3a493c4e32ff89f56"
+    },
+    {
+      "id": "TFA-035-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "030942d2f0a1a4d50707f3b6ba025b67737dfa9ed626c5d646dab47ee2367bd2"
+    },
+    {
+      "id": "TFA-035-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e29e1fff639ca547b8418c259966b869ee06963c8afebbd9c9d7e1434d74d0f4"
+    },
+    {
+      "id": "TFA-036-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "89aa212e36b4ce3f6a7944bf3de0be711dc7b9a58618ceff0be6d7a3dfe45e1c"
+    },
+    {
+      "id": "TFA-036-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "79331862b355c9a5474576d59ac7f1a065a41759e771c6ca8b2a183f33281b93"
+    },
+    {
+      "id": "TFA-036-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "c73cc1b2dc66bc8a3282487db391f0cfd551950c64fa30b628a5704f772594af"
+    },
+    {
+      "id": "TFA-036-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "ca93823d9198e3088dc8ae7fae2e0782eeaa1051c6c4ff19c5f76cfc88a70f1a"
+    },
+    {
+      "id": "TFA-036-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "e3cda70de2f27fe73d6218f469c166361ac8ba217633b8a9a071c66e2175e3a5"
+    },
+    {
+      "id": "TFA-037-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "0d7a08cf0f976d08aabf5193433f9e319f92344693af70068731d0457e47f853"
+    },
+    {
+      "id": "TFA-037-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "8dffd31cdbd24925f16ba3bc21b639c533c9b4e74458bb98b51132edf3b3f6be"
+    },
+    {
+      "id": "TFA-037-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "1a61b86f08165e7fa093234dd47d25a09778ee85fad5f829c71fbb950b625215"
+    },
+    {
+      "id": "TFA-037-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "a1ff2d10d472a7b42b1b5b7e59c7f199dd4d0fe3bed18ec9a1cc706aa6a9356d"
+    },
+    {
+      "id": "TFA-037-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "25fd95ff7c4eb0304a086d39af2fec53b8f3074bfefb9883d308d56136d39bd0"
+    },
+    {
+      "id": "TFA-038-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "c29aeb8c99255194a298415f8ca6f912ee544e8be1312256097174a5105ffca5"
+    },
+    {
+      "id": "TFA-038-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "849d5d93f7bd803541ec5f31be702674e42c6dd957f09a70e722f3a7cb2f945c"
+    },
+    {
+      "id": "TFA-038-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "96818a5dd41a00c6e7ef2e14936f27dce584f4a41d0d90a214431472dc18f620"
+    },
+    {
+      "id": "TFA-038-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "bcbbda1b88f9101d58baf8d4be7737b7160d5289e5a5fbfdeeb49889cdbccb89"
+    },
+    {
+      "id": "TFA-038-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "5f70328c5ffa074f3204ae4ff90126a414c5c90589cd5951851a76e8cace027a"
+    },
+    {
+      "id": "TFA-039-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "172fcc2b99182cc594c1fe594aca596c979239ec0278ef66776307cab64fd535"
+    },
+    {
+      "id": "TFA-039-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "3360428db5a5ecfda98ed1b2ba905969ebc149690c70cb0c335ea8722e6bad62"
+    },
+    {
+      "id": "TFA-039-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "3aac84281bfc9e9030dec5346529b4c0fc82584b4489fc3788403a377b74b7fd"
+    },
+    {
+      "id": "TFA-039-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "ee94c6ec4bc8c6cfcec23e93d2dc915d31756678292769c6c54fc8f1480f2b64"
+    },
+    {
+      "id": "TFA-039-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "98c65bcdc587b781652508a6501e2ade086031245142d3c6ccf00547642efb15"
+    },
+    {
+      "id": "TFA-040-Q1",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "aa0a5f46d421ce5a6189d7a740868762a955f9cb9e56ac1fdbaa9bf0d549ecc3"
+    },
+    {
+      "id": "TFA-040-Q2",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "1b2fc76630a5857c8b36ddbfb5eb6d3b40f50f9e91a907eaa8e95f322e4667ed"
+    },
+    {
+      "id": "TFA-040-Q3",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "b92867bba4e0c214bab6f1b0ad57004b3a14ef4e411f463c465dbcb583cb4cf7"
+    },
+    {
+      "id": "TFA-040-Q4",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "16b4a8e9305a73c17fbc1f40b66cde5c50ff12efc48597d76639acca40db81b5"
+    },
+    {
+      "id": "TFA-040-Q5",
+      "review": "correct reasoning checked; three topic-specific misconceptions reviewed",
+      "revision": 2,
+      "content_sha256": "b645c88b583a2ba68635383f3254432b6777dc3ccfb63ea76515757b07bb59e1"
+    }
+  ]
+}

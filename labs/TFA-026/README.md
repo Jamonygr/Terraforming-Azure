@@ -1,8 +1,14 @@
 # TFA-026 - Inspected hub-and-spoke routing
 
-[Course home](../../README.md) | [Previous lab](../TFA-025/README.md) | [Next lab](../TFA-027/README.md)
+<!-- lab-metadata:start -->
+**Phase 4:** Private platforms
 
-> **Mode:** Azure deployment | **Time:** 80-110 minutes plus Firewall/VM provisioning | **Cost:** High: Firewall Standard and two Windows VMs. No public VM addresses.
+**Learning target:** 120 minutes · **Cost tier:** High · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-025 — Azure Firewall and Firewall Policy](../TFA-025/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-025/README.md) | [Next lab](../TFA-027/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ Peering two spokes to a hub does not automatically let the spokes communicate. Y
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Inspect selected spoke and outbound traffic without creating asymmetric routing. Your evidence must distinguish configuration intent from the observed result: Forward and return paths traverse the intended inspection point.
+
+## Predict the mechanism
+
+Peering system routes are more specific than a default route. Inspected interspoke traffic therefore needs destination-specific UDRs as well as an egress default. A stateful Firewall also needs a compatible return path; one-way inspection can fail or bypass the intended policy.
+
+Before running commands, write the expected result: **Forward and return paths traverse the intended inspection point.** Then explain what would change in this controlled failure: Remove a destination route and distinguish bypass or asymmetry from a policy denial. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,15 +30,17 @@ VNet peering is non-transitive. Each workload subnet receives a UDR for the othe
 
 ## Architecture
 
-![TFA-026 architecture](../../assets/diagrams/TFA-026.svg)
+<!-- lab-diagram:start -->
+![TFA-026 teaching diagram](../../assets/diagrams/TFA-026.svg)
+<!-- lab-diagram:end -->
 
 One hub, two spoke VNets, four directional hub/spoke peerings, Firewall Standard with a narrow ICMP rule, two private Windows VMs, and reciprocal spoke-prefix UDRs.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
 
-High: Firewall Standard and two Windows VMs. No public VM addresses. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
+Charged resources include Firewall Standard and two Windows VMs. No public VM addresses. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
 ## Step 1 - Read the implementation
 
@@ -86,16 +100,23 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 ## Cleanup
 
 ```powershell
+$cleanupGroup = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroup) { throw 'Capture the actual lab group before planning destruction.' }
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 # Check the Azure resource group no longer exists after successful destroy.
-az group exists --subscription $env:TF_VAR_subscription_id --name rg-tfa026
+$groupExists = az group exists --subscription $env:TF_VAR_subscription_id --name $cleanupGroup
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item Env:TF_VAR_admin_password -ErrorAction SilentlyContinue
 ```
 
-A successful destroy and an empty state are the expected result. Verify the actual lab group name from the earlier output if you changed name_prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
+A successful destroy and an empty state are the expected result. The cleanup command uses the captured group, including a changed prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
 
 ## Completion criteria
 
@@ -107,3 +128,9 @@ A successful destroy and an empty state are the expected result. Verify the actu
 ## Continue learning
 
 [Official documentation](https://learn.microsoft.com/en-us/azure/networking/design-guide/hub-spoke) | [Continue to TFA-027](../TFA-027/README.md)
+
+## Evidence contract
+
+Inspect workload UDRs and compare allowed/denied interspoke probes with Firewall logs. Forward and return paths traverse the intended inspection point.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

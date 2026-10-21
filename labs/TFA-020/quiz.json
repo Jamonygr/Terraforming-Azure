@@ -3,36 +3,36 @@
     "id": "TFA-020-Q1",
     "prompt": "What identifies each for_each network module instance?",
     "options": [
-      "The order of README sections",
       "The stable networks map key",
-      "The subnet’s last IP octet",
-      "The provider’s installed folder"
+      "The position of the map entry",
+      "The order of module blocks in the file",
+      "The display name inside each value"
     ],
-    "answer": 1,
+    "answer": 0,
     "explanation": "Module instance addresses preserve keys such as module.network[\"hub\"]."
   },
   {
     "id": "TFA-020-Q2",
     "prompt": "What does the label hub create automatically?",
     "options": [
-      "A DNS forwarding resolver",
-      "Gateway transit between every VNet",
-      "No transit behavior beyond the declared resources",
-      "An Azure Firewall"
+      "An Azure gateway transit relationship",
+      "A default route through a hub appliance",
+      "Automatic spoke-to-spoke forwarding",
+      "No transit behavior beyond the declared resources"
     ],
-    "answer": 2,
+    "answer": 3,
     "explanation": "Labels describe intent; only explicit resources and settings create network behavior."
   },
   {
     "id": "TFA-020-Q3",
     "prompt": "Do the two module-created groups imply two Terraform states?",
     "options": [
-      "Yes, resource groups always create state backends",
-      "Yes, map keys are Azure Blob keys",
-      "Yes, modules never share a root",
-      "No; both instances belong to this root’s state"
+      "Yes, each module instance owns a backend",
+      "Yes, each RG has its own Terraform state",
+      "No; both instances belong to this root’s state",
+      "Yes, each map key creates a workspace"
     ],
-    "answer": 3,
+    "answer": 2,
     "explanation": "Azure lifecycle containers and Terraform state boundaries are different concepts."
   },
   {
@@ -40,9 +40,9 @@
     "prompt": "Adding one subnet key inside the spoke map should normally propose what?",
     "options": [
       "One subnet creation in the existing spoke module",
-      "All networks recreated",
-      "One new Azure tenant",
-      "Deletion of the hub"
+      "Recreation of every module instance",
+      "Replacement of the spoke VNet",
+      "Creation of a new root state"
     ],
     "answer": 0,
     "explanation": "Stable outer and inner keys keep unchanged module/resource identities."
@@ -51,12 +51,12 @@
     "id": "TFA-020-Q5",
     "prompt": "What risk accompanies renaming hub to core?",
     "options": [
-      "Azure deduplicates every resource by tag",
+      "Only the Azure display name changes",
+      "The provider remaps nested addresses automatically",
       "Nested module addresses change and need a reviewed migration",
-      "Only Markdown navigation changes",
-      "The state provider becomes local automatically"
+      "Terraform infers the migration from matching CIDRs"
     ],
-    "answer": 1,
+    "answer": 2,
     "explanation": "Renaming a for_each module key affects the addresses of its entire child resource tree."
   }
 ]

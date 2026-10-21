@@ -1,14 +1,30 @@
 # TFA-018 — Module contracts and safe changes
 
-![Module contracts and safe changes teaching diagram](../../assets/diagrams/TFA-018.svg)
+<!-- lab-metadata:start -->
+**Phase 3:** Terraform engineering
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-017 — Your first reusable module](../TFA-017/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-018 teaching diagram](../../assets/diagrams/TFA-018.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Treat typed inputs, output keys, and resource addresses as a contract and distinguish additive changes from replacements.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-017](../TFA-017/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+Validation checks the contract domain, while lifecycle behavior controls how Terraform responds to change. A typed input can still be operationally unsafe if it allows overlapping networks or names that force replacement. A useful output describes a stable capability, such as a subnet ID, rather than an internal implementation detail.
+
+Before running commands, write the expected result: **Invalid inputs fail early; replacement-producing changes are visible before apply.** Then explain what would change in this controlled failure: Supply an invalid module input and repair the contract or caller deliberately. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The module validates CIDR syntax and nonempty input maps. It intentionally does 
 
 The same learning-network module now accepts a caller-supplied subnets map for 10.18.0.0/16. web and app are stable identities; new keys can be added without changing them.
 
-**Cost:** Low: network resources only. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -91,9 +107,13 @@ Supply subnets={} or a value such as "not-a-cidr" and plan. Validation must fail
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -106,3 +126,11 @@ Publish breaking interface or naming changes as explicit releases with upgrade n
 ## Navigation
 
 [Previous: TFA-017](../TFA-017/README.md) · [Curriculum](../../README.md) · [Next: TFA-019](../TFA-019/README.md)
+
+## Evidence contract
+
+Run the module contract tests and inspect a deliberate invalid-input or replacement plan. Invalid inputs fail early; replacement-producing changes are visible before apply.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.
+
+Run `terraform test` after initialization for three mocked interface contracts: stable subnet keys, empty-map rejection and malformed-CIDR rejection. The key-renaming/replacement exercise remains an authored plan review; it is not a simulated Azure lifecycle or a resource replacement observed during this overhaul.

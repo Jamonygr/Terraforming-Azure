@@ -37,11 +37,11 @@ variable "admin_password" {
 }
 
 variable "incident" {
-  description = "Controlled fault: healthy or nsg-block. Never inject faults outside this lab."
+  description = "One isolated fault: healthy, dns-wrong, route-drop, nsg-block or app-stopped."
   type        = string
   default     = "healthy"
   validation {
-    condition     = contains(["healthy", "nsg-block"], var.incident)
-    error_message = "Choose healthy or nsg-block."
+    condition     = contains(["healthy", "dns-wrong", "route-drop", "nsg-block", "app-stopped"], var.incident)
+    error_message = "Choose healthy, dns-wrong, route-drop, nsg-block or app-stopped."
   }
 }

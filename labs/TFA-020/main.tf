@@ -25,3 +25,8 @@ output "networks" {
   description = "Structured module outputs retain each input key. There is no peering in this lesson."
   value       = { for name, net in module.network : name => { vnet_id = net.vnet_id, vnet_name = net.vnet_name, resource_group_name = net.resource_group_name, subnet_ids = net.subnet_ids } }
 }
+
+output "cleanup_group_names" {
+  description = "Capture the exact groups owned by this root before destruction."
+  value       = [for network in module.network : network.resource_group_name]
+}

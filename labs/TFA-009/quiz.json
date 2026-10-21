@@ -3,60 +3,60 @@
     "id": "TFA-009-Q1",
     "prompt": "What does NAT Gateway principally provide here?",
     "options": [
-      "An HTTP application firewall",
-      "A private DNS zone",
-      "Explicit outbound source NAT and return flow handling",
-      "An inbound RDP listener"
+      "FQDN filtering for outbound HTTPS",
+      "Inbound destination NAT for the VMs",
+      "Private DNS forwarding for workload names",
+      "Explicit outbound source NAT and return flow handling"
     ],
-    "answer": 2,
+    "answer": 3,
     "explanation": "NAT translates outbound connections; it does not publish unsolicited inbound services."
   },
   {
     "id": "TFA-009-Q2",
     "prompt": "Which attachments complete this lesson’s egress configuration?",
     "options": [
-      "NSG to README and VM to subscription name",
-      "DNS to tenant and route to browser",
-      "Only a public IP object",
-      "NAT to public IP and NAT to workload subnet"
+      "Only the public-IP-to-NAT association",
+      "NAT to public IP and NAT to workload subnet",
+      "A public IP attached directly to the workload NIC",
+      "Only the NAT-to-subnet association"
     ],
-    "answer": 3,
+    "answer": 1,
     "explanation": "The gateway needs a public source IP association and the source subnet association."
   },
   {
     "id": "TFA-009-Q3",
     "prompt": "Can a browser reach a private VM merely by using its NAT public IP?",
     "options": [
-      "No; NAT Gateway does not publish an inbound listener",
-      "Yes, every port is forwarded",
-      "Yes, if the subnet has a name",
-      "Yes, after terraform fmt"
+      "Yes, when the workload NSG allows RDP",
+      "Yes, for every outbound port that previously connected",
+      "Yes, because Standard public IPs publish VM ports",
+      "No; NAT Gateway does not publish an inbound listener"
     ],
-    "answer": 0,
+    "answer": 3,
     "explanation": "Outbound mappings allow replies to originated flows, not arbitrary new inbound connections."
   },
   {
     "id": "TFA-009-Q4",
     "prompt": "Does this no-VM lab prove the packet source IP at an external destination?",
     "options": [
-      "Yes, because Terraform state is a packet capture",
       "No; it inspects configuration before a workload test",
-      "Yes, because an output printed an IP",
-      "Yes, because NAT always installs IIS"
+      "Yes, provisioningState proves the remote request succeeded",
+      "Yes, the configured public IP proves the observed source",
+      "Yes, the subnet association proves guest networking works"
     ],
-    "answer": 1,
+    "answer": 0,
     "explanation": "Dataplane evidence requires a real flow from a representative workload."
   },
   {
     "id": "TFA-009-Q5",
     "prompt": "Removing the subnet association while leaving NAT running has what effect?",
     "options": [
-      "It creates an inbound gateway",
-      "It removes all billing from the gateway",
+      "The NAT resource is destroyed automatically",
       "That subnet no longer uses the NAT attachment",
-      "It deletes every VM automatically"
+      "The NAT stays associated through the public IP",
+      "The VM automatically receives the NAT public IP"
     ],
-    "answer": 2,
+    "answer": 1,
     "explanation": "Resource existence and path attachment are different; an unattached running gateway may still cost money."
   }
 ]

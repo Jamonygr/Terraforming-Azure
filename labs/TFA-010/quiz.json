@@ -3,34 +3,34 @@
     "id": "TFA-010-Q1",
     "prompt": "Why does the IIS extension explicitly depend on the NAT associations?",
     "options": [
-      "It needs a public VM NIC",
-      "It must disable the VM agent",
-      "All extensions require Bastion",
-      "Bootstrap needs the intended outbound path ready first"
+      "NAT installs the Windows feature",
+      "The VM name cannot be known before NAT exists",
+      "Bootstrap needs the intended outbound path ready first",
+      "A dependency gives the extension a public IP"
     ],
-    "answer": 3,
+    "answer": 2,
     "explanation": "Application bootstrap can require outbound access; waiting for both associations makes that dependency explicit."
   },
   {
     "id": "TFA-010-Q2",
     "prompt": "What does sensitive=true do for the administrator password?",
     "options": [
+      "Encrypt the variable within the plan file",
       "Redact normal display, while state may still contain the value",
-      "Remove it from every state file",
-      "Encrypt all local disks automatically",
-      "Rotate the password every hour"
+      "Remove the password from state",
+      "Prevent the provider from receiving plaintext"
     ],
-    "answer": 0,
+    "answer": 1,
     "explanation": "Sensitive is a display-handling property, not a secret-storage guarantee."
   },
   {
     "id": "TFA-010-Q3",
     "prompt": "Which evidence checks actual IIS behavior?",
     "options": [
-      "A VNet resource ID",
+      "An NSG rule allowing port 80",
       "Run Command returning HTTP 200 from localhost",
-      "Only a successful terraform fmt",
-      "The string web in a subnet name"
+      "A VM provisioningState of Succeeded",
+      "Only a successful extension deployment"
     ],
     "answer": 1,
     "explanation": "A guest HTTP request validates the application response rather than just control-plane creation."
@@ -39,10 +39,10 @@
     "id": "TFA-010-Q4",
     "prompt": "Stopping W3SVC can leave Terraform plan empty because what?",
     "options": [
-      "Run Command deletes state",
-      "The VM acquired a public IP",
+      "Run Command removed the extension from state",
+      "Terraform always ignores guest resources",
       "Guest service runtime is not modeled by this configuration",
-      "Terraform always restarts all Windows services"
+      "A new refresh automatically restarts W3SVC"
     ],
     "answer": 2,
     "explanation": "Terraform does not automatically model every mutable guest operating-system condition."
@@ -51,12 +51,12 @@
     "id": "TFA-010-Q5",
     "prompt": "How should the optional external IP test compare with the NAT output?",
     "options": [
-      "It should show the VM private IP publicly",
-      "It should equal the subscription GUID",
-      "It should change the administrator password",
-      "The observed source should match outbound_public_ip"
+      "The observed source should match outbound_public_ip",
+      "Each new request should use a different random address",
+      "It should match the DNS resolver address",
+      "The VM private address should be visible externally"
     ],
-    "answer": 3,
+    "answer": 0,
     "explanation": "A flow leaving through the NAT Gateway should use its configured public source address."
   }
 ]

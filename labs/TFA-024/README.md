@@ -1,8 +1,14 @@
 # TFA-024 - Managed identity and Key Vault
 
-[Course home](../../README.md) | [Previous lab](../TFA-023/README.md) | [Next lab](../TFA-025/README.md)
+<!-- lab-metadata:start -->
+**Phase 4:** Private platforms
 
-> **Mode:** Azure deployment | **Time:** 50-70 minutes | **Cost:** Medium: private Windows probe, NAT Gateway, identity, vault, and vault operations.
+**Learning target:** 75 minutes · **Cost tier:** Moderate · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-023 — Storage private endpoints](../TFA-023/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-023/README.md) | [Next lab](../TFA-025/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ An application should obtain Azure credentials from its runtime identity rather 
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Use managed identity and scoped RBAC to access private sample data. Your evidence must distinguish configuration intent from the observed result: The intended identity can read the scoped sample; normal outputs expose no secret values.
+
+## Predict the mechanism
+
+Managed identity gives a VM a service principal without distributing a reusable client secret. A scoped Key Vault data role authorizes only selected operations. Sensitive Terraform values can still appear in state, so sample secret seeding belongs on a private authorized client rather than in ordinary Terraform outputs.
+
+Before running commands, write the expected result: **The intended identity can read the scoped sample; normal outputs expose no secret values.** Then explain what would change in this controlled failure: Remove the data role or request a forbidden operation and diagnose authorization separately. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,15 +30,17 @@ A user-assigned managed identity is an Azure resource with a principal ID for ro
 
 ## Architecture
 
-![TFA-024 architecture](../../assets/diagrams/TFA-024.svg)
+<!-- lab-diagram:start -->
+![TFA-024 teaching diagram](../../assets/diagrams/TFA-024.svg)
+<!-- lab-diagram:end -->
 
 A user-assigned identity, an RBAC-enabled Key Vault, and a private Windows VM with that identity attached, explicit NAT egress, and a vault-scoped role. The initial Secrets Officer role allows runtime seeding of one dummy secret; it is then reduced to Secrets User. No secret value is managed by Terraform.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
 
-Medium: private Windows probe, NAT Gateway, identity, vault, and vault operations. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
+Charged resources include private Windows probe, NAT Gateway, identity, vault, and vault operations. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
 ## Step 1 - Read the implementation
 
@@ -107,16 +121,23 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 ## Cleanup
 
 ```powershell
+$cleanupGroup = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroup) { throw 'Capture the actual lab group before planning destruction.' }
 terraform plan -destroy -var='identity_secret_role=Key Vault Secrets User' -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 Remove-Item Env:TF_VAR_admin_password -ErrorAction SilentlyContinue
 # Check the Azure resource group no longer exists after successful destroy.
-az group exists --subscription $env:TF_VAR_subscription_id --name rg-tfa024
+$groupExists = az group exists --subscription $env:TF_VAR_subscription_id --name $cleanupGroup
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 ```
 
-A successful destroy and an empty state are the expected result. Verify the actual lab group name from the earlier output if you changed name_prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
+A successful destroy and an empty state are the expected result. The cleanup command uses the captured group, including a changed prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
 
 ## Completion criteria
 
@@ -128,3 +149,9 @@ A successful destroy and an empty state are the expected result. Verify the actu
 ## Continue learning
 
 [Official documentation](https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide) | [Continue to TFA-025](../TFA-025/README.md)
+
+## Evidence contract
+
+Use the authored VM identity request and read only the designated sample secret. The intended identity can read the scoped sample; normal outputs expose no secret values.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

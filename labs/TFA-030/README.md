@@ -1,8 +1,14 @@
 # TFA-030 - Simulated on-premises connectivity
 
-[Course home](../../README.md) | [Previous lab](../TFA-029/README.md) | [Next lab](../TFA-031/README.md)
+<!-- lab-metadata:start -->
+**Phase 5:** Hybrid operations
 
-> **Mode:** Azure deployment | **Time:** 90-120 minutes hands-on; gateways can each take 45+ minutes | **Cost:** High: two VpnGw1AZ gateways, public IPs, and two Windows VMs. Charges continue while gateways exist.
+**Learning target:** 120 minutes · **Cost tier:** High · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-029 — VPN and hybrid routing foundations](../TFA-029/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-029/README.md) | [Next lab](../TFA-031/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ Hybrid connectivity becomes easier to reason about when both ends of a tunnel ar
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Prove an encrypted connection to an Azure-hosted simulated on-premises network. Your evidence must distinguish configuration intent from the observed result: Both connections report Connected and the intended private traffic succeeds.
+
+## Predict the mechanism
+
+Two Azure VPN gateways can form a repeatable VNet-to-VNet IPsec exercise. Both reciprocal connections must refer to the other gateway and share the intended key. Connected control-plane status is necessary, but a guest traffic probe and a return route are still required to prove the tunnel is useful.
+
+Before running commands, write the expected result: **Both connections report Connected and the intended private traffic succeeds.** Then explain what would change in this controlled failure: Use a mismatched shared key, diagnose the tunnel failure, restore matching keys. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,15 +30,17 @@ Two Azure VNets represent an Azure site and a simulated remote site. Each has it
 
 ## Architecture
 
-![TFA-030 architecture](../../assets/diagrams/TFA-030.svg)
+<!-- lab-diagram:start -->
+![TFA-030 teaching diagram](../../assets/diagrams/TFA-030.svg)
+<!-- lab-diagram:end -->
 
 Two non-overlapping VNets, two dedicated GatewaySubnets, two zone-redundant gateway public IPs, two VPN gateways, two directional VNet2VNet connections, and a private Windows test VM at each site.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts. Azure CLI, an explicitly selected sandbox subscription, approved permissions and regional quota. AzureRM is pinned to 4.77.0; do not silently upgrade it during the lesson.
 
-High: two VpnGw1AZ gateways, public IPs, and two Windows VMs. Charges continue while gateways exist. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
+Charged resources include two VpnGw1AZ gateways, public IPs, and two Windows VMs. Charges continue while gateways exist. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
 ## Step 1 - Read the implementation
 
@@ -87,17 +101,24 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 ## Cleanup
 
 ```powershell
+$cleanupGroup = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroup) { throw 'Capture the actual lab group before planning destruction.' }
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 # Check the Azure resource group no longer exists after successful destroy.
-az group exists --subscription $env:TF_VAR_subscription_id --name rg-tfa030
+$groupExists = az group exists --subscription $env:TF_VAR_subscription_id --name $cleanupGroup
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item Env:TF_VAR_admin_password -ErrorAction SilentlyContinue
 Remove-Item Env:TF_VAR_vpn_shared_key -ErrorAction SilentlyContinue
 ```
 
-A successful destroy and an empty state are the expected result. Verify the actual lab group name from the earlier output if you changed name_prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
+A successful destroy and an empty state are the expected result. The cleanup command uses the captured group, including a changed prefix. Soft-deleted vaults and retained logs can outlive their active resource; review the relevant Azure lifecycle and cost settings. Do not commit generated plans or state as evidence.
 
 ## Completion criteria
 
@@ -109,3 +130,9 @@ A successful destroy and an empty state are the expected result. Verify the actu
 ## Continue learning
 
 [Official documentation](https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-howto-vnet-vnet-resource-manager-portal) | [Continue to TFA-031](../TFA-031/README.md)
+
+## Evidence contract
+
+Inspect both VPN connection states and execute the authored cross-network private probe. Both connections report Connected and the intended private traffic succeeds.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

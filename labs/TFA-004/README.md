@@ -1,14 +1,30 @@
 # TFA-004 — Variables, types, and validation
 
-![Variables, types, and validation teaching diagram](../../assets/diagrams/TFA-004.svg)
+<!-- lab-metadata:start -->
+**Phase 1:** Foundations
+
+**Learning target:** 75 minutes · **Cost tier:** None · **Run mode:** `local`
+
+**Prerequisites:** [TFA-003 — Your first Azure deployment](../TFA-003/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-004 teaching diagram](../../assets/diagrams/TFA-004.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Design a small typed configuration interface and reject invalid inputs before any infrastructure exists.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-003](../TFA-003/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+Terraform validates typed inputs before creating resources. TF_VAR environment values can be overridden by an explicit tfvars file, so changing the shell alone may not change the plan. Validation should explain a domain rule, such as an allowed environment, instead of relying on an Azure API error.
+
+Before running commands, write the expected result: **Invalid inputs fail before resource creation; explicit variable precedence is visible.** Then explain what would change in this controlled failure: Set a value of the wrong type or outside the allowed values, then restore it. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ This lesson evaluates a configuration_preview output with an environment, a repl
 
 Typed variables → validation → a local preview output saved in local state.
 
-**Cost:** None Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -86,7 +102,9 @@ Run terraform plan -var="instance_count=1.5" and terraform plan -var="environmen
 
 ```powershell
 terraform destroy
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -99,3 +117,9 @@ Public module inputs need concise descriptions and constraints that encode known
 ## Navigation
 
 [Previous: TFA-003](../TFA-003/README.md) · [Curriculum](../../README.md) · [Next: TFA-005](../TFA-005/README.md)
+
+## Evidence contract
+
+Plan with valid inputs, then supply an invalid environment and read the variable error. Invalid inputs fail before resource creation; explicit variable precedence is visible.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

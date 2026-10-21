@@ -3,60 +3,60 @@
     "id": "TFA-023-Q1",
     "prompt": "Which hostname should an application normally keep using for private Blob access?",
     "options": [
+      "The bare privatelink zone name",
       "The normal account.blob.core.windows.net service name",
       "The private endpoint resource ID",
-      "The private DNS zone name without an account label",
-      "A hard-coded private IP in every application URL"
+      "A hard-coded private IP HTTPS URL"
     ],
-    "answer": 0,
+    "answer": 1,
     "explanation": "Private DNS changes the answer for the normal service hostname; keeping the hostname preserves service identity and TLS behavior."
   },
   {
     "id": "TFA-023-Q2",
     "prompt": "An endpoint connection is Approved. What else is still required?",
     "options": [
+      "Only a matching account name",
       "Only a resource-group Reader role",
       "Correct DNS, a usable network path, and data-plane permission",
-      "A public IP on the endpoint NIC",
-      "A storage account access key in Git"
+      "Only the endpoint NIC provisioning state"
     ],
-    "answer": 1,
+    "answer": 2,
     "explanation": "Approval alone does not prove resolution, transport, or authorization."
   },
   {
     "id": "TFA-023-Q3",
     "prompt": "Does one Blob private endpoint privately expose Azure Files?",
     "options": [
-      "Yes; all storage services share the Blob endpoint",
-      "Only when the account is Standard LRS",
       "No; Files needs its own relevant endpoint configuration",
-      "Only when public access is disabled"
+      "Yes, every account subresource shares one endpoint",
+      "Yes, when the account uses LRS",
+      "Yes, when public network access is disabled"
     ],
-    "answer": 2,
+    "answer": 0,
     "explanation": "Private endpoints target service subresources, such as blob or file."
   },
   {
     "id": "TFA-023-Q4",
     "prompt": "What does disabling public network access guarantee here?",
     "options": [
-      "Every private client can read blobs",
-      "The account has no public DNS name",
-      "No identity can access the account",
-      "The storage service rejects its public network path"
+      "The storage service rejects its public network path",
+      "Every authorized request uses the private endpoint automatically",
+      "Every private client can read data",
+      "The public service DNS name disappears"
     ],
-    "answer": 3,
+    "answer": 0,
     "explanation": "Network restriction is independent of RBAC and does not remove public DNS naming."
   },
   {
     "id": "TFA-023-Q5",
     "prompt": "Why disable AzureRM storage data-plane polling in this ARM-only root?",
     "options": [
-      "The laptop has no private data-plane path to the locked-down account",
+      "To make public access available only during apply",
       "To bypass storage authorization",
-      "To make a private endpoint free",
-      "To upload blobs through the ARM API"
+      "To upload blob data through ARM",
+      "The laptop has no private data-plane path to the locked-down account"
     ],
-    "answer": 0,
+    "answer": 3,
     "explanation": "The lab creates ARM resources; this feature does not supply private access for containers or blob uploads."
   }
 ]

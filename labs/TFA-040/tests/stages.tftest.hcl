@@ -1,11 +1,4 @@
-mock_provider "azurerm" {
-  mock_data "azurerm_client_config" {
-    defaults = {
-      tenant_id       = "11111111-1111-1111-1111-111111111111"
-      subscription_id = "22222222-2222-2222-2222-222222222222"
-    }
-  }
-}
+mock_provider "azurerm" { source = "../../modules/capstone/tests/mocks" }
 
 variables {
   subscription_id      = "22222222-2222-2222-2222-222222222222"
@@ -17,7 +10,7 @@ variables {
 }
 
 run "foundation" {
-  command = plan
+  command = apply
   variables { stage = "foundation" }
   assert {
     condition     = output.traffic_contract.windows_vm_count == 0 && output.traffic_contract.vpn_gateway_count == 0
@@ -30,7 +23,7 @@ run "foundation" {
 }
 
 run "secure" {
-  command = plan
+  command = apply
   variables { stage = "secure" }
   assert {
     condition     = output.traffic_contract.firewall_sku == "Standard" && output.traffic_contract.windows_vm_count == 0
@@ -43,7 +36,7 @@ run "secure" {
 }
 
 run "applications" {
-  command = plan
+  command = apply
   variables { stage = "applications" }
   assert {
     condition     = output.traffic_contract.windows_vm_count == 3 && output.traffic_contract.vpn_gateway_count == 0
@@ -56,7 +49,7 @@ run "applications" {
 }
 
 run "hybrid" {
-  command = plan
+  command = apply
   variables { stage = "hybrid" }
   assert {
     condition     = output.traffic_contract.windows_vm_count == 4 && output.traffic_contract.vpn_gateway_count == 2
@@ -87,4 +80,130 @@ run "reject_missing_hybrid_secret" {
     vpn_shared_key = null
   }
   expect_failures = [var.vpn_shared_key]
+}
+
+# Keep identities distinct so relationship assertions can detect wrong associations.
+override_resource {
+  target = module.capstone.azurerm_virtual_network.network["hub"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/hub" }
+}
+override_resource {
+  target = module.capstone.azurerm_virtual_network.network["app"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/app" }
+}
+override_resource {
+  target = module.capstone.azurerm_virtual_network.network["data"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/data" }
+}
+override_resource {
+  target = module.capstone.azurerm_virtual_network.network["operations"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/operations" }
+}
+override_resource {
+  target = module.capstone.azurerm_virtual_network.network["onprem"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/onprem" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["firewall"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/AzureFirewallSubnet" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["bastion"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/AzureBastionSubnet" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["gateway"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/GatewaySubnet" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["dns_in"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/dns_in" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["dns_out"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/dns_out" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["ingress"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/ingress" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["app"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/app" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["data"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/data" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["operations"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/operations" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["corp"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/mock/subnets/corp" }
+}
+override_resource {
+  target = module.capstone.azurerm_subnet.subnet["remote_gw"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworks/onprem/subnets/GatewaySubnet" }
+}
+override_resource {
+  target = module.capstone.azurerm_route_table.workload["app"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/routeTables/app" }
+}
+override_resource {
+  target = module.capstone.azurerm_route_table.workload["data"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/routeTables/data" }
+}
+override_resource {
+  target = module.capstone.azurerm_route_table.workload["operations"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/routeTables/operations" }
+}
+
+override_resource {
+  target = module.capstone.azurerm_virtual_network_gateway.vpn["hub"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworkGateways/hub" }
+}
+
+override_resource {
+  target = module.capstone.azurerm_virtual_network_gateway.vpn["onprem"]
+  values = { id = "/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/mock-rg/providers/Microsoft.Network/virtualNetworkGateways/onprem" }
+}
+
+run "reject_noncanonical_world_route" {
+  command = plan
+  variables { operator_cidrs = ["203.0.113.1/0"] }
+  expect_failures = [var.operator_cidrs]
+}
+run "reject_operator_host_bits" {
+  command = plan
+  variables { operator_cidrs = ["203.0.113.10/24"] }
+  expect_failures = [var.operator_cidrs]
+}
+run "reject_malformed_operator" {
+  command = plan
+  variables { operator_cidrs = ["999.1.2.3/32"] }
+  expect_failures = [var.operator_cidrs]
+}
+run "accept_canonical_operator_ranges" {
+  command = plan
+  variables {
+    stage          = "foundation"
+    operator_cidrs = ["203.0.113.10/32", "198.51.100.0/24"]
+  }
+  assert {
+    condition     = output.stage == "foundation"
+    error_message = "Canonical operator addresses and corporate ranges must remain supported."
+  }
+}
+
+run "reject_zero_padded_prefix" {
+  command = plan
+  variables { operator_cidrs = ["128.0.0.0/01"] }
+  expect_failures = [var.operator_cidrs]
+}
+run "reject_ipv6_operator" {
+  command = plan
+  variables { operator_cidrs = ["2001:db8::/64"] }
+  expect_failures = [var.operator_cidrs]
 }

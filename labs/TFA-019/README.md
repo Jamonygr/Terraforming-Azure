@@ -1,14 +1,30 @@
 # TFA-019 — Environment and state separation
 
-![Environment and state separation teaching diagram](../../assets/diagrams/TFA-019.svg)
+<!-- lab-metadata:start -->
+**Phase 3:** Terraform engineering
+
+**Learning target:** 75 minutes · **Cost tier:** None · **Run mode:** `local`
+
+**Prerequisites:** [TFA-018 — Module contracts and safe changes](../TFA-018/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-019 teaching diagram](../../assets/diagrams/TFA-019.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Demonstrate that a shared codebase and separate state boundaries are different concerns using independent dev and prod roots.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-018](../TFA-018/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+Separate roots isolate backend configuration, permissions and deployment cadence. Workspaces select another state instance for the same root configuration; they are not an authorization boundary. An environment name in a tag does not prevent a caller from choosing the wrong backend.
+
+Before running commands, write the expected result: **Environment data is isolated in distinct intended state locations.** Then explain what would change in this controlled failure: Deliberately inspect the wrong workspace before planning and switch back before any apply. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The top-level output previews a dev/prod design. The actual exercise runs indepe
 
 One repo → environments/dev local state and environments/prod local state. Dev uses 10.19.0.0/16; prod uses 10.119.0.0/16. The root-level preview does not manage either environment.
 
-**Cost:** None Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -95,6 +111,7 @@ terraform -chdir=environments/prod destroy
 terraform -chdir=environments/dev state list
 terraform -chdir=environments/prod state list
 terraform destroy
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -107,3 +124,9 @@ Separate access rights, backend keys, identities, approval rules, subscriptions 
 ## Navigation
 
 [Previous: TFA-018](../TFA-018/README.md) · [Curriculum](../../README.md) · [Next: TFA-020](../TFA-020/README.md)
+
+## Evidence contract
+
+Compare development/test roots or workspace outputs and record their state/backend identities. Environment data is isolated in distinct intended state locations.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

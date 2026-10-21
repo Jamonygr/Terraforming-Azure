@@ -1,8 +1,14 @@
 # TFA-038 - Recovery and controlled upgrades
 
-[Course home](../../README.md) | [Previous lab](../TFA-037/README.md) | [Next lab](../TFA-039/README.md)
+<!-- lab-metadata:start -->
+**Phase 6:** Delivery & capstone
 
-> **Mode:** Local Terraform / workflow learning | **Time:** 50-75 minutes | **Cost:** Local state only. No Azure resources or credentials.
+**Learning target:** 75 minutes · **Cost tier:** None · **Run mode:** `local`
+
+**Prerequisites:** [TFA-037 — Reviewed plan, apply, and destroy workflows](../TFA-037/README.md)
+<!-- lab-metadata:end -->
+
+[Course home](../../README.md) | [Previous lab](../TFA-037/README.md) | [Next lab](../TFA-039/README.md)
 
 ## Why this lab exists
 
@@ -10,7 +16,13 @@ State is operational data. Recovery should be rehearsed on a disposable local re
 
 ## What you will learn
 
-By the end, explain the mechanism below, follow its dependencies in Terraform, reproduce its evidence, diagnose the named failure, and clean up the resources you created. The final challenge checks whether you can apply the concept without copying another resource block.
+Recover ownership and state, resume interrupted work, and review provider upgrades. Your evidence must distinguish configuration intent from the observed result: Recovery preserves the intended object bindings and exposes changes before upgrade apply.
+
+## Predict the mechanism
+
+An interrupted apply can leave both real resources and partial state, so recovery starts by observing rather than blindly rerunning destructive commands. Restoring state affects bindings and must be reconciled with actual resources. Provider upgrades require lockfile review and a plan because schema compatibility does not guarantee unchanged behavior.
+
+Before running commands, write the expected result: **Recovery preserves the intended object bindings and exposes changes before upgrade apply.** Then explain what would change in this controlled failure: Use an interrupted or stale local state fixture, inspect it, then restore the known binding. Record your prediction before inspecting the outcome.
 
 ## Concepts before commands
 
@@ -18,13 +30,15 @@ This lab uses only terraform_data so you can safely inspect a state backup, remo
 
 ## Architecture
 
-![TFA-038 architecture](../../assets/diagrams/TFA-038.svg)
+<!-- lab-diagram:start -->
+![TFA-038 teaching diagram](../../assets/diagrams/TFA-038.svg)
+<!-- lab-diagram:end -->
 
 One local resource with stable recovery metadata. You will create an ignored state backup and restore it after a deliberate local-state loss.
 
-## Prerequisites and cost checkpoint
+## Runtime and cost checkpoint
 
-PowerShell 7, Terraform 1.9 or later (under 2.0; course tested with 1.15.8), Git, and the preceding concepts.
+PowerShell 7.4 or newer (under 8), Terraform 1.15.8, Git, and the preceding concepts.
 
 Local state only. No Azure resources or credentials. Read the selected services in the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/) before apply. A stopped VM can retain charged disks; a gateway/firewall is not stopped by leaving the terminal. Each lab owns its own local state; keep that state until cleanup. Do not reuse another lab's backend or import its resources.
 
@@ -83,9 +97,13 @@ Complete the five questions in [quiz.json](quiz.json), or use the course site's 
 
 ```powershell
 terraform plan -destroy -out=cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan failed: do not apply an older cleanup plan.' }
 terraform show cleanup.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Destroy plan could not be reviewed: stop before apply.' }
 terraform apply cleanup.tfplan
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: retain state and investigate remaining resources before claiming cleanup.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 ```
 
 A successful destroy and an empty state are the expected result. Do not remove files or state from another lab. Do not commit generated plans or state as evidence.
@@ -100,3 +118,9 @@ A successful destroy and an empty state are the expected result. Do not remove f
 ## Continue learning
 
 [Official documentation](https://developer.hashicorp.com/terraform/cli/commands/state/pull) | [Continue to TFA-039](../TFA-039/README.md)
+
+## Evidence contract
+
+Rehearse the local recovery example and compare version/lockfile changes with a fresh plan. Recovery preserves the intended object bindings and exposes changes before upgrade apply.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

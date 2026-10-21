@@ -1,0 +1,318 @@
+{
+  "labs": {
+    "TFA-001": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-002": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-003": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-004": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-005": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-006": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-007": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-008": {
+      "resources": {},
+      "note": "Default has no probe VMs. enable_probes=true adds two private Windows B2s VMs and two S10 disks. Includes one optional NAT and public IP for explicit outbound.",
+      "optional_resources": {
+        "vm": 2,
+        "hdd": 2,
+        "nat": 1,
+        "pip": 1
+      }
+    },
+    "TFA-009": {
+      "resources": {
+        "nat": 1,
+        "pip": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-010": {
+      "resources": {
+        "nat": 1,
+        "pip": 1,
+        "vm": 1,
+        "hdd": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-011": {
+      "resources": {
+        "nat": 1,
+        "pip": 2,
+        "vm": 1,
+        "hdd": 1,
+        "bastion_basic": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-012": {
+      "resources": {},
+      "note": "Default has no probe VMs. enable_probes=true adds three private Windows B2s VMs and three S10 disks. Includes one optional NAT/public IP in each network.",
+      "optional_resources": {
+        "vm": 3,
+        "hdd": 3,
+        "nat": 3,
+        "pip": 3
+      }
+    },
+    "TFA-013": {
+      "resources": {
+        "vm": 1,
+        "hdd": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-014": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-015": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-016": {
+      "resources": {
+        "blob_gb": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-017": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-018": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-019": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-020": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-021": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-022": {
+      "resources": {
+        "dns_zone": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-023": {
+      "resources": {
+        "blob_gb": 1,
+        "dns_zone": 1,
+        "pe": 1,
+        "vm": 1,
+        "hdd": 1,
+        "nat": 1,
+        "pip": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-024": {
+      "resources": {
+        "vm": 1,
+        "hdd": 1,
+        "nat": 1,
+        "pip": 1
+      },
+      "note": "Key Vault standard has request-based charges, with no fixed vault deployment fee; requests excluded."
+    },
+    "TFA-025": {
+      "resources": {
+        "firewall": 1,
+        "pip": 1,
+        "vm": 1,
+        "hdd": 1,
+        "log_gb": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-026": {
+      "resources": {
+        "firewall": 1,
+        "pip": 1,
+        "vm": 2,
+        "hdd": 2
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-027": {
+      "resources": {
+        "waf": 1,
+        "waf_cu": 10,
+        "pip": 1,
+        "vm": 2,
+        "hdd": 2
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-028": {
+      "resources": {
+        "vm": 1,
+        "hdd": 1,
+        "nat": 1,
+        "pip": 1,
+        "log_gb": 1,
+        "log_alert": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-029": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-030": {
+      "resources": {
+        "vpn": 2,
+        "pip": 2,
+        "vm": 2,
+        "hdd": 2
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-031": {
+      "resources": {
+        "vpn": 2,
+        "pip": 4,
+        "vm": 2,
+        "hdd": 2,
+        "dns_in": 1,
+        "dns_out": 1,
+        "dns_rules": 1,
+        "dns_zone": 1,
+        "pe": 1,
+        "blob_gb": 1,
+        "nat": 2
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-032": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-033": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-034": {
+      "resources": {
+        "vm": 2,
+        "hdd": 2,
+        "dns_zone": 1,
+        "nat": 1,
+        "pip": 1
+      },
+      "note": "Default standalone resources; additional usage and optional services are separate."
+    },
+    "TFA-035": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-036": {
+      "resources": {},
+      "note": "Federated identity and role assignments have no fixed deployment charge; existing backend Storage is separate."
+    },
+    "TFA-037": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-038": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-039": {
+      "resources": {},
+      "note": "Local/mock exercise or no fixed-price Azure services in the default root. Usage charges can still apply to network traffic."
+    },
+    "TFA-040": {
+      "resources": {},
+      "note": "Use the four cumulative stage rows below; these include one separate bootstrap account at an assumed 1 GB."
+    }
+  },
+  "stages": {
+    "foundation": {
+      "resources": {
+        "dns_zone": 3,
+        "blob_gb": 1
+      },
+      "note": "Includes separate bootstrap storage assumption; shared workspace has no fixed deployment fee."
+    },
+    "secure": {
+      "resources": {
+        "dns_zone": 3,
+        "blob_gb": 1,
+        "firewall": 1,
+        "bastion_standard": 1,
+        "pip": 2,
+        "dns_in": 1,
+        "log_gb": 1
+      },
+      "note": "Cumulative; one Firewall, Bastion and resolver inbound endpoint."
+    },
+    "applications": {
+      "resources": {
+        "dns_zone": 3,
+        "blob_gb": 2,
+        "firewall": 1,
+        "bastion_standard": 1,
+        "pip": 3,
+        "dns_in": 1,
+        "log_gb": 1,
+        "waf": 1,
+        "waf_cu": 10,
+        "vm": 3,
+        "ssd": 3,
+        "pe": 2,
+        "metric_alert": 1
+      },
+      "note": "Cumulative; IIS pair and operations VM. Each VM has one assumed 128 GiB E10 OS disk."
+    },
+    "hybrid": {
+      "resources": {
+        "dns_zone": 3,
+        "blob_gb": 2,
+        "firewall": 1,
+        "bastion_standard": 1,
+        "pip": 6,
+        "dns_in": 1,
+        "log_gb": 1,
+        "waf": 1,
+        "waf_cu": 10,
+        "vm": 4,
+        "ssd": 4,
+        "pe": 2,
+        "metric_alert": 1,
+        "vpn": 2,
+        "nat": 1,
+        "dns_out": 1,
+        "dns_rules": 1
+      },
+      "note": "Cumulative; adds corporate VM, two gateways, outbound DNS and one NAT gateway."
+    }
+  }
+}

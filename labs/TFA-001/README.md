@@ -1,6 +1,16 @@
 # TFA-001 — Azure, infrastructure as code, and Terraform
 
-![Azure, infrastructure as code, and Terraform teaching diagram](../../assets/diagrams/TFA-001.svg)
+<!-- lab-metadata:start -->
+**Phase 1:** Foundations
+
+**Learning target:** 75 minutes · **Cost tier:** None · **Run mode:** `local`
+
+**Prerequisites:** None — start here.
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-001 teaching diagram](../../assets/diagrams/TFA-001.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
@@ -8,7 +18,13 @@ Explain what Azure manages, what Terraform records, and how a reviewable desired
 
 ## Prerequisites
 
-None. Begin here without Azure credentials.
+No tools or Azure credentials are needed to read this introduction and make the predictions below. The executable preview requires the workstation setup in [TFA-002](../TFA-002/README.md#install-the-windows-workstation). If Terraform is not installed yet, read through this lesson, complete that setup section, then return to run the preview. You do not need an Azure subscription for this preview.
+
+## Predict the mechanism
+
+Configuration expresses desired state; a provider translates its graph into API operations. State records object bindings and is not a second source of desired configuration. A tenant contains identities, while a subscription owns resource billing and access boundaries.
+
+Before running commands, write the expected result: **The plan changes the recorded input; no Azure resource is created.** Then explain what would change in this controlled failure: Change an input and explain an update versus deleting state. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ Terraform compares configuration, recorded state, and provider observations to p
 
 PowerShell → Terraform built-in provider → local terraform.tfstate. The output is a model of an Azure resource group, not a real resource group.
 
-**Cost:** None Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -86,7 +102,9 @@ Change location to northeurope in terraform.tfvars and plan. The model changes b
 
 ```powershell
 terraform destroy
-terraform state list
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -99,3 +117,9 @@ Real infrastructure requires a provider, an explicit subscription, identity perm
 ## Navigation
 
 [Course start](../../README.md) · [Curriculum](../../README.md) · [Next: TFA-002](../TFA-002/README.md)
+
+## Evidence contract
+
+Inspect the local terraform_data output and explain which hierarchy fields are labels, then change one input and read its plan. The plan changes the recorded input; no Azure resource is created.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

@@ -1,6 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
-<title id="title">TFA-031 Hybrid DNS with Private Resolver</title><desc id="desc">Corporate DNS → VPN path → Resolver inbound → Private Azure zone</desc>
-<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0a1023"/><stop offset="1" stop-color="#151433"/></linearGradient><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#fff" stroke-opacity=".035"/></pattern></defs>
-<rect width="100%" height="100%" rx="24" fill="url(#bg)"/><rect width="100%" height="100%" rx="24" fill="url(#grid)"/>
-<text x="54" y="63" fill="#ffcb6b" font-family="Segoe UI,Arial,sans-serif" font-size="17" letter-spacing="3">TERRAFORMING AZURE / LEARN BY BUILDING</text>
-<text x="54" y="125" fill="#f2f5ff" font-family="Segoe UI,Arial" font-size="26" font-weight="700">TFA-031 / Hybrid DNS with Private Resolver</text><text x="54" y="175" fill="#aab8d4" font-family="Segoe UI,Arial" font-size="18">TEACHING FLOW · read the lesson for the actual resources and packet paths</text><path d="M297 323h30m-8-7 8 7-8 7" stroke="#ffcb6b" stroke-width="2" fill="none"/><rect x="50" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#ffcb6b"/><text x="67" y="293" fill="#ffcb6b" font-family="Segoe UI,Arial" font-size="14">01</text><text x="67" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">Corporate DNS</text><path d="M582 323h30m-8-7 8 7-8 7" stroke="#ffcb6b" stroke-width="2" fill="none"/><rect x="335" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#ffcb6b"/><text x="352" y="293" fill="#ffcb6b" font-family="Segoe UI,Arial" font-size="14">02</text><text x="352" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">VPN path</text><path d="M867 323h30m-8-7 8 7-8 7" stroke="#ffcb6b" stroke-width="2" fill="none"/><rect x="620" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#ffcb6b"/><text x="637" y="293" fill="#ffcb6b" font-family="Segoe UI,Arial" font-size="14">03</text><text x="637" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">Resolver inbound</text><rect x="905" y="260" width="247" height="128" rx="15" fill="#19223b" stroke="#ffcb6b"/><text x="922" y="293" fill="#ffcb6b" font-family="Segoe UI,Arial" font-size="14">04</text><text x="922" y="337" fill="#eff3ff" font-family="Segoe UI,Arial" font-size="16">Private Azure zone</text><text x="54" y="466" fill="#b1c1dc" font-family="Segoe UI,Arial" font-size="20">Resolve Azure private services and corporate lab names across the VPN.</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="600" viewBox="0 0 1280 600" role="img" aria-labelledby="title desc">
+<title id="title">TFA-031: Hybrid DNS has two independent query directions</title>
+<desc id="desc">Hybrid DNS has two independent directions. The corporate server forwards original Azure service namespaces to the resolver inbound IP; an Azure-linked outbound ruleset forwards only the corporate suffix back to corporate DNS. Keep suffix ownership explicit to avoid forwarding loops and compare answers to exact expected endpoint addresses. Blob resolves to its exact private endpoint and the corporate record resolves to 10.131.2.4.</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#55caff"/></marker></defs>
+<rect width="1280" height="600" rx="24" fill="#091625"/>
+<text x="40" y="52" font-family="Arial,sans-serif" font-size="26" fill="#f4f8ff">TFA-031 | Hybrid DNS has two independent query directions</text>
+<rect x="40" y="115" width="330" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="58" y="149" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Corporate DNS 10.131.2.4</text>
+<text x="58" y="180" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Original Blob service name</text>
+<text x="58" y="204" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Conditional forwarder</text>
+<rect x="490" y="115" width="330" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="508" y="149" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Inbound 10.31.1.4</text>
+<text x="508" y="180" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Query crosses the VPN</text>
+<text x="508" y="204" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Azure-linked private Blob zone</text>
+<rect x="940" y="115" width="300" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="958" y="149" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Private endpoint answer</text>
+<text x="958" y="180" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Exact Blob endpoint IP</text>
+<text x="958" y="204" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Not any private address</text>
+<line x1="370" y1="180" x2="490" y2="180" stroke="#55caff" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="430.0" y="168.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#e0e7fa">VPN:53</text>
+<line x1="820" y1="180" x2="940" y2="180" stroke="#55caff" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="880.0" y="168.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#e0e7fa">resolve</text>
+<rect x="40" y="330" width="330" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="58" y="364" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Azure Windows probe</text>
+<text x="58" y="395" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">files.corp.tfa.internal</text>
+<text x="58" y="419" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Normal VNet DNS</text>
+<rect x="490" y="330" width="330" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="508" y="364" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Azure-linked ruleset</text>
+<text x="508" y="395" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">corp.tfa.internal. only</text>
+<text x="508" y="419" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Outbound 10.31.1.16/28</text>
+<rect x="940" y="330" width="300" height="130" rx="14" fill="#132d47" stroke="#52658c"/>
+<text x="958" y="364" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="#72d3ff">Corporate DNS</text>
+<text x="958" y="395" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">Target 10.131.2.4:53</text>
+<text x="958" y="419" font-family="Arial,sans-serif" font-size="17" fill="#eef5ff">A answer 10.131.2.4</text>
+<line x1="370" y1="395" x2="490" y2="395" stroke="#55caff" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="430.0" y="383.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#e0e7fa">suffix match</text>
+<line x1="820" y1="395" x2="940" y2="395" stroke="#55caff" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="880.0" y="383.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" fill="#e0e7fa">VPN:53</text>
+<text x="40" y="510" font-family="Arial,sans-serif" font-size="18" fill="#bca4ff">Do not forward a namespace back toward its own authoritative resolver. Test each direction independently and compare exact A</text>
+<text x="40" y="537" font-family="Arial,sans-serif" font-size="18" fill="#bca4ff">answers.</text>
+<text x="40" y="580" font-family="Arial,sans-serif" font-size="15" fill="#a4b5cc">Terraforming Azure • Authored topology and expected learner evidence • Azure runtime not executed in this overhaul</text></svg>

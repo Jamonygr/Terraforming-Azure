@@ -21,3 +21,7 @@ output "identity_principal_id" {
 output "federated_subject" {
   value = { for key, credential in azurerm_federated_identity_credential.github : key => credential.subject }
 }
+
+output "identity_name" {
+  value = azurerm_user_assigned_identity.github.name
+}

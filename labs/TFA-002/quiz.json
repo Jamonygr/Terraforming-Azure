@@ -3,9 +3,9 @@
     "id": "TFA-002-Q1",
     "prompt": "Why select an Azure subscription by GUID?",
     "options": [
-      "GUIDs grant Owner automatically",
-      "GUIDs remove all quotas",
-      "Names cannot be used interactively",
+      "GUIDs bypass resource-provider registration",
+      "A GUID also establishes deployment authorization",
+      "The GUID selects a tenant without authentication",
       "Display names may be duplicated or changed"
     ],
     "answer": 3,
@@ -15,48 +15,48 @@
     "id": "TFA-002-Q2",
     "prompt": "az login succeeds. What remains unproven?",
     "options": [
+      "Whether the selected region has a resource group",
       "Permission and quota for the intended deployment",
-      "Whether the CLI supports login",
-      "That credentials were accepted",
-      "That an account exists"
+      "Whether the CLI cached the account display name",
+      "Whether Terraform has initialized its provider"
     ],
-    "answer": 0,
+    "answer": 1,
     "explanation": "Authentication alone does not establish authorization, regional capacity, or quota."
   },
   {
     "id": "TFA-002-Q3",
     "prompt": "What does checks.providers=true prove in this Terraform example?",
     "options": [
-      "No subscription is needed",
       "The learner recorded a completed check",
-      "Terraform registered all Azure providers",
-      "A real provider API check ran automatically"
+      "Terraform performed the registration",
+      "The provider will register itself during this local plan",
+      "The readiness model queried the registration API"
     ],
-    "answer": 1,
+    "answer": 0,
     "explanation": "The configuration is a local checklist and does not independently verify Azure readiness."
   },
   {
     "id": "TFA-002-Q4",
     "prompt": "A required namespace is NotRegistered. What is the next appropriate step?",
     "options": [
-      "Change every resource name",
-      "Delete local state",
+      "Disable provider registration checks in the checklist",
       "Arrange authorized registration before deploying that service",
-      "Disable TLS"
+      "Run apply and assume registration will finish first",
+      "Keep retrying with a different resource name"
     ],
-    "answer": 2,
+    "answer": 1,
     "explanation": "Provider registration is an Azure subscription prerequisite, not a formatting or state problem."
   },
   {
     "id": "TFA-002-Q5",
     "prompt": "Which command helps check regional vCPU quotas without creating a VM?",
     "options": [
-      "terraform apply -auto-approve",
-      "az group delete",
-      "terraform state rm",
-      "az vm list-usage --location westeurope"
+      "az account show",
+      "terraform validate",
+      "az vm list-usage --location westeurope",
+      "az vm list-sizes --location westeurope"
     ],
-    "answer": 3,
+    "answer": 2,
     "explanation": "list-usage is a read-only quota investigation command; creating a VM is not necessary for this check."
   }
 ]

@@ -1,14 +1,30 @@
 # TFA-010 — Private Windows VM and IIS
 
-![Private Windows VM and IIS teaching diagram](../../assets/diagrams/TFA-010.svg)
+<!-- lab-metadata:start -->
+**Phase 2:** Azure networks
+
+**Learning target:** 75 minutes · **Cost tier:** Moderate · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-009 — Explicit outbound connectivity](../TFA-009/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-010 teaching diagram](../../assets/diagrams/TFA-010.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Provision a private Windows VM, bootstrap IIS after explicit egress exists, and validate the application without publishing an inbound endpoint.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-009](../TFA-009/README.md). Earlier cloud labs should already be destroyed; this root deploys independently. Confirm regional Windows VM SKU/vCPU quota. Use a unique password and protect local state.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block. Confirm regional Windows VM SKU/vCPU quota. Use a unique password and protect local state.
+
+## Predict the mechanism
+
+The private VM needs a guest agent and an explicit outbound path for bootstrap operations. Terraform VM provisioning, extension provisioning and an HTTP200 response are three different milestones. The page body should identify the intended VM, not just return any reachable website.
+
+Before running commands, write the expected result: **A private NIC, successful extension and expected local HTTP page are separate checks.** Then explain what would change in this controlled failure: Stop IIS or alter the page, distinguish service status from VM existence, then restore. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The administrator password is a required sensitive input supplied through a proc
 
 One private Windows Server 2022 VM in 10.10.1.0/24, no NIC public IP, NAT egress, and a Custom Script extension installing IIS. Azure Run Command provides an evidence path through the VM agent.
 
-**Cost:** Moderate: Windows VM, disk, NAT Gateway, and public NAT IPv4 are billed. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -95,9 +111,13 @@ Use Run Command to stop W3SVC, repeat the localhost HTTP test, and record the fa
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 Remove-Item Env:TF_VAR_admin_password -ErrorAction SilentlyContinue
 Remove-Variable securePassword -ErrorAction SilentlyContinue
@@ -112,3 +132,15 @@ Use managed images, configuration management, patching, monitoring, backup, iden
 ## Navigation
 
 [Previous: TFA-009](../TFA-009/README.md) · [Curriculum](../../README.md) · [Next: TFA-011](../TFA-011/README.md)
+
+## Evidence contract
+
+Run the authored VM command and inspect the IIS HTTP response and identifying page body. A private NIC, successful extension and expected local HTTP page are separate checks.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.
+
+## Inspect and rehearse the actual IIS bootstrap
+
+The extension now encodes [Bootstrap-Iis.ps1](Bootstrap-Iis.ps1) from this directory. Installation must report `Success=true`; a required restart stops the script with an actionable error. It starts W3SVC, writes the one expected page, and verifies both HTTP 200 and the identifying body before reporting success. Errors fail the extension instead of leaving a misleading success page. A retry replaces the page rather than appending to it.
+
+From the repository root, run `pwsh -NoProfile -File tests/Test-IisBootstrap.ps1`. This executes that exact authored script against stubbed feature/service/HTTP commands and a temporary webroot. It proves failure stops before page publication, required-restart handling, successful/repeated page writing, and rejection of wrong status/body. It does not install a Windows feature, start a service or make a network request. The learner's Azure guest observations remain separate and unexecuted in this overhaul.

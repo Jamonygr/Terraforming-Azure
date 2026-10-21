@@ -2,35 +2,60 @@
   {
     "id": "TFA-040-Q1",
     "prompt": "Why does the public Application Gateway subnet not use the workload 0.0.0.0/0 route to Firewall?",
-    "options": ["Public v2 response/control-plane paths must keep supported routing; IIS replies to WAF through their same VNet", "Application Gateway cannot be in a spoke", "WAF disables all routing", "Every Application Gateway backend must have a public IP"],
+    "options": [
+      "Public v2 response/control-plane paths must keep supported routing; IIS replies to WAF through their same VNet",
+      "A WAF policy controls the backend return route",
+      "All subnets must use the same default route",
+      "The gateway's NSG automatically corrects asymmetric routing"
+    ],
     "answer": 0,
     "explanation": "Ordinary public Application Gateway v2 deployments do not support generic forced tunneling through a virtual appliance. Keeping WAF and IIS in separate subnets of the app VNet preserves the backend response path while workload egress uses Firewall."
   },
   {
     "id": "TFA-040-Q2",
     "prompt": "Which evidence best proves private endpoint traffic is inspected and authorized?",
-    "options": ["A successful ping to the storage account name", "Terraform apply returned successfully", "Private DNS, effective routes to Firewall, matching application-rule logs, and a successful managed-identity data request", "The storage account name contains the word private"],
-    "answer": 2,
+    "options": [
+      "A successful TCP 443 connection without request authorization",
+      "A successful apply plus a Storage Reader role",
+      "Private DNS and an Approved endpoint alone",
+      "Private DNS, effective routes to Firewall, matching application-rule logs, and a successful managed-identity data request"
+    ],
+    "answer": 3,
     "explanation": "DNS proves name resolution, routes and logs prove the intended path, and the identity-authenticated data request proves authorization. A default route alone does not override a private endpoint route; PE network policies and appropriate specific routing are required."
   },
   {
     "id": "TFA-040-Q3",
     "prompt": "What would create a DNS forwarding loop in this capstone?",
-    "options": ["Linking the Blob private zone to the resolver hub VNet", "Configuring a hub-linked rule to forward the Azure private namespace back to that same hub resolver's inbound endpoint", "Forwarding corp.terraforming-azure.test to the actual corp DNS VM", "Using a static non-reserved inbound endpoint address"],
-    "answer": 1,
+    "options": [
+      "Forwarding the corporate namespace to the corporate DNS VM",
+      "Using a static inbound address from its delegated subnet",
+      "Configuring a hub-linked rule to forward the Azure private namespace back to that same hub resolver's inbound endpoint",
+      "Linking the Blob private zone to the hub VNet"
+    ],
+    "answer": 2,
     "explanation": "A hub-linked forwarding rule that points its own Azure namespace back to its own inbound endpoint can recursively resend the same query. The hub resolves linked Azure zones directly and forwards only the corp namespace to the remote Windows DNS server."
   },
   {
     "id": "TFA-040-Q4",
     "prompt": "What does the Azure-hosted simulated on-premises VNet demonstrate?",
-    "options": ["The exact reliability of a physical office's ISP and VPN appliance", "That direct peering encrypts traffic with an IPsec shared key", "A production ExpressRoute circuit without a provider", "IPsec/IKE, gateway transit, inspected hybrid access and bidirectional DNS, without requiring a physical VPN device"],
-    "answer": 3,
+    "options": [
+      "IPsec/IKE, gateway transit, inspected hybrid access and bidirectional DNS, without requiring a physical VPN device",
+      "Production route convergence under WAN failure",
+      "BGP behavior against every physical gateway vendor",
+      "The reliability of a particular office WAN appliance"
+    ],
+    "answer": 0,
     "explanation": "Two Azure VPN gateways make a reproducible VNet-to-VNet simulation with a real IPsec/IKE tunnel. A physical S2S deployment still needs a compatible appliance, explicit local network gateway and testing of actual WAN conditions."
   },
   {
     "id": "TFA-040-Q5",
     "prompt": "What is the safe final teardown sequence?",
-    "options": ["Delete the backend storage account first so no state can remain", "Destroy capstone consumers, migrate bootstrap state back locally, then destroy bootstrap/backend", "Stop IIS and assume all managed-service charges have stopped", "Switch stage to foundation and delete all local state files"],
+    "options": [
+      "Remove state after deallocating the VMs",
+      "Destroy capstone consumers, migrate bootstrap state back locally, then destroy bootstrap/backend",
+      "Reduce stage to foundation and delete the backend",
+      "Delete the backend after saving only the configuration"
+    ],
     "answer": 1,
     "explanation": "Terraform needs its backend to read and persist state during consumer teardown. Bootstrap has a separate lifecycle and must be migrated locally before its backend is destroyed. Stopping VMs does not stop Firewall, WAF, Bastion, resolver, VPN, NAT or disk charges."
   }

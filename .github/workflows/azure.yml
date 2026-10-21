@@ -33,7 +33,8 @@ env:
 jobs:
   plan:
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
     environment: azure-plan
     permissions:
       contents: read
@@ -48,15 +49,23 @@ jobs:
       run:
         shell: pwsh
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
-      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_version: '1.15.8'
           terraform_wrapper: false
-      - uses: azure/login@8216e11d8cd9b42fe925c852af8e76311ff067ac # v2
+      - name: Require explicit lifecycle configuration
+        env:
+          AZURE_WORKFLOW_READY: ${{ vars.AZURE_WORKFLOW_READY }}
+        run: |
+          if ($env:AZURE_WORKFLOW_READY -ne 'true') { throw 'Azure lifecycle is unconfigured. Complete docs/delivery.md protections and settings, then set AZURE_WORKFLOW_READY=true.' }
+          foreach ($key in @('ARM_CLIENT_ID','ARM_TENANT_ID','ARM_SUBSCRIPTION_ID','TFSTATE_ACCOUNT')) {
+            if (-not [Environment]::GetEnvironmentVariable($key)) { throw "Missing required setting: $key" }
+          }
+      - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -80,7 +89,7 @@ jobs:
           $env:PLAN_ENCRYPTION_KEY | gpg --batch --yes --no-tty --pinentry-mode loopback --passphrase-fd 0 --symmetric --cipher-algo AES256 --output work/review/tfplan.gpg work/review/tfplan
           if ($LASTEXITCODE) { throw 'Plan encryption failed.' }
           Remove-Item -LiteralPath work/review/tfplan
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: reviewed-capstone-plan
           path: |
@@ -91,7 +100,8 @@ jobs:
   apply:
     needs: plan
     if: inputs.operation != 'plan' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
     # Configure required reviewers and main-only protection in repository settings.
     environment: azure-course
     permissions:
@@ -107,19 +117,27 @@ jobs:
       run:
         shell: pwsh
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
-      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_version: '1.15.8'
           terraform_wrapper: false
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: reviewed-capstone-plan
           path: work/review
-      - uses: azure/login@8216e11d8cd9b42fe925c852af8e76311ff067ac # v2
+      - name: Require explicit lifecycle configuration
+        env:
+          AZURE_WORKFLOW_READY: ${{ vars.AZURE_WORKFLOW_READY }}
+        run: |
+          if ($env:AZURE_WORKFLOW_READY -ne 'true') { throw 'Azure lifecycle is unconfigured. Complete docs/delivery.md protections and settings, then set AZURE_WORKFLOW_READY=true.' }
+          foreach ($key in @('ARM_CLIENT_ID','ARM_TENANT_ID','ARM_SUBSCRIPTION_ID','TFSTATE_ACCOUNT')) {
+            if (-not [Environment]::GetEnvironmentVariable($key)) { throw "Missing required setting: $key" }
+          }
+      - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}

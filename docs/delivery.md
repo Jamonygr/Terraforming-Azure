@@ -23,8 +23,15 @@ that their GitHub account supports; the workflow is still manually dispatched.
 
 ## Repository/environment configuration
 
+Keep `AZURE_WORKFLOW_READY` unset or `false` until a learner has completed the
+environment protections, scoped Azure federation and backend setup. Both jobs
+fail before Azure login unless this explicit setting is `true`. This switch does
+not validate the external protections; it records the operator's readiness decision.
+No Azure workflow, token exchange or deployment is part of course release validation.
+
 | Variable | Value |
 |---|---|
+| `AZURE_WORKFLOW_READY` | Leave unset/false during offline validation; set true only after the documented setup |
 | `AZURE_CLIENT_ID` | Federated managed identity client ID |
 | `AZURE_TENANT_ID` | Entra tenant UUID |
 | `AZURE_SUBSCRIPTION_ID` | Explicit disposable subscription UUID |
@@ -72,3 +79,30 @@ Dispatch `destroy` with the current stage, inspect the destruction plan, approve
 the protected job, and verify resources are gone. Retain the backend until all
 consumers are destroyed. Remove the OIDC role assignments and federation when
 the training repository no longer needs Azure access.
+
+## Course publishing and repository controls
+
+`Course quality` runs on pull requests and main pushes. Linux performs the full
+Terraform/mock, mutation, PowerShell, documentation and Chromium checks; a focused
+Windows lane executes native quoting, local state and fixture behavior. Neither
+lane needs Azure credentials. The Python dependency lock and npm lockfile are
+committed, runners are explicit, and actions are pinned to reviewed commit SHAs.
+
+The site is built once in the quality run. `Learning website` accepts its artifact
+only after a successful same-repository main push or manual quality run. PR and
+fork artifacts cannot enter the publishing job. Pages does not rebuild the site
+or repeat the quality workflow.
+
+Protect main with the required checks **Linux course checks** and **Windows behavior
+checks**, require current branch status and a pull request, and disallow force
+pushes/deletion. For a solo-owned course, zero mandatory approving reviewers
+still permits self-maintenance through a passing PR; collaborators can raise the
+review count. Keep Azure environment protections separate from Pages protections.
+See [GitHub's environment protection documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments).
+
+Action updates require reviewing their release/inputs/runtime and rerunning
+actionlint plus the workflow policy tests. Refresh Python dependencies in a clean
+Python 3.12 virtual environment from `requirements-site.in`, inspect the resulting
+`pip freeze`, and update `requirements-site.txt`. Run the Windows and Linux checks
+before accepting a dependency update; a successful local build alone does not
+establish cross-platform compatibility.

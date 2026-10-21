@@ -3,33 +3,33 @@
     "id": "TFA-004-Q1",
     "prompt": "Why does type=number not enforce an integer replica count?",
     "options": [
-      "Azure ignores all number inputs",
-      "Numbers also include fractional values",
-      "Numbers are always strings",
-      "Numbers can only contain zero"
+      "The Azure provider converts decimals before validation",
+      "Terraform automatically rounds numbers",
+      "Validation is inherited from the description",
+      "Numbers also include fractional values"
     ],
-    "answer": 1,
+    "answer": 3,
     "explanation": "An integer constraint needs an additional rule such as floor(value)==value."
   },
   {
     "id": "TFA-004-Q2",
     "prompt": "Which input is rejected by the environment validation?",
     "options": [
-      "dev",
-      "test",
+      "prod",
       "production",
-      "prod"
+      "test",
+      "dev"
     ],
-    "answer": 2,
+    "answer": 1,
     "explanation": "The accepted contract is exactly dev, test, or prod."
   },
   {
     "id": "TFA-004-Q3",
     "prompt": "For one invocation, what overrides a matching value in terraform.tfvars?",
     "options": [
-      "The README",
-      "The description attribute",
-      "Alphabetical resource order",
+      "The variable default",
+      "A matching TF_VAR environment variable",
+      "The variable's type constraint",
       "A command-line -var value"
     ],
     "answer": 3,
@@ -39,24 +39,24 @@
     "id": "TFA-004-Q4",
     "prompt": "What property of a set matters for the workload ports input?",
     "options": [
+      "Input order defines stable numbered addresses",
       "Order is not a stable identity contract",
-      "Duplicate elements must create duplicate listeners",
-      "Sets are secret automatically",
-      "Sets only accept resource IDs"
+      "The first input element always remains first",
+      "Repeated values produce distinct set members"
     ],
-    "answer": 0,
+    "answer": 1,
     "explanation": "A set models unique values without relying on list ordering."
   },
   {
     "id": "TFA-004-Q5",
     "prompt": "Does this lesson validate regional Azure capacity?",
     "options": [
-      "Yes, by requiring three replicas",
-      "No; it validates local input contracts only",
-      "Yes, by reading the output name",
-      "Yes, because location is a string"
+      "Yes, because variable validation calls Azure",
+      "Yes, because the region input has a default",
+      "Yes, because a valid plan reserves capacity",
+      "No; it validates local input contracts only"
     ],
-    "answer": 1,
+    "answer": 3,
     "explanation": "No Azure provider is present; syntax and value checks do not establish cloud capacity."
   }
 ]

@@ -1,14 +1,30 @@
 # TFA-012 — VNet peering and its limits
 
-![VNet peering and its limits teaching diagram](../../assets/diagrams/TFA-012.svg)
+<!-- lab-metadata:start -->
+**Phase 2:** Azure networks
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-011 — Private administration with Bastion](../TFA-011/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-012 teaching diagram](../../assets/diagrams/TFA-012.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Create both directions of a direct VNet peering and explain why peering is not automatically transitive.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-011](../TFA-011/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+Peering is represented by two directional resource configurations. Two networks each peered to a hub do not acquire a transitive route to each other. allow_forwarded_traffic permits traffic that a real forwarding device has already handled; it does not create that device or its routes.
+
+Before running commands, write the expected result: **The two direct pairs succeed; the leaf-to-leaf path fails without transit.** Then explain what would change in this controlled failure: Predict the missing route before adding a forwarding design in TFA-026. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ The third VNet starts isolated. Adding a second pair between hub and isolated st
 
 Hub 10.12.0.0/16 ↔ spoke 10.13.0.0/16. Isolated VNet 10.14.0.0/16 has no initial peer. No gateway, firewall, forwarding VM, or workload is present.
 
-**Cost:** Low for empty networks; peering data transfer is billed when traffic flows. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -81,6 +97,33 @@ configuration behavior; it is not a network connectivity test.
 
 Change the spoke CIDR to overlap the hub and inspect the plan. Terraform can describe the resources, but Azure cannot establish that peering. Restore nonoverlapping ranges before applying. Do not treat plan success as a network-design validator.
 
+## Optional direct-versus-transitive packet exercise
+
+Return after TFA-010 when you understand Windows probes. Enabling this mode adds **three private Windows VMs, three NAT Gateways/public NAT IPs, three probe subnets and a hub↔isolated peering pair**. See [the cost guide](../../docs/cost-and-cleanup.md). The topology has no spoke↔isolated peering and no forwarding appliance.
+
+```powershell
+$env:TF_VAR_enable_probes = 'true'
+$env:TF_VAR_probe_admin_password = Read-Host 'Unique Windows password (14+ characters)' -MaskInput
+terraform init -lockfile=readonly
+terraform plan -out=probes.tfplan
+terraform show probes.tfplan
+terraform apply probes.tfplan
+if ($LASTEXITCODE -ne 0) { throw 'Probe deployment failed. Preserve state and inspect the failure.' }
+$rg = terraform output -raw resource_group_name
+$targets = terraform output -json probe_targets | ConvertFrom-Json
+foreach ($key in 'hub','isolated') {
+    az vm run-command invoke -g $rg -n $targets.$key.name --command-id RunPowerShellScript --scripts "New-NetFirewallRule -DisplayName 'TFA012 ICMP' -Direction Inbound -Action Allow -Protocol ICMPv4 -IcmpType 8 -RemoteAddress 10.12.0.0/16,10.13.0.0/16,10.14.0.0/16"
+}
+az vm run-command invoke -g $rg -n $targets.spoke.name --command-id RunPowerShellScript --scripts "Test-Connection $($targets.hub.ip) -Count 2; Test-Connection $($targets.isolated.ip) -Count 2"
+az vm run-command invoke -g $rg -n $targets.hub.name --command-id RunPowerShellScript --scripts "Test-Connection $($targets.isolated.ip) -Count 2"
+$spokeNic = Split-Path $targets.spoke.nic -Leaf
+az network nic show-effective-route-table -g $rg -n $spokeNic -o json
+```
+
+Expected learner evidence: spoke→hub succeeds, hub→isolated succeeds, spoke→isolated fails. The spoke's effective routes should have its direct peering path to 10.12.0.0/16 and no transitive peering route to 10.14.0.0/16. Guest firewall rules are allowed at both targets so the test does not confuse guest ICMP filtering with missing transit. `allow_forwarded_traffic` accepts traffic from an existing forwarder; changing it alone creates no forwarder. In TFA-026 an actual Firewall and symmetric routes supply the missing design.
+
+The course's mocked tests assert two versus four directional peerings and no direct spoke↔isolated connection. They do not prove the ICMP observations. Destroy the whole root while the probe variables remain set; clear those two environment variables after successful cleanup.
+
 ## Troubleshooting
 
 | Symptom | Investigation |
@@ -93,9 +136,13 @@ Change the spoke CIDR to overlap the hub and inspect the plan. Terraform can des
 
 ```powershell
 $rg = terraform output -raw resource_group_name
+if ($LASTEXITCODE -ne 0 -or -not $rg) { throw 'Capture the exact owned group before destruction.' }
 terraform destroy
-terraform state list
-az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+$groupExists = az group exists --name $rg --subscription $env:TF_VAR_subscription_id
+if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw 'The owned group is not confirmed deleted. Keep state and investigate.' }
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -108,3 +155,9 @@ Document address ownership, cross-subscription permissions, gateway sharing, for
 ## Navigation
 
 [Previous: TFA-011](../TFA-011/README.md) · [Curriculum](../../README.md) · [Next: TFA-013](../TFA-013/README.md)
+
+## Evidence contract
+
+Optional three-host exercise: spoke→hub, hub→isolated and spoke→isolated, with guest ICMP explicitly allowed. The two direct pairs succeed; the leaf-to-leaf path fails without transit.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.

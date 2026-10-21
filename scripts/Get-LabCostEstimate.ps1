@@ -2,10 +2,49 @@
 param(
   [string]$Region = 'westeurope',
   [string]$Currency = 'USD',
+  [ValidatePattern('^TFA-0[0-4][0-9]$')][string]$Lab,
+  [ValidateSet('foundation','secure','applications','hybrid')][string]$Stage,
+  [ValidateRange(0.01,87600)][decimal]$Hours = 4,
+  [switch]$OptionalProbes,
+  [switch]$Refresh,
   [string[]]$ServiceNames = @('Azure Firewall','Azure Bastion','Application Gateway','VPN Gateway','Azure DNS','Azure DNS Private Resolver'),
   [string]$SelectionFile
 )
 $ErrorActionPreference = 'Stop'
+if (-not $Refresh -and -not $SelectionFile) {
+  $repo = Split-Path $PSScriptRoot -Parent
+  $snapshot = Get-Content -LiteralPath (Join-Path $repo 'docs/cost-snapshot.json') -Raw | ConvertFrom-Json -AsHashtable
+  $inventory = Get-Content -LiteralPath (Join-Path $repo 'curriculum/costs.json') -Raw | ConvertFrom-Json -AsHashtable
+  if ($Region -ne $snapshot.region -or $Currency -ne $snapshot.currency) { throw 'The saved estimate covers West Europe/USD only. Use -Refresh to inspect other public prices.' }
+  if ($Lab -and $Stage) { throw 'Choose either -Lab or -Stage.' }
+  if ($Lab -eq 'TFA-040') { throw 'Choose -Stage foundation, secure, applications or hybrid for TFA-040.' }
+  if (-not $Lab -and -not $Stage) { $Stage = 'hybrid' }
+  $key = if ($Lab) { $Lab } else { $Stage }
+  $entry = if ($Lab) { $inventory.labs[$Lab] } else { $inventory.stages[$Stage] }
+  if (-not $entry) { throw "Unknown inventory $key" }
+  $quantities = $entry.resources.Clone()
+  if ($OptionalProbes -and $entry.optional_resources) {
+    foreach ($name in $entry.optional_resources.Keys) { $quantities[$name] = [decimal]$quantities[$name] + [decimal]$entry.optional_resources[$name] }
+  }
+  $total = [decimal]0
+  foreach ($name in $quantities.Keys | Sort-Object) {
+    $meter = $snapshot.meters[$name]
+    $factor = switch ($meter.basis) {
+      'hour' { $Hours }
+      'month' { $Hours / [decimal]$snapshot.monthly_hours }
+      'month_daily' { [decimal][math]::Ceiling($Hours / 24) / [decimal]$snapshot.monthly_days }
+      'usage_daily' { $Hours / 24 }
+      default { throw "Unsupported billing basis for $name" }
+    }
+    $amount = [decimal]$meter.retailPrice * [decimal]$quantities[$name] * $factor
+    $total += $amount
+    [pscustomobject]@{ Resource=$name; Quantity=$quantities[$name]; Hours=$Hours; USD=[math]::Round($amount,4); Snapshot=$snapshot.date }
+  }
+  Write-Output "$key : $Hours hours = USD $([math]::Round($total,2)); public price snapshot $($snapshot.date)."
+  Write-Output $entry.note
+  Write-Output 'Additional usage charges excluded. Read docs/cost-estimates.md assumptions. No Azure login or network call was made.'
+  return
+}
 $items = @()
 foreach ($service in $ServiceNames) {
   $filter = "armRegionName eq '$($Region.Replace("'","''"))' and serviceName eq '$($service.Replace("'","''"))' and priceType eq 'Consumption'"

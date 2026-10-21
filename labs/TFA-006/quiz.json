@@ -3,46 +3,46 @@
     "id": "TFA-006-Q1",
     "prompt": "What identifies an instance created with for_each over a map?",
     "options": [
-      "Its map insertion position",
-      "Its public IP",
-      "Its source file name",
-      "Its map key"
+      "The order of entries in the map",
+      "The resource name inside the value",
+      "Its map key",
+      "The provider-assigned resource ID alone"
     ],
-    "answer": 3,
+    "answer": 2,
     "explanation": "Stable keys become part of resource addresses such as keyed[\"web\"]."
   },
   {
     "id": "TFA-006-Q2",
     "prompt": "Which address represents a count-indexed instance?",
     "options": [
-      "azurerm_resource_group.indexed[0]",
+      "azurerm_resource_group.indexed.web",
+      "azurerm_resource_group.indexed[\"0\"]",
       "azurerm_resource_group.indexed[\"web\"]",
-      "module[\"README\"]",
-      "subscription.indexed.web"
+      "azurerm_resource_group.indexed[0]"
     ],
-    "answer": 0,
+    "answer": 3,
     "explanation": "count creates integer-indexed resource instances."
   },
   {
     "id": "TFA-006-Q3",
     "prompt": "Adding a new worker key to workloads should normally propose what?",
     "options": [
-      "Changing all tenant IDs",
       "One additional keyed resource group",
-      "Replacing every existing group",
-      "Deleting the Terraform provider"
+      "An in-place rename of the final existing group",
+      "Replacement of every keyed group",
+      "Renumbering every existing instance"
     ],
-    "answer": 1,
+    "answer": 0,
     "explanation": "Adding a distinct stable key is additive while existing keys remain unchanged."
   },
   {
     "id": "TFA-006-Q4",
     "prompt": "Why can renaming web to frontend cause destroy/create actions?",
     "options": [
-      "Azure forbids lowercase names",
-      "for_each always replaces all objects",
+      "The changed value alters every map key",
+      "Azure cannot rename Terraform addresses",
       "The state address key changes",
-      "Map values must be secret"
+      "Terraform treats maps as ordered lists"
     ],
     "answer": 2,
     "explanation": "A key rename is an address migration, not merely a description edit."
@@ -52,8 +52,8 @@
     "prompt": "Which is a poor for_each key for long-lived infrastructure?",
     "options": [
       "A stable workload identifier",
-      "An agreed subnet role",
       "A persistent topology key",
+      "An agreed subnet role",
       "A frequently changing human description"
     ],
     "answer": 3,

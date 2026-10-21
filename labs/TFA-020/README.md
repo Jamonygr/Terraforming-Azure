@@ -1,14 +1,30 @@
 # TFA-020 — Compose a network from structured inputs
 
-![Compose a network from structured inputs teaching diagram](../../assets/diagrams/TFA-020.svg)
+<!-- lab-metadata:start -->
+**Phase 3:** Terraform engineering
+
+**Learning target:** 75 minutes · **Cost tier:** Low · **Run mode:** `azure`
+
+**Prerequisites:** [TFA-019 — Environment and state separation](../TFA-019/README.md)
+<!-- lab-metadata:end -->
+
+<!-- lab-diagram:start -->
+![TFA-020 teaching diagram](../../assets/diagrams/TFA-020.svg)
+<!-- lab-diagram:end -->
 
 ## Goal
 
 Use a typed topology map and for_each module calls to compose multiple predictable networks without copying resource blocks.
 
-## Prerequisites
+## Workspace and isolation
 
-Complete [TFA-019](../TFA-019/README.md). Earlier cloud labs should already be destroyed; this root deploys independently.
+Earlier cloud labs should already be destroyed; this root deploys independently. Concept prerequisites are listed in the generated catalog block.
+
+## Predict the mechanism
+
+Structured input maps let the caller name each spoke and its subnets. Transformations should preserve meaningful keys so resource identity remains stable. dynamic blocks generate repeated nested arguments; they do not replace for_each when independently addressed resources are required.
+
+Before running commands, write the expected result: **Existing keyed spokes remain unchanged while only the new key is added.** Then explain what would change in this controlled failure: Change a key versus its value and explain the different address consequences. Record your prediction before inspecting the outcome.
 
 ## Understand the design
 
@@ -20,7 +36,7 @@ A data structure named hub is not a hub architecture yet. This lesson creates se
 
 hub:10.20.0.0/16 with services subnet; spoke:10.21.0.0/16 with web/app subnets. Each module instance has its own resource group, and both live in this root’s single state.
 
-**Cost:** Low for empty networks; later peering, gateways, and workloads add cost. Destroy the lesson when finished. A stopped VM may still have billable disks; deleting all lab resources is the cleanup target.
+See the catalog cost tier above and the [cost and cleanup guide](../../docs/cost-and-cleanup.md). Destroy the lesson when finished and verify its actual resource names.
 
 ## Inputs and working directory
 
@@ -90,9 +106,16 @@ Temporarily rename the hub key to core and review the proposed changes without a
 ## Cleanup and proof
 
 ```powershell
+$cleanupGroups = @(terraform output -json cleanup_group_names | ConvertFrom-Json)
+if ($LASTEXITCODE -ne 0 -or -not $cleanupGroups.Count) { throw 'Capture the exact owned groups before destruction.' }
 terraform destroy
-terraform state list
-az group list --tag lab=TFA-020 --subscription $env:TF_VAR_subscription_id --query '[].name' -o json
+if ($LASTEXITCODE -ne 0) { throw 'Destroy failed: keep state and investigate before continuing.' }
+$remaining = @(terraform state list)
+if ($LASTEXITCODE -ne 0 -or $remaining.Count) { throw 'Cleanup left managed objects or state could not be read.' }
+foreach ($groupName in $cleanupGroups) {
+    $groupExists = az group exists --name $groupName --subscription $env:TF_VAR_subscription_id
+    if ($LASTEXITCODE -ne 0 -or $groupExists -ne 'false') { throw "Owned group $groupName is not confirmed deleted." }
+}
 Remove-Item tfplan -ErrorAction SilentlyContinue
 ```
 
@@ -105,3 +128,9 @@ Split platform and workload state by lifecycle and access boundaries as the arch
 ## Navigation
 
 [Previous: TFA-019](../TFA-019/README.md) · [Curriculum](../../README.md) · [Next: TFA-021](../TFA-021/README.md)
+
+## Evidence contract
+
+Run the structured-input example and inspect a plan that adds exactly one named spoke. Existing keyed spokes remain unchanged while only the new key is added.
+
+See the [40-lab evidence map](../../docs/curriculum-evidence.md) for source paths, validation level and cleanup dependencies. Authored Azure commands are learner exercises; passing local checks does not establish a live deployment.
