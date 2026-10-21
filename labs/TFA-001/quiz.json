@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-001-Q1",
+    "prompt": "Which Azure boundary principally connects billing, access, policies, and quotas?",
+    "options": [
+      "Availability zone",
+      "Resource tag",
+      "Subscription",
+      "Subnet"
+    ],
+    "answer": 2,
+    "explanation": "A subscription is a billing and governance boundary; the other choices organize different concerns."
+  },
+  {
+    "id": "TFA-001-Q2",
+    "prompt": "What does this lesson create when applied?",
+    "options": [
+      "An Azure resource group",
+      "An Entra tenant",
+      "An Azure subscription",
+      "A local terraform_data object and state"
+    ],
+    "answer": 3,
+    "explanation": "The built-in Terraform provider records the local model without any Azure provider or API call."
+  },
+  {
+    "id": "TFA-001-Q3",
+    "prompt": "What is the purpose of terraform plan?",
+    "options": [
+      "Propose changes for review",
+      "Guarantee application availability",
+      "Apply changes immediately",
+      "Replace the Azure portal identity"
+    ],
+    "answer": 0,
+    "explanation": "Planning evaluates intended changes; applying is a separate operation and runtime health requires separate evidence."
+  },
+  {
+    "id": "TFA-001-Q4",
+    "prompt": "After a successful unchanged apply, what should the next plan show?",
+    "options": [
+      "An automatic new subscription",
+      "No changes",
+      "A new resource ID every time",
+      "A mandatory destroy"
+    ],
+    "answer": 1,
+    "explanation": "Stable configuration and state should produce a converged plan."
+  },
+  {
+    "id": "TFA-001-Q5",
+    "prompt": "Why is an Azure region different from an Entra tenant?",
+    "options": [
+      "Regions own all user passwords",
+      "Tenants are individual data centers",
+      "A region selects deployment geography; a tenant is an identity boundary",
+      "Both are identical aliases"
+    ],
+    "answer": 2,
+    "explanation": "Identity and deployment geography are separate Azure concepts."
+  }
+]

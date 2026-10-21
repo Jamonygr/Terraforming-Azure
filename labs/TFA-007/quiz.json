@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-007-Q1",
+    "prompt": "What is cidrsubnet(\"10.7.0.0/16\",8,2)?",
+    "options": [
+      "10.7.2.0/24",
+      "10.7.0.0/8",
+      "10.7.2.0/16",
+      "10.8.0.0/24"
+    ],
+    "answer": 0,
+    "explanation": "Eight additional prefix bits produce /24 networks; netnum 2 selects the third block."
+  },
+  {
+    "id": "TFA-007-Q2",
+    "prompt": "What does naming a subnet data enforce by itself?",
+    "options": [
+      "Automatic private DNS resolution",
+      "No packet filtering",
+      "Automatic database-only access",
+      "Automatic encryption policy"
+    ],
+    "answer": 1,
+    "explanation": "Subnet names are labels; NSGs, routes, service policy, and applications control behavior."
+  },
+  {
+    "id": "TFA-007-Q3",
+    "prompt": "Why reserve address space before peering networks?",
+    "options": [
+      "CIDRs are only display text",
+      "All private ranges route transitively",
+      "Overlapping ranges prevent a valid peering design",
+      "Peering requires identical CIDRs"
+    ],
+    "answer": 2,
+    "explanation": "Networks that must communicate need coordinated, non-overlapping address allocation."
+  },
+  {
+    "id": "TFA-007-Q4",
+    "prompt": "What should you infer from default_outbound_access_enabled=false?",
+    "options": [
+      "The subnet has a NAT Gateway automatically",
+      "All traffic is denied by an NSG",
+      "The VNet cannot have any subnets",
+      "A workload needs an explicit supported outbound design"
+    ],
+    "answer": 3,
+    "explanation": "Disabling implicit outbound does not create NAT, a firewall, or a general outbound path."
+  },
+  {
+    "id": "TFA-007-Q5",
+    "prompt": "Does CIDR syntax validation prove that every subnet fits without overlap?",
+    "options": [
+      "No; syntax alone does not prove the whole address plan",
+      "Yes, even across all companies",
+      "Yes, if subnet names differ",
+      "Yes, because maps are typed"
+    ],
+    "answer": 0,
+    "explanation": "Containment and overlap require additional reasoning or validation beyond parseable CIDR strings."
+  }
+]

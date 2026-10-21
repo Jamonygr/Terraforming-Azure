@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-028-Q1",
+    "prompt": "What connects a DCR to a specific VM?",
+    "options": [
+      "A DNS A record",
+      "A data collection rule association",
+      "A storage account shared key",
+      "A budget threshold"
+    ],
+    "answer": 1,
+    "explanation": "The rule describes collection; its association attaches it to the monitored resource."
+  },
+  {
+    "id": "TFA-028-Q2",
+    "prompt": "Which component collects guest Windows event and performance data here?",
+    "options": [
+      "A private endpoint",
+      "A VPN connection",
+      "Azure Monitor Agent",
+      "The Key Vault policy assignment"
+    ],
+    "answer": 2,
+    "explanation": "AMA runs inside the guest and follows its data collection rules."
+  },
+  {
+    "id": "TFA-028-Q3",
+    "prompt": "A recent Heartbeat exists but an Event query is empty. What should you inspect?",
+    "options": [
+      "Only whether the VM exists",
+      "Only the subscription display name",
+      "Only the backend certificate",
+      "The XPath filter, generated event, destination, and query time range"
+    ],
+    "answer": 3,
+    "explanation": "Heartbeat shows agent communication; it does not prove a specific event stream matches your query."
+  },
+  {
+    "id": "TFA-028-Q4",
+    "prompt": "Are platform diagnostic settings the same thing as guest AMA collection?",
+    "options": [
+      "No; they collect different resource and guest signals",
+      "Yes; each installs AMA",
+      "Only on Windows Server 2022",
+      "Only when retention is 30 days"
+    ],
+    "answer": 0,
+    "explanation": "Platform logs and guest telemetry have separate collection mechanisms and schemas."
+  },
+  {
+    "id": "TFA-028-Q5",
+    "prompt": "Why add NAT egress to a private monitoring VM?",
+    "options": [
+      "NAT installs the monitoring agent",
+      "The agent needs outbound service connectivity without inbound public VM exposure",
+      "NAT authorizes Log Analytics queries",
+      "NAT grants subscription Owner"
+    ],
+    "answer": 1,
+    "explanation": "A private NIC still needs a deliberate outbound path to relevant monitoring services."
+  }
+]

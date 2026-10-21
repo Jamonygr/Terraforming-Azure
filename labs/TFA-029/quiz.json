@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-029-Q1",
+    "prompt": "What does the Terraform configuration in this lab deploy?",
+    "options": [
+      "Two Azure VPN gateways",
+      "A physical VPN appliance",
+      "Local terraform_data only",
+      "A private DNS resolver"
+    ],
+    "answer": 2,
+    "explanation": "The model teaches route-selection inputs without paying for or claiming a tunnel."
+  },
+  {
+    "id": "TFA-029-Q2",
+    "prompt": "Which of two matching routes wins in this introductory model: /16 or /0?",
+    "options": [
+      "The /0 route",
+      "The route with the alphabetically first name",
+      "The route created most recently",
+      "The /16 route"
+    ],
+    "answer": 3,
+    "explanation": "A longer prefix is a more specific match."
+  },
+  {
+    "id": "TFA-029-Q3",
+    "prompt": "Does the model check whether arbitrary routes actually contain the destination?",
+    "options": [
+      "No; candidates are explicitly assumed to match",
+      "Yes; it is Azure's actual route engine",
+      "Only for IPv6",
+      "Only after terraform fmt"
+    ],
+    "answer": 0,
+    "explanation": "The exercise filters prefix lengths, not CIDR membership or every Azure route precedence rule."
+  },
+  {
+    "id": "TFA-029-Q4",
+    "prompt": "Why reserve a dedicated GatewaySubnet in an address plan?",
+    "options": [
+      "All Windows VMs must use it",
+      "VPN Gateway requires its own correctly named subnet",
+      "It supplies the VPN shared key",
+      "It creates VNet peering"
+    ],
+    "answer": 1,
+    "explanation": "Service-specific subnet requirements should be planned before deployment."
+  },
+  {
+    "id": "TFA-029-Q5",
+    "prompt": "Which real hybrid issue is outside this local model?",
+    "options": [
+      "The difference between /16 and /0",
+      "Producing a local output",
+      "Whether an IPsec tunnel establishes and transports packets",
+      "Storing an input in terraform_data"
+    ],
+    "answer": 2,
+    "explanation": "Actual tunnel status and traffic need deployed endpoints and runtime evidence."
+  }
+]

@@ -1,0 +1,20 @@
+// Run each query separately in the Log Analytics workspace.
+Heartbeat
+| where TimeGenerated > ago(30m)
+| summarize LastSeen=max(TimeGenerated) by Computer, OSType
+
+Event
+| where TimeGenerated > ago(1h)
+| where EventLevelName in ("Error", "Warning", "Critical")
+| project TimeGenerated, Computer, Source, EventID, RenderedDescription
+| order by TimeGenerated desc
+
+Perf
+| where TimeGenerated > ago(1h)
+| summarize Average=avg(CounterValue) by Computer, ObjectName, CounterName, bin(TimeGenerated, 5m)
+
+// Platform Key Vault resource logs use a separate table from guest Event.
+AZKVAuditLogs
+| where TimeGenerated > ago(1h)
+| project TimeGenerated, OperationName, ResultType, ResultDescription
+| order by TimeGenerated desc

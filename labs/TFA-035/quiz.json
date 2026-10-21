@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-035-Q1",
+    "prompt": "Does applying this local terraform_data contract create a GitHub pull request?",
+    "options": [
+      "No",
+      "Yes; every terraform_data resource calls GitHub",
+      "Only when on a feature branch",
+      "Only when Git is installed"
+    ],
+    "answer": 0,
+    "explanation": "The real Git workflow and CI must be exercised separately."
+  },
+  {
+    "id": "TFA-035-Q2",
+    "prompt": "Where is the real repository quality workflow?",
+    "options": [
+      "terraform.tfstate",
+      ".github/workflows/quality.yml",
+      "The private DNS zone",
+      "The VPN connection object"
+    ],
+    "answer": 1,
+    "explanation": "GitHub Actions executes workflow files in the repository's workflow directory."
+  },
+  {
+    "id": "TFA-035-Q3",
+    "prompt": "Does a workflow file automatically enforce required PR checks?",
+    "options": [
+      "Yes; its filename enforces them",
+      "Only if Terraform is installed",
+      "No; repository rules or branch protection must require them",
+      "Only if it has a README link"
+    ],
+    "answer": 2,
+    "explanation": "Running a check and making that check a merge requirement are separate settings."
+  },
+  {
+    "id": "TFA-035-Q4",
+    "prompt": "What is the best first response to a failed formatting check?",
+    "options": [
+      "Disable the check",
+      "Upload Azure credentials to the PR",
+      "Delete the repository lockfile",
+      "Reproduce and fix it locally, then push the change"
+    ],
+    "answer": 3,
+    "explanation": "A local reproducible repair keeps the review useful."
+  },
+  {
+    "id": "TFA-035-Q5",
+    "prompt": "What should an infrastructure PR description include?",
+    "options": [
+      "The behavior change, reason, and relevant validation",
+      "Only a green badge",
+      "Only a list of every terminal command",
+      "A plaintext administrator password"
+    ],
+    "answer": 0,
+    "explanation": "A reviewer needs intent and evidence, not secrets or a command transcript."
+  }
+]

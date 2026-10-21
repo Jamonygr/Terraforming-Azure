@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-019-Q1",
+    "prompt": "What actually isolates the two local environments in this lesson?",
+    "options": [
+      "Separate roots with separate state files",
+      "A map key named prod in one shared state",
+      "A different terminal color",
+      "A resource tag alone"
+    ],
+    "answer": 0,
+    "explanation": "Directory roots and independent state files establish the demonstrated operational boundary."
+  },
+  {
+    "id": "TFA-019-Q2",
+    "prompt": "Applying revision=2 only in dev should do what to prod?",
+    "options": [
+      "Move prod to dev’s CIDR",
+      "Leave prod state and its plan unchanged",
+      "Automatically apply the same change to prod",
+      "Delete prod state"
+    ],
+    "answer": 1,
+    "explanation": "Separate state operations do not propagate merely because the code lives in one repository."
+  },
+  {
+    "id": "TFA-019-Q3",
+    "prompt": "What should the two local state lineages look like?",
+    "options": [
+      "Absent from every Terraform state",
+      "Equal to the same password",
+      "Different because they are independent state histories",
+      "Identical because directory names differ"
+    ],
+    "answer": 2,
+    "explanation": "Independent initialized states have distinct lineages."
+  },
+  {
+    "id": "TFA-019-Q4",
+    "prompt": "Why is an environment variable alone insufficient for isolation?",
+    "options": [
+      "Variables cannot be strings",
+      "Only a README can isolate state",
+      "All Azure regions share one mandatory state",
+      "One state may still own and change all resources together"
+    ],
+    "answer": 3,
+    "explanation": "Input selection and state ownership are separate design concerns."
+  },
+  {
+    "id": "TFA-019-Q5",
+    "prompt": "Does a Terraform workspace alone create an authorization boundary?",
+    "options": [
+      "No",
+      "Yes, it assigns a separate Entra role automatically",
+      "Yes, it buys a separate subscription",
+      "Yes, it encrypts every caller differently"
+    ],
+    "answer": 0,
+    "explanation": "Workspace state selection does not by itself change backend access, identities, or permissions."
+  }
+]

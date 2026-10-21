@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-003-Q1",
+    "prompt": "What links azurerm_resource_group.lab to its Azure object?",
+    "options": [
+      "The Terraform state binding",
+      "The README title",
+      "The order of files",
+      "The terminal font"
+    ],
+    "answer": 0,
+    "explanation": "State records the object ID associated with the Terraform address."
+  },
+  {
+    "id": "TFA-003-Q2",
+    "prompt": "What is applied by terraform apply tfplan?",
+    "options": [
+      "A new provider release",
+      "The reviewed saved plan",
+      "Any future configuration automatically",
+      "Only README changes"
+    ],
+    "answer": 1,
+    "explanation": "A saved plan captures the planned action; changes require a new plan."
+  },
+  {
+    "id": "TFA-003-Q3",
+    "prompt": "What exit code means a change exists with plan -detailed-exitcode?",
+    "options": [
+      "1",
+      "255 always",
+      "2",
+      "0"
+    ],
+    "answer": 2,
+    "explanation": "Detailed exit codes distinguish no changes (0), error (1), and changes (2)."
+  },
+  {
+    "id": "TFA-003-Q4",
+    "prompt": "Why review a resource-group name change before apply?",
+    "options": [
+      "Names are always changed without effect",
+      "It disables every Azure bill automatically",
+      "It changes the signed-in tenant password",
+      "It can replace the lifecycle container"
+    ],
+    "answer": 3,
+    "explanation": "Changing an Azure resource group identity can require replacement; inspect the actual plan."
+  },
+  {
+    "id": "TFA-003-Q5",
+    "prompt": "What evidence proves cleanup more strongly than an empty terminal?",
+    "options": [
+      "Empty managed state plus Azure reporting the group absent",
+      "A closed VS Code window",
+      "An unchanged README",
+      "A stopped shell process"
+    ],
+    "answer": 0,
+    "explanation": "Check both Terraform ownership and actual Azure resource existence."
+  }
+]

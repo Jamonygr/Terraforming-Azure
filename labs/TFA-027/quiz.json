@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-027-Q1",
+    "prompt": "Why must the HTTPS test send the listener hostname?",
+    "options": [
+      "The listener and certificate are configured for that host",
+      "The VM has a public IP",
+      "WAF only filters DNS packets",
+      "HTTP cannot use IP addresses"
+    ],
+    "answer": 0,
+    "explanation": "Using curl --resolve preserves host/TLS name while selecting the gateway public IP."
+  },
+  {
+    "id": "TFA-027-Q2",
+    "prompt": "What does curl -k change in this self-signed exercise?",
+    "options": [
+      "It disables WAF",
+      "It disables certificate trust verification for that request",
+      "It opens port 80 on the backend",
+      "It enables end-to-end TLS"
+    ],
+    "answer": 1,
+    "explanation": "The option is limited to this lab's self-signed certificate and must not become production client guidance."
+  },
+  {
+    "id": "TFA-027-Q3",
+    "prompt": "The gateway returns HTTP 502. Which evidence should you inspect first?",
+    "options": [
+      "Only the Git branch name",
+      "Only the certificate output password",
+      "Backend health and probe/IIS/NSG settings",
+      "Only the resource-group tags"
+    ],
+    "answer": 2,
+    "explanation": "An unhealthy backend commonly produces 502; changing WAF is not the first diagnosis."
+  },
+  {
+    "id": "TFA-027-Q4",
+    "prompt": "Where is TLS terminated in this implementation?",
+    "options": [
+      "At each IIS VM only",
+      "At Azure Firewall Premium",
+      "At the DNS resolver",
+      "At Application Gateway; backend traffic is HTTP"
+    ],
+    "answer": 3,
+    "explanation": "This lesson deliberately does not claim end-to-end TLS."
+  },
+  {
+    "id": "TFA-027-Q5",
+    "prompt": "Why keep the gateway subnet separate from generic forced-tunnel routes?",
+    "options": [
+      "Application Gateway v2 has infrastructure routing restrictions and asymmetric-route risks",
+      "A subnet may never have routes",
+      "WAF only works without a VNet",
+      "It prevents all public internet traffic"
+    ],
+    "answer": 0,
+    "explanation": "Gateway infrastructure routing requires its own supported design; workload UDRs must not be copied blindly."
+  }
+]

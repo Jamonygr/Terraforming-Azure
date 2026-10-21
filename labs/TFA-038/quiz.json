@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-038-Q1",
+    "prompt": "Why is this recovery exercise safe to perform without Azure?",
+    "options": [
+      "Terraform state never matters",
+      "Cloud resources are automatically backed up by Git",
+      "All recovery commands are read-only",
+      "It manages only a disposable local terraform_data resource"
+    ],
+    "answer": 3,
+    "explanation": "The exercise deliberately avoids affecting real remote objects."
+  },
+  {
+    "id": "TFA-038-Q2",
+    "prompt": "After moving away the only local state file, what should plan propose?",
+    "options": [
+      "Creating the now-untracked local resource",
+      "Automatically importing the original state",
+      "Deleting Azure VNets",
+      "Changing the provider tenant"
+    ],
+    "answer": 0,
+    "explanation": "Without state, Terraform lacks its prior managed-object association."
+  },
+  {
+    "id": "TFA-038-Q3",
+    "prompt": "What should happen after restoring the exact state backup with unchanged inputs?",
+    "options": [
+      "A forced replacement of every resource",
+      "A clean plan with no changes",
+      "A new subscription",
+      "A Key Vault purge"
+    ],
+    "answer": 1,
+    "explanation": "The backup preserves the resource association and state lineage for this local exercise."
+  },
+  {
+    "id": "TFA-038-Q4",
+    "prompt": "Why avoid committing a real state backup?",
+    "options": [
+      "Git cannot store JSON",
+      "It makes Terraform fmt fail",
+      "It may contain sensitive values and operational metadata",
+      "It changes a DNS TTL"
+    ],
+    "answer": 2,
+    "explanation": "State backups deserve the same protection as active state."
+  },
+  {
+    "id": "TFA-038-Q5",
+    "prompt": "How should a provider upgrade be introduced?",
+    "options": [
+      "By silently running init -upgrade before every apply",
+      "By deleting all state first",
+      "By editing generated state JSON",
+      "In a dedicated reviewed change with lockfile, schema, test, and plan inspection"
+    ],
+    "answer": 3,
+    "explanation": "Toolchain changes can alter behavior and require explicit verification."
+  }
+]

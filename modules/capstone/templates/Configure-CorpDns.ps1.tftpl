@@ -1,0 +1,24 @@
+$ErrorActionPreference = 'Stop'
+Install-WindowsFeature -Name DNS -IncludeManagementTools | Out-Null
+Import-Module DnsServer
+$zone = 'corp.terraforming-azure.test'
+if (-not (Get-DnsServerZone -Name $zone -ErrorAction SilentlyContinue)) {
+  Add-DnsServerPrimaryZone -Name $zone -ZoneFile "$zone.dns"
+}
+if (-not (Get-DnsServerResourceRecord -ZoneName $zone -Name 'corp01' -ErrorAction SilentlyContinue)) {
+  Add-DnsServerResourceRecordA -ZoneName $zone -Name 'corp01' -IPv4Address '${corp_ip}'
+}
+foreach ($name in @('azure.terraforming-azure.test', 'blob.core.windows.net', 'vault.azure.net')) {
+  if (-not (Get-DnsServerZone -Name $name -ErrorAction SilentlyContinue)) {
+    Add-DnsServerConditionalForwarderZone -Name $name -MasterServers '${resolver_ip}'
+  }
+}
+# Public recursive queries use Azure DNS in this Azure-hosted simulation only.
+Set-DnsServerForwarder -IPAddress 168.63.129.16
+foreach ($protocol in @('TCP', 'UDP')) {
+  New-NetFirewallRule -DisplayName "Terraforming Azure DNS $protocol" -Direction Inbound -Action Allow -Protocol $protocol -LocalPort 53 -ErrorAction SilentlyContinue | Out-Null
+}
+Restart-Service DNS
+$adapter = Get-NetAdapter | Where-Object Status -eq 'Up' | Select-Object -First 1
+Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses '${corp_ip}'
+Resolve-DnsName -Name "corp01.$zone" -Server 127.0.0.1 -DnsOnly

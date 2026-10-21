@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-034-Q1",
+    "prompt": "What should you capture before injecting a controlled fault?",
+    "options": [
+      "Only a screenshot of the README",
+      "A new subscription Owner assignment",
+      "A public IP for the server",
+      "A healthy baseline using the same repeatable probe"
+    ],
+    "answer": 3,
+    "explanation": "Without a healthy baseline you cannot attribute a later failure to the intended change."
+  },
+  {
+    "id": "TFA-034-Q2",
+    "prompt": "Which layer does incident=nsg-block change?",
+    "options": [
+      "The subnet NSG HTTP rule",
+      "The IIS installation",
+      "The VM image version",
+      "The VPN shared key"
+    ],
+    "answer": 0,
+    "explanation": "The isolated fault makes the hypothesis testable."
+  },
+  {
+    "id": "TFA-034-Q3",
+    "prompt": "VM Run Command still works while HTTP fails. What does that imply?",
+    "options": [
+      "The HTTP probe must be wrong",
+      "Control-plane management success does not prove application traffic success",
+      "NSGs cannot block traffic",
+      "The VM has been deleted"
+    ],
+    "answer": 1,
+    "explanation": "Management and application paths are different signals."
+  },
+  {
+    "id": "TFA-034-Q4",
+    "prompt": "What evidence identifies the intended block?",
+    "options": [
+      "Only resource existence",
+      "Only a DNS A record",
+      "The effective NSG rule plus a failed TCP probe",
+      "Only terraform fmt passing"
+    ],
+    "answer": 2,
+    "explanation": "Transport evidence and effective enforcement should support the same diagnosis."
+  },
+  {
+    "id": "TFA-034-Q5",
+    "prompt": "What is the appropriate repair?",
+    "options": [
+      "Delete state to hide the rule",
+      "Open all inbound ports",
+      "Add an unrelated peer",
+      "Restore healthy through a reviewed Terraform plan and retest"
+    ],
+    "answer": 3,
+    "explanation": "The smallest code repair preserves the lab's private architecture and demonstrates cause and effect."
+  }
+]

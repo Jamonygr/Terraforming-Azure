@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-032-Q1",
+    "prompt": "Which control decides whether a principal can perform an Azure action?",
+    "options": [
+      "A DNS link",
+      "RBAC",
+      "A budget",
+      "A subnet route"
+    ],
+    "answer": 1,
+    "explanation": "RBAC answers who may perform actions at a scope."
+  },
+  {
+    "id": "TFA-032-Q2",
+    "prompt": "What does a deny Azure Policy mainly evaluate?",
+    "options": [
+      "Whether its owner memorized a password",
+      "Whether a TCP packet matches a route",
+      "Whether a resource request meets configuration rules",
+      "Whether a DNS TTL expired"
+    ],
+    "answer": 2,
+    "explanation": "Policy guardrails and identity permissions are distinct controls."
+  },
+  {
+    "id": "TFA-032-Q3",
+    "prompt": "Will an Azure budget automatically stop this lab at its amount?",
+    "options": [
+      "Yes; all VMs are immediately deleted",
+      "Only when a lock is enabled",
+      "Only when the principal is Reader",
+      "No; it is a notification mechanism"
+    ],
+    "answer": 3,
+    "explanation": "Cost processing and notifications are not a hard real-time spending cap."
+  },
+  {
+    "id": "TFA-032-Q4",
+    "prompt": "How should the exercise delete lock be removed before cleanup?",
+    "options": [
+      "Set enable_delete_lock=false and apply that change",
+      "Delete the Terraform state",
+      "Change the DNS zone",
+      "Force-unlock the backend state lock"
+    ],
+    "answer": 0,
+    "explanation": "An Azure resource lock is distinct from a Terraform state lock; manage it through the configuration."
+  },
+  {
+    "id": "TFA-032-Q5",
+    "prompt": "Does Contributor normally include roleAssignments/write?",
+    "options": [
+      "Yes; it grants every authorization action",
+      "No",
+      "Only on a Monday",
+      "Only with a public endpoint"
+    ],
+    "answer": 1,
+    "explanation": "Creating role assignments requires a role with the relevant authorization permission at the appropriate scope."
+  }
+]

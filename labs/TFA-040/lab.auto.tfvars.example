@@ -1,0 +1,10 @@
+# Copy to lab.auto.tfvars. Never put secrets in this file.
+subscription_id = "00000000-0000-0000-0000-000000000000"
+location        = "westeurope"
+name_prefix     = "tfazure"
+environment     = "lab"
+operator_cidrs  = ["203.0.113.10/32"] # Replace with your real public IPv4/32.
+tags = {
+  owner = "your-name"
+}
+# alert_email = "you@example.com" # Optional. Null means Azure alerts without emails.

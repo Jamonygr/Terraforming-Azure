@@ -1,0 +1,71 @@
+name: Course quality
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/work/terraform-plugin-cache
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-site.txt
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        with:
+          terraform_version: '1.15.8'
+          terraform_wrapper: false
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ${{ github.workspace }}/work/terraform-plugin-cache
+          key: terraform-plugins-${{ runner.os }}-azurerm-4.77.0
+      - uses: terraform-linters/setup-tflint@6e87008f9dd1fe3e34e66aca6c97b4a69f72a7f4 # v4
+        with:
+          tflint_version: v0.63.1
+      - name: Install documentation dependencies
+        run: python -m pip install -r requirements-site.txt
+      - name: Course and security policies
+        run: |
+          python tools/check_course.py
+          python tools/sync_catalog.py --check
+          python tools/check_security.py
+          python -m unittest discover -s tests -v
+          node tools/test_progress.cjs
+      - name: Terraform format and credential-free validation
+        run: |
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          terraform -chdir=labs/TFA-003 init -backend=false -input=false -lockfile=readonly
+          terraform fmt -check -recursive
+          tflint --recursive --format compact
+          python tools/check_terraform.py --jobs 2
+      - name: Check GitHub workflow syntax
+        run: |
+          mkdir -p "$RUNNER_TEMP/actionlint"
+          curl --fail --location --silent --show-error https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint/actionlint_1.7.12_linux_amd64.tar.gz"
+          curl --fail --location --silent --show-error https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_checksums.txt -o "$RUNNER_TEMP/actionlint/actionlint_1.7.12_checksums.txt"
+          (cd "$RUNNER_TEMP/actionlint" && sha256sum --check --ignore-missing actionlint_1.7.12_checksums.txt)
+          tar -xzf "$RUNNER_TEMP/actionlint/actionlint_1.7.12_linux_amd64.tar.gz" -C "$RUNNER_TEMP/actionlint" actionlint
+          "$RUNNER_TEMP/actionlint/actionlint" -shellcheck=
+      - name: Build and inspect the learning website
+        run: |
+          python tools/build_site.py
+          python -m mkdocs build --strict
+          python tools/check_built_site.py
+      - name: Parse all PowerShell scripts
+        shell: pwsh
+        run: |
+          $errorsFound = @()
+          Get-ChildItem -Recurse -Filter *.ps1 | Where-Object { $_.FullName -notmatch '/\.terraform/' } | ForEach-Object {
+            $tokens = $null; $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$parseErrors) | Out-Null
+            $errorsFound += $parseErrors
+          }
+          if ($errorsFound.Count) { $errorsFound | Format-List; throw 'PowerShell syntax errors' }

@@ -1,0 +1,3 @@
+location = "westeurope"
+name_prefix = "tfa016"
+tags = { owner = "learner" }

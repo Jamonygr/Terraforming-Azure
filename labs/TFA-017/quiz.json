@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-017-Q1",
+    "prompt": "Where are child-module resources recorded in this lesson?",
+    "options": [
+      "Only in the module README",
+      "In an automatically isolated backend per subnet",
+      "In the calling root’s state",
+      "In an automatic separate subscription"
+    ],
+    "answer": 2,
+    "explanation": "A module call is a code boundary, not an automatic state boundary."
+  },
+  {
+    "id": "TFA-017-Q2",
+    "prompt": "Who configures AzureRM authentication here?",
+    "options": [
+      "Every child subnet resource separately",
+      "The quiz file",
+      "The GitHub repository title",
+      "The calling root module"
+    ],
+    "answer": 3,
+    "explanation": "Provider configuration remains with the root and is inherited by the child."
+  },
+  {
+    "id": "TFA-017-Q3",
+    "prompt": "Which is an intended public module interface?",
+    "options": [
+      "subnet_ids output keyed by subnet name",
+      "The internal filename line number",
+      "An untracked tfplan path",
+      "The provider’s download folder"
+    ],
+    "answer": 0,
+    "explanation": "Documented outputs are stable interfaces for callers; internal layout is not."
+  },
+  {
+    "id": "TFA-017-Q4",
+    "prompt": "Why learn direct resources before the module?",
+    "options": [
+      "Because child modules use no state",
+      "So the abstraction wraps understood Azure and Terraform behavior",
+      "Because modules cannot create VNets",
+      "Because output values are forbidden"
+    ],
+    "answer": 1,
+    "explanation": "Understanding the underlying resources makes module tradeoffs and failures easier to diagnose."
+  },
+  {
+    "id": "TFA-017-Q5",
+    "prompt": "Does a local source path provide release governance by itself?",
+    "options": [
+      "Yes, it removes the need for review",
+      "Yes, it grants role assignments",
+      "No; versioning, review, tests, and migrations still need design",
+      "Yes, it pins every future commit automatically"
+    ],
+    "answer": 2,
+    "explanation": "A filesystem source supplies reuse but not an immutable release process."
+  }
+]

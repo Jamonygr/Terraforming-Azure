@@ -1,0 +1,138 @@
+name: Azure course lifecycle
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'plan only, or create a reviewed plan and wait for protected apply/destroy approval'
+        required: true
+        type: choice
+        options: [plan, apply, destroy]
+      stage:
+        description: Cumulative capstone stage
+        required: true
+        type: choice
+        options: [foundation, secure, applications, hybrid]
+permissions:
+  contents: read
+concurrency:
+  group: azure-course-capstone
+  cancel-in-progress: false
+env:
+  COURSE_STAGE: ${{ inputs.stage }}
+  COURSE_OPERATION: ${{ inputs.operation }}
+  ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  ARM_USE_OIDC: 'true'
+  ARM_USE_AZUREAD: 'true'
+  TFSTATE_ACCOUNT: ${{ vars.TFSTATE_ACCOUNT }}
+  TF_VAR_location: ${{ vars.AZURE_LOCATION }}
+  TF_VAR_name_prefix: ${{ vars.NAME_PREFIX }}
+  TF_VAR_operator_cidrs: ${{ vars.OPERATOR_CIDRS }}
+  TF_IN_AUTOMATION: 'true'
+jobs:
+  plan:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: azure-plan
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      TF_VAR_admin_password: ${{ secrets.LAB_ADMIN_PASSWORD }}
+      TF_VAR_certificate_password: ${{ secrets.LAB_CERTIFICATE_PASSWORD }}
+      TF_VAR_vpn_shared_key: ${{ secrets.LAB_VPN_SHARED_KEY }}
+      LAB_CERTIFICATE_PFX: ${{ secrets.LAB_CERTIFICATE_PFX }}
+      PLAN_ENCRYPTION_KEY: ${{ secrets.PLAN_ENCRYPTION_KEY }}
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        with:
+          terraform_version: '1.15.8'
+          terraform_wrapper: false
+      - uses: azure/login@8216e11d8cd9b42fe925c852af8e76311ff067ac # v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Create and encrypt a fresh reviewed plan
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not $env:PLAN_ENCRYPTION_KEY -or $env:PLAN_ENCRYPTION_KEY.Length -lt 24) { throw 'Configure a strong PLAN_ENCRYPTION_KEY secret (at least 24 characters).' }
+          ./scripts/Initialize-CourseWorkflow.ps1
+          New-Item -ItemType Directory -Path work/review -Force | Out-Null
+          terraform -chdir=labs/TFA-040 init -input=false -lockfile=readonly -backend-config="storage_account_name=$env:TFSTATE_ACCOUNT" -backend-config='container_name=tfstate' -backend-config='key=capstone.terraform.tfstate' -backend-config='use_azuread_auth=true' -backend-config='use_oidc=true'
+          if ($LASTEXITCODE) { throw 'Backend initialization failed.' }
+          $planArgs = @('-chdir=labs/TFA-040','plan','-input=false','-out=../../work/review/tfplan')
+          if ($env:COURSE_OPERATION -eq 'destroy') { $planArgs += '-destroy' }
+          & terraform @planArgs
+          if ($LASTEXITCODE) { throw 'Planning failed.' }
+          terraform -chdir=labs/TFA-040 show -no-color ../../work/review/tfplan
+          if ($LASTEXITCODE) { throw 'Plan review output failed.' }
+          python tools/plan_artifact.py create work/review/tfplan work/review/metadata.json
+          if ($LASTEXITCODE) { throw 'Plan metadata failed.' }
+          $env:PLAN_ENCRYPTION_KEY | gpg --batch --yes --no-tty --pinentry-mode loopback --passphrase-fd 0 --symmetric --cipher-algo AES256 --output work/review/tfplan.gpg work/review/tfplan
+          if ($LASTEXITCODE) { throw 'Plan encryption failed.' }
+          Remove-Item -LiteralPath work/review/tfplan
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: reviewed-capstone-plan
+          path: |
+            work/review/tfplan.gpg
+            work/review/metadata.json
+          retention-days: 1
+          if-no-files-found: error
+  apply:
+    needs: plan
+    if: inputs.operation != 'plan' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # Configure required reviewers and main-only protection in repository settings.
+    environment: azure-course
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      TF_VAR_admin_password: ${{ secrets.LAB_ADMIN_PASSWORD }}
+      TF_VAR_certificate_password: ${{ secrets.LAB_CERTIFICATE_PASSWORD }}
+      TF_VAR_vpn_shared_key: ${{ secrets.LAB_VPN_SHARED_KEY }}
+      LAB_CERTIFICATE_PFX: ${{ secrets.LAB_CERTIFICATE_PFX }}
+      PLAN_ENCRYPTION_KEY: ${{ secrets.PLAN_ENCRYPTION_KEY }}
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        with:
+          terraform_version: '1.15.8'
+          terraform_wrapper: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: reviewed-capstone-plan
+          path: work/review
+      - uses: azure/login@8216e11d8cd9b42fe925c852af8e76311ff067ac # v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Verify and apply the approved saved plan
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./scripts/Initialize-CourseWorkflow.ps1
+          $env:PLAN_ENCRYPTION_KEY | gpg --batch --yes --no-tty --pinentry-mode loopback --passphrase-fd 0 --output work/review/tfplan --decrypt work/review/tfplan.gpg
+          if ($LASTEXITCODE) { throw 'Plan decryption failed.' }
+          python tools/plan_artifact.py verify work/review/tfplan work/review/metadata.json
+          if ($LASTEXITCODE) { throw 'Saved-plan verification failed.' }
+          terraform -chdir=labs/TFA-040 init -input=false -lockfile=readonly -backend-config="storage_account_name=$env:TFSTATE_ACCOUNT" -backend-config='container_name=tfstate' -backend-config='key=capstone.terraform.tfstate' -backend-config='use_azuread_auth=true' -backend-config='use_oidc=true'
+          if ($LASTEXITCODE) { throw 'Backend initialization failed.' }
+          terraform -chdir=labs/TFA-040 apply -input=false ../../work/review/tfplan
+          if ($LASTEXITCODE) { throw 'Apply failed. Review a fresh plan against the same state before retrying.' }

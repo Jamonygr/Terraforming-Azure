@@ -1,0 +1,648 @@
+{
+  "schema_version": 1,
+  "phases": [
+    {
+      "id": 1,
+      "title": "Foundations",
+      "description": "Read a plan. Make your first deliberate change.",
+      "range": "01\u201406",
+      "color": "#9e8cff"
+    },
+    {
+      "id": 2,
+      "title": "Azure networks",
+      "description": "Trace packets before adding abstractions.",
+      "range": "07\u201413",
+      "color": "#54c8ff"
+    },
+    {
+      "id": 3,
+      "title": "Terraform engineering",
+      "description": "Build reusable, tested infrastructure.",
+      "range": "14\u201421",
+      "color": "#c49aff"
+    },
+    {
+      "id": 4,
+      "title": "Private platforms",
+      "description": "Deliver applications through explicit security boundaries.",
+      "range": "22\u201428",
+      "color": "#52e0b3"
+    },
+    {
+      "id": 5,
+      "title": "Hybrid operations",
+      "description": "Connect networks. Diagnose the whole path.",
+      "range": "29\u201434",
+      "color": "#ffcb6b"
+    },
+    {
+      "id": 6,
+      "title": "Delivery & capstone",
+      "description": "Review, deploy, prove, and recover.",
+      "range": "35\u201440",
+      "color": "#ff93b8"
+    }
+  ],
+  "labs": [
+    {
+      "id": "TFA-001",
+      "title": "Azure, infrastructure as code, and Terraform",
+      "outcome": "Explain Azure hierarchy, desired state, providers, and the Terraform resource graph.",
+      "phase": 1,
+      "path": "labs/TFA-001",
+      "prerequisites": [],
+      "run_mode": "local",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-001.svg",
+      "quiz": "labs/TFA-001/quiz.json"
+    },
+    {
+      "id": "TFA-002",
+      "title": "Prepare your workstation and subscription",
+      "outcome": "Verify your tools, tenant, subscription, permissions, quota, and regional availability.",
+      "phase": 1,
+      "path": "labs/TFA-002",
+      "prerequisites": [
+        "TFA-001"
+      ],
+      "run_mode": "read-only",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-002.svg",
+      "quiz": "labs/TFA-002/quiz.json"
+    },
+    {
+      "id": "TFA-003",
+      "title": "Your first Azure deployment",
+      "outcome": "Create, change, inspect, and destroy a resource group through a reviewed plan.",
+      "phase": 1,
+      "path": "labs/TFA-003",
+      "prerequisites": [
+        "TFA-002"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-003.svg",
+      "quiz": "labs/TFA-003/quiz.json"
+    },
+    {
+      "id": "TFA-004",
+      "title": "Variables, types, and validation",
+      "outcome": "Reject invalid inputs and explain variable precedence before changing resources.",
+      "phase": 1,
+      "path": "labs/TFA-004",
+      "prerequisites": [
+        "TFA-003"
+      ],
+      "run_mode": "local",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-004.svg",
+      "quiz": "labs/TFA-004/quiz.json"
+    },
+    {
+      "id": "TFA-005",
+      "title": "References, locals, data sources, and outputs",
+      "outcome": "Use references and data sources to compose names, tags, dependencies, and outputs.",
+      "phase": 1,
+      "path": "labs/TFA-005",
+      "prerequisites": [
+        "TFA-004"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-005.svg",
+      "quiz": "labs/TFA-005/quiz.json"
+    },
+    {
+      "id": "TFA-006",
+      "title": "Collections and resource identity",
+      "outcome": "Choose stable resource addresses using collection types, count, and for_each.",
+      "phase": 1,
+      "path": "labs/TFA-006",
+      "prerequisites": [
+        "TFA-005"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-006.svg",
+      "quiz": "labs/TFA-006/quiz.json"
+    },
+    {
+      "id": "TFA-007",
+      "title": "IP addressing, CIDR, VNets, and subnets",
+      "outcome": "Design non-overlapping network ranges and allocate explicit subnets.",
+      "phase": 2,
+      "path": "labs/TFA-007",
+      "prerequisites": [
+        "TFA-006"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-007.svg",
+      "quiz": "labs/TFA-007/quiz.json"
+    },
+    {
+      "id": "TFA-008",
+      "title": "NSGs and application security groups",
+      "outcome": "Prove allow and deny decisions using priorities, NSGs, and application security groups.",
+      "phase": 2,
+      "path": "labs/TFA-008",
+      "prerequisites": [
+        "TFA-007"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-008.svg",
+      "quiz": "labs/TFA-008/quiz.json"
+    },
+    {
+      "id": "TFA-009",
+      "title": "Explicit outbound connectivity",
+      "outcome": "Provide a deliberate outbound path with NAT Gateway and private workload subnets.",
+      "phase": 2,
+      "path": "labs/TFA-009",
+      "prerequisites": [
+        "TFA-008"
+      ],
+      "run_mode": "azure",
+      "cost": "Moderate",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-009.svg",
+      "quiz": "labs/TFA-009/quiz.json"
+    },
+    {
+      "id": "TFA-010",
+      "title": "Private Windows VM and IIS",
+      "outcome": "Bootstrap a private Windows/IIS server and verify it through the Azure control plane.",
+      "phase": 2,
+      "path": "labs/TFA-010",
+      "prerequisites": [
+        "TFA-009"
+      ],
+      "run_mode": "azure",
+      "cost": "Moderate",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-010.svg",
+      "quiz": "labs/TFA-010/quiz.json"
+    },
+    {
+      "id": "TFA-011",
+      "title": "Private administration with Bastion",
+      "outcome": "Administer Windows over Bastion without a public VM address or public RDP rule.",
+      "phase": 2,
+      "path": "labs/TFA-011",
+      "prerequisites": [
+        "TFA-010"
+      ],
+      "run_mode": "azure",
+      "cost": "High",
+      "duration_minutes": 120,
+      "diagram": "assets/diagrams/TFA-011.svg",
+      "quiz": "labs/TFA-011/quiz.json"
+    },
+    {
+      "id": "TFA-012",
+      "title": "VNet peering and its limits",
+      "outcome": "Demonstrate direct peering connectivity and the limit of non-transitive peering.",
+      "phase": 2,
+      "path": "labs/TFA-012",
+      "prerequisites": [
+        "TFA-011"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-012.svg",
+      "quiz": "labs/TFA-012/quiz.json"
+    },
+    {
+      "id": "TFA-013",
+      "title": "Routes, next hops, and Network Watcher",
+      "outcome": "Predict longest-prefix route selection and inspect the effective next hop.",
+      "phase": 2,
+      "path": "labs/TFA-013",
+      "prerequisites": [
+        "TFA-012"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-013.svg",
+      "quiz": "labs/TFA-013/quiz.json"
+    },
+    {
+      "id": "TFA-014",
+      "title": "State, addressing, and locking",
+      "outcome": "Explain state addresses, ownership, locking, and the limits of local state.",
+      "phase": 3,
+      "path": "labs/TFA-014",
+      "prerequisites": [
+        "TFA-013"
+      ],
+      "run_mode": "local",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-014.svg",
+      "quiz": "labs/TFA-014/quiz.json"
+    },
+    {
+      "id": "TFA-015",
+      "title": "Drift, import, and refactoring",
+      "outcome": "Detect drift, import ownership, and preserve resource addresses while refactoring.",
+      "phase": 3,
+      "path": "labs/TFA-015",
+      "prerequisites": [
+        "TFA-014"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-015.svg",
+      "quiz": "labs/TFA-015/quiz.json"
+    },
+    {
+      "id": "TFA-016",
+      "title": "Azure remote-state bootstrap",
+      "outcome": "Bootstrap a protected Azure backend, migrate state, and rehearse reverse cleanup.",
+      "phase": 3,
+      "path": "labs/TFA-016",
+      "prerequisites": [
+        "TFA-014",
+        "TFA-015"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-016.svg",
+      "quiz": "labs/TFA-016/quiz.json"
+    },
+    {
+      "id": "TFA-017",
+      "title": "Your first reusable module",
+      "outcome": "Refactor a concrete network into a reusable module with useful outputs.",
+      "phase": 3,
+      "path": "labs/TFA-017",
+      "prerequisites": [
+        "TFA-016"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-017.svg",
+      "quiz": "labs/TFA-017/quiz.json"
+    },
+    {
+      "id": "TFA-018",
+      "title": "Module contracts and safe changes",
+      "outcome": "Define module contracts and predict replacement, lifecycle, and validation behavior.",
+      "phase": 3,
+      "path": "labs/TFA-018",
+      "prerequisites": [
+        "TFA-017"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-018.svg",
+      "quiz": "labs/TFA-018/quiz.json"
+    },
+    {
+      "id": "TFA-019",
+      "title": "Environment and state separation",
+      "outcome": "Separate environment configuration, state keys, and operational ownership.",
+      "phase": 3,
+      "path": "labs/TFA-019",
+      "prerequisites": [
+        "TFA-018"
+      ],
+      "run_mode": "local",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-019.svg",
+      "quiz": "labs/TFA-019/quiz.json"
+    },
+    {
+      "id": "TFA-020",
+      "title": "Compose a network from structured inputs",
+      "outcome": "Compose multiple networks from typed maps without hiding their relationships.",
+      "phase": 3,
+      "path": "labs/TFA-020",
+      "prerequisites": [
+        "TFA-019"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-020.svg",
+      "quiz": "labs/TFA-020/quiz.json"
+    },
+    {
+      "id": "TFA-021",
+      "title": "Test Terraform behavior",
+      "outcome": "Test input validation and planned behavior with mocked providers and assertions.",
+      "phase": 3,
+      "path": "labs/TFA-021",
+      "prerequisites": [
+        "TFA-020"
+      ],
+      "run_mode": "mock",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-021.svg",
+      "quiz": "labs/TFA-021/quiz.json"
+    },
+    {
+      "id": "TFA-022",
+      "title": "Azure DNS and private DNS",
+      "outcome": "Resolve a private name and understand zone links and authoritative DNS boundaries.",
+      "phase": 4,
+      "path": "labs/TFA-022",
+      "prerequisites": [
+        "TFA-021"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-022.svg",
+      "quiz": "labs/TFA-022/quiz.json"
+    },
+    {
+      "id": "TFA-023",
+      "title": "Storage private endpoints",
+      "outcome": "Resolve Blob Storage to a private endpoint and disable its public service path.",
+      "phase": 4,
+      "path": "labs/TFA-023",
+      "prerequisites": [
+        "TFA-022"
+      ],
+      "run_mode": "azure",
+      "cost": "Moderate",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-023.svg",
+      "quiz": "labs/TFA-023/quiz.json"
+    },
+    {
+      "id": "TFA-024",
+      "title": "Managed identity and Key Vault",
+      "outcome": "Use managed identity and scoped RBAC to access private sample data.",
+      "phase": 4,
+      "path": "labs/TFA-024",
+      "prerequisites": [
+        "TFA-023"
+      ],
+      "run_mode": "azure",
+      "cost": "Moderate",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-024.svg",
+      "quiz": "labs/TFA-024/quiz.json"
+    },
+    {
+      "id": "TFA-025",
+      "title": "Azure Firewall and Firewall Policy",
+      "outcome": "Build a Firewall Policy and distinguish network rules from application rules.",
+      "phase": 4,
+      "path": "labs/TFA-025",
+      "prerequisites": [
+        "TFA-024"
+      ],
+      "run_mode": "azure",
+      "cost": "High",
+      "duration_minutes": 120,
+      "diagram": "assets/diagrams/TFA-025.svg",
+      "quiz": "labs/TFA-025/quiz.json"
+    },
+    {
+      "id": "TFA-026",
+      "title": "Inspected hub-and-spoke routing",
+      "outcome": "Inspect selected spoke and outbound traffic without creating asymmetric routing.",
+      "phase": 4,
+      "path": "labs/TFA-026",
+      "prerequisites": [
+        "TFA-025"
+      ],
+      "run_mode": "azure",
+      "cost": "High",
+      "duration_minutes": 120,
+      "diagram": "assets/diagrams/TFA-026.svg",
+      "quiz": "labs/TFA-026/quiz.json"
+    },
+    {
+      "id": "TFA-027",
+      "title": "Application Gateway WAF and private IIS",
+      "outcome": "Serve HTTPS through WAF to healthy private IIS backends and prove a blocked request.",
+      "phase": 4,
+      "path": "labs/TFA-027",
+      "prerequisites": [
+        "TFA-026"
+      ],
+      "run_mode": "azure",
+      "cost": "High",
+      "duration_minutes": 120,
+      "diagram": "assets/diagrams/TFA-027.svg",
+      "quiz": "labs/TFA-027/quiz.json"
+    },
+    {
+      "id": "TFA-028",
+      "title": "Monitoring and diagnostic evidence",
+      "outcome": "Collect diagnostics and guest telemetry, query evidence, and validate an alert.",
+      "phase": 4,
+      "path": "labs/TFA-028",
+      "prerequisites": [
+        "TFA-027"
+      ],
+      "run_mode": "azure",
+      "cost": "Moderate",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-028.svg",
+      "quiz": "labs/TFA-028/quiz.json"
+    },
+    {
+      "id": "TFA-029",
+      "title": "VPN and hybrid routing foundations",
+      "outcome": "Explain IPsec, gateway transit, propagation, route selection, and BGP purpose.",
+      "phase": 5,
+      "path": "labs/TFA-029",
+      "prerequisites": [
+        "TFA-028"
+      ],
+      "run_mode": "local",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-029.svg",
+      "quiz": "labs/TFA-029/quiz.json"
+    },
+    {
+      "id": "TFA-030",
+      "title": "Simulated on-premises connectivity",
+      "outcome": "Prove an encrypted connection to an Azure-hosted simulated on-premises network.",
+      "phase": 5,
+      "path": "labs/TFA-030",
+      "prerequisites": [
+        "TFA-029"
+      ],
+      "run_mode": "azure",
+      "cost": "High",
+      "duration_minutes": 120,
+      "diagram": "assets/diagrams/TFA-030.svg",
+      "quiz": "labs/TFA-030/quiz.json"
+    },
+    {
+      "id": "TFA-031",
+      "title": "Hybrid DNS with Private Resolver",
+      "outcome": "Resolve Azure private services and corporate lab names across the VPN.",
+      "phase": 5,
+      "path": "labs/TFA-031",
+      "prerequisites": [
+        "TFA-030"
+      ],
+      "run_mode": "azure",
+      "cost": "High",
+      "duration_minutes": 120,
+      "diagram": "assets/diagrams/TFA-031.svg",
+      "quiz": "labs/TFA-031/quiz.json"
+    },
+    {
+      "id": "TFA-032",
+      "title": "RBAC, policy, budgets, and locks",
+      "outcome": "Apply practical permissions, policy, budget notifications, and resource locks.",
+      "phase": 5,
+      "path": "labs/TFA-032",
+      "prerequisites": [
+        "TFA-031"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-032.svg",
+      "quiz": "labs/TFA-032/quiz.json"
+    },
+    {
+      "id": "TFA-033",
+      "title": "Provider aliases and subscription boundaries",
+      "outcome": "Map provider aliases explicitly and understand cross-subscription prerequisites.",
+      "phase": 5,
+      "path": "labs/TFA-033",
+      "prerequisites": [
+        "TFA-032"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-033.svg",
+      "quiz": "labs/TFA-033/quiz.json"
+    },
+    {
+      "id": "TFA-034",
+      "title": "Network incident investigation",
+      "outcome": "Diagnose a broken service by following DNS, routes, enforcement, and application health.",
+      "phase": 5,
+      "path": "labs/TFA-034",
+      "prerequisites": [
+        "TFA-033"
+      ],
+      "run_mode": "azure",
+      "cost": "Moderate",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-034.svg",
+      "quiz": "labs/TFA-034/quiz.json"
+    },
+    {
+      "id": "TFA-035",
+      "title": "Git collaboration and pull-request checks",
+      "outcome": "Review infrastructure changes through credential-free pull-request quality checks.",
+      "phase": 6,
+      "path": "labs/TFA-035",
+      "prerequisites": [
+        "TFA-034"
+      ],
+      "run_mode": "local",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-035.svg",
+      "quiz": "labs/TFA-035/quiz.json"
+    },
+    {
+      "id": "TFA-036",
+      "title": "GitHub Actions authentication with OIDC",
+      "outcome": "Configure a federated managed identity for GitHub Actions and backend access.",
+      "phase": 6,
+      "path": "labs/TFA-036",
+      "prerequisites": [
+        "TFA-035"
+      ],
+      "run_mode": "azure",
+      "cost": "Low",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-036.svg",
+      "quiz": "labs/TFA-036/quiz.json"
+    },
+    {
+      "id": "TFA-037",
+      "title": "Reviewed plan, apply, and destroy workflows",
+      "outcome": "Review a saved plan and use an explicitly invoked protected deployment workflow.",
+      "phase": 6,
+      "path": "labs/TFA-037",
+      "prerequisites": [
+        "TFA-036"
+      ],
+      "run_mode": "local",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-037.svg",
+      "quiz": "labs/TFA-037/quiz.json"
+    },
+    {
+      "id": "TFA-038",
+      "title": "Recovery and controlled upgrades",
+      "outcome": "Recover ownership and state, resume interrupted work, and review provider upgrades.",
+      "phase": 6,
+      "path": "labs/TFA-038",
+      "prerequisites": [
+        "TFA-037"
+      ],
+      "run_mode": "local",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-038.svg",
+      "quiz": "labs/TFA-038/quiz.json"
+    },
+    {
+      "id": "TFA-039",
+      "title": "Capstone architecture workshop",
+      "outcome": "Complete the address plan, traffic matrix, permissions, cost review, and readiness gate.",
+      "phase": 6,
+      "path": "labs/TFA-039",
+      "prerequisites": [
+        "TFA-038"
+      ],
+      "run_mode": "local",
+      "cost": "None",
+      "duration_minutes": 75,
+      "diagram": "assets/diagrams/TFA-039.svg",
+      "quiz": "labs/TFA-039/quiz.json"
+    },
+    {
+      "id": "TFA-040",
+      "title": "Build Terraforming Azure",
+      "outcome": "Integrate and prove the complete staged regional hub-and-spoke architecture.",
+      "phase": 6,
+      "path": "labs/TFA-040",
+      "prerequisites": [
+        "TFA-039"
+      ],
+      "run_mode": "azure",
+      "cost": "High",
+      "duration_minutes": 480,
+      "diagram": "assets/diagrams/TFA-040.svg",
+      "quiz": "labs/TFA-040/quiz.json"
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+site_name: Terraforming Azure
+site_description: A Windows-first journey from Terraform basics to a complete Azure
+  hub-and-spoke network.
+site_url: https://jamonygr.github.io/Terraforming-Azure/
+repo_url: https://github.com/Jamonygr/Terraforming-Azure
+repo_name: Jamonygr/Terraforming-Azure
+docs_dir: .site-docs
+site_dir: site
+use_directory_urls: true
+theme:
+  name: material
+  font: false
+  features:
+  - navigation.tabs
+  - navigation.sections
+  - navigation.top
+  - search.highlight
+  - content.code.copy
+  palette:
+  - scheme: slate
+    primary: indigo
+    accent: cyan
+    toggle:
+      icon: material/brightness-4
+      name: Use light theme
+  - scheme: default
+    primary: indigo
+    accent: deep purple
+    toggle:
+      icon: material/brightness-7
+      name: Use dark theme
+nav:
+- Start here: index.md
+- Learning phases:
+  - 1 · Foundations:
+    - Phase overview: phases/phase-1.md
+    - TFA-001 · Azure, infrastructure as code, and Terraform: labs/TFA-001.md
+    - TFA-002 · Prepare your workstation and subscription: labs/TFA-002.md
+    - TFA-003 · Your first Azure deployment: labs/TFA-003.md
+    - TFA-004 · Variables, types, and validation: labs/TFA-004.md
+    - TFA-005 · References, locals, data sources, and outputs: labs/TFA-005.md
+    - TFA-006 · Collections and resource identity: labs/TFA-006.md
+  - 2 · Azure networks:
+    - Phase overview: phases/phase-2.md
+    - TFA-007 · IP addressing, CIDR, VNets, and subnets: labs/TFA-007.md
+    - TFA-008 · NSGs and application security groups: labs/TFA-008.md
+    - TFA-009 · Explicit outbound connectivity: labs/TFA-009.md
+    - TFA-010 · Private Windows VM and IIS: labs/TFA-010.md
+    - TFA-011 · Private administration with Bastion: labs/TFA-011.md
+    - TFA-012 · VNet peering and its limits: labs/TFA-012.md
+    - TFA-013 · Routes, next hops, and Network Watcher: labs/TFA-013.md
+  - 3 · Terraform engineering:
+    - Phase overview: phases/phase-3.md
+    - TFA-014 · State, addressing, and locking: labs/TFA-014.md
+    - TFA-015 · Drift, import, and refactoring: labs/TFA-015.md
+    - TFA-016 · Azure remote-state bootstrap: labs/TFA-016.md
+    - TFA-017 · Your first reusable module: labs/TFA-017.md
+    - TFA-018 · Module contracts and safe changes: labs/TFA-018.md
+    - TFA-019 · Environment and state separation: labs/TFA-019.md
+    - TFA-020 · Compose a network from structured inputs: labs/TFA-020.md
+    - TFA-021 · Test Terraform behavior: labs/TFA-021.md
+  - 4 · Private platforms:
+    - Phase overview: phases/phase-4.md
+    - TFA-022 · Azure DNS and private DNS: labs/TFA-022.md
+    - TFA-023 · Storage private endpoints: labs/TFA-023.md
+    - TFA-024 · Managed identity and Key Vault: labs/TFA-024.md
+    - TFA-025 · Azure Firewall and Firewall Policy: labs/TFA-025.md
+    - TFA-026 · Inspected hub-and-spoke routing: labs/TFA-026.md
+    - TFA-027 · Application Gateway WAF and private IIS: labs/TFA-027.md
+    - TFA-028 · Monitoring and diagnostic evidence: labs/TFA-028.md
+  - 5 · Hybrid operations:
+    - Phase overview: phases/phase-5.md
+    - TFA-029 · VPN and hybrid routing foundations: labs/TFA-029.md
+    - TFA-030 · Simulated on-premises connectivity: labs/TFA-030.md
+    - TFA-031 · Hybrid DNS with Private Resolver: labs/TFA-031.md
+    - TFA-032 · RBAC, policy, budgets, and locks: labs/TFA-032.md
+    - TFA-033 · Provider aliases and subscription boundaries: labs/TFA-033.md
+    - TFA-034 · Network incident investigation: labs/TFA-034.md
+  - 6 · Delivery & capstone:
+    - Phase overview: phases/phase-6.md
+    - TFA-035 · Git collaboration and pull-request checks: labs/TFA-035.md
+    - TFA-036 · GitHub Actions authentication with OIDC: labs/TFA-036.md
+    - TFA-037 · Reviewed plan, apply, and destroy workflows: labs/TFA-037.md
+    - TFA-038 · Recovery and controlled upgrades: labs/TFA-038.md
+    - TFA-039 · Capstone architecture workshop: labs/TFA-039.md
+    - TFA-040 · Build Terraforming Azure: labs/TFA-040.md
+- Architecture: guides/architecture.md
+- Practice: practice.md
+- Your progress: progress.md
+- Run safely:
+  - Cost and cleanup: guides/cost-and-cleanup.md
+  - Backend bootstrap: guides/backend.md
+  - Delivery and OIDC: guides/delivery.md
+  - Troubleshooting: guides/troubleshooting.md
+  - Glossary: guides/glossary.md
+  - Live smoke tests: guides/live-smoke-tests.md
+  - Validation status: guides/validation.md
+plugins:
+- search:
+    lang: en
+markdown_extensions:
+- admonition
+- attr_list
+- md_in_html
+- tables
+- toc:
+    permalink: true
+- pymdownx.details
+- pymdownx.highlight
+- pymdownx.superfences
+extra_css:
+- web/course.css
+extra_javascript:
+- web/course.js
+validation:
+  links:
+    unrecognized_links: warn
+    not_found: warn
+    anchors: warn

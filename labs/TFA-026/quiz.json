@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-026-Q1",
+    "prompt": "Two spokes are each peered with the hub. Can they automatically communicate through that peering chain?",
+    "options": [
+      "Yes; hub peering is always transitive",
+      "Only if every VM is Windows",
+      "Only if the VNets share a tag",
+      "No; VNet peering is non-transitive"
+    ],
+    "answer": 3,
+    "explanation": "Transit needs an explicit supported path such as a firewall plus routes."
+  },
+  {
+    "id": "TFA-026-Q2",
+    "prompt": "Why configure a route on both workload subnets?",
+    "options": [
+      "To preserve the forward and return inspection paths",
+      "To duplicate DNS records",
+      "To make the VPN shared key match",
+      "To grant RBAC to the firewall"
+    ],
+    "answer": 0,
+    "explanation": "A stateful transit design needs symmetric routing as well as an allow rule."
+  },
+  {
+    "id": "TFA-026-Q3",
+    "prompt": "What next-hop type directs a spoke-prefix route to the firewall IP?",
+    "options": [
+      "Internet",
+      "VirtualAppliance",
+      "None",
+      "VirtualNetworkGateway"
+    ],
+    "answer": 1,
+    "explanation": "The firewall acts as a virtual appliance next hop in these UDRs."
+  },
+  {
+    "id": "TFA-026-Q4",
+    "prompt": "ICMP fails even though Azure Firewall permits it. What is another likely layer?",
+    "options": [
+      "Terraform fmt",
+      "The resource-group name",
+      "Windows guest firewall on the destination",
+      "The managed identity client ID"
+    ],
+    "answer": 2,
+    "explanation": "Guest firewall and Azure network enforcement are independent."
+  },
+  {
+    "id": "TFA-026-Q5",
+    "prompt": "Why is adding direct spoke peering a poor fix for this lab?",
+    "options": [
+      "It makes VNet peering transitive",
+      "It enables TLS inspection",
+      "It reduces all Firewall charges to zero",
+      "It can bypass the inspection path being taught"
+    ],
+    "answer": 3,
+    "explanation": "A shortcut can make a probe pass while invalidating the architecture and its evidence."
+  }
+]

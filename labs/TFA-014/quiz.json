@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-014-Q1",
+    "prompt": "What is the purpose of a state lock?",
+    "options": [
+      "Merge all competing plans automatically",
+      "Hide every output",
+      "Increase Azure vCPU quota",
+      "Prevent concurrent state writers from racing"
+    ],
+    "answer": 3,
+    "explanation": "A lock serializes state-changing operations; it does not reconcile independent plans."
+  },
+  {
+    "id": "TFA-014-Q2",
+    "prompt": "A second plan fails while terminal A awaits apply approval. What should you do?",
+    "options": [
+      "Coordinate with terminal A and retry after its operation ends",
+      "Always use -lock=false",
+      "Delete both state files",
+      "Create a different subscription"
+    ],
+    "answer": 0,
+    "explanation": "Respect an active lock; bypassing it removes protection against concurrent operations."
+  },
+  {
+    "id": "TFA-014-Q3",
+    "prompt": "What does a state lineage identify?",
+    "options": [
+      "A GitHub issue number",
+      "The state’s identity history",
+      "A VM SKU",
+      "A CIDR subnet size"
+    ],
+    "answer": 1,
+    "explanation": "Lineage helps distinguish state histories during migrations and recovery."
+  },
+  {
+    "id": "TFA-014-Q4",
+    "prompt": "What does a state serial help indicate?",
+    "options": [
+      "Password strength",
+      "Number of README paragraphs",
+      "Saved state revisions",
+      "Number of Azure regions"
+    ],
+    "answer": 2,
+    "explanation": "The serial changes as state snapshots are saved; it is operational state metadata."
+  },
+  {
+    "id": "TFA-014-Q5",
+    "prompt": "What is safer than manually editing raw state JSON?",
+    "options": [
+      "Delete arbitrary resource IDs",
+      "Copy another team’s state over it",
+      "Commit passwords to Git",
+      "Use supported state-aware commands and preserve a backup"
+    ],
+    "answer": 3,
+    "explanation": "Supported operations preserve state structure more safely, and backups support recovery."
+  }
+]

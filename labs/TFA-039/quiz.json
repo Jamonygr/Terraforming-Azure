@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-039-Q1",
+    "prompt": "What does readiness=true in this local workbook prove?",
+    "options": [
+      "That you explicitly recorded its three review flags",
+      "That Azure quota has been validated automatically",
+      "That both VPN tunnels are connected",
+      "That all WAF requests are safe"
+    ],
+    "answer": 0,
+    "explanation": "The flags are a planning record, not external evidence or automated approval."
+  },
+  {
+    "id": "TFA-039-Q2",
+    "prompt": "Does checking distinct CIDR strings prove that address blocks never overlap?",
+    "options": [
+      "Yes; string inequality is a complete CIDR check",
+      "No; different CIDRs can partially overlap",
+      "Only for /16 blocks",
+      "Only in West Europe"
+    ],
+    "answer": 1,
+    "explanation": "Review actual prefix containment and intersection as well as exact duplicates."
+  },
+  {
+    "id": "TFA-039-Q3",
+    "prompt": "Why use a separate bootstrap state?",
+    "options": [
+      "To deploy a second unrelated hub",
+      "To avoid blob data-plane permission",
+      "To give backend resources an independent lifecycle from the capstone",
+      "To bypass all cleanup"
+    ],
+    "answer": 2,
+    "explanation": "Destroying the workload must not erase the state backend it still needs."
+  },
+  {
+    "id": "TFA-039-Q4",
+    "prompt": "What evidence belongs in final acceptance beyond a successful apply?",
+    "options": [
+      "Only resource counts",
+      "Only a diagram",
+      "Only formatting output",
+      "Application, WAF, Firewall, DNS/private endpoint, VPN, monitoring, and repair evidence"
+    ],
+    "answer": 3,
+    "explanation": "Runtime behavior, enforcement, and recovery show that the integrated design actually works."
+  },
+  {
+    "id": "TFA-039-Q5",
+    "prompt": "When is the best time to decide cleanup ownership and cost limits?",
+    "options": [
+      "Before provisioning the expensive stages",
+      "After forgetting the deployment",
+      "Only after a budget notification",
+      "Only after the repo is public"
+    ],
+    "answer": 0,
+    "explanation": "The deployment window and teardown owner make charged lab infrastructure manageable."
+  }
+]

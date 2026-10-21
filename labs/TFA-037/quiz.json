@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-037-Q1",
+    "prompt": "Why execute a reviewed saved plan rather than silently re-plan at apply time?",
+    "options": [
+      "To bypass state locking",
+      "To avoid all Azure charges",
+      "To apply the exact inspected operation and inputs",
+      "To remove secrets from state"
+    ],
+    "answer": 2,
+    "explanation": "Replanning can produce a different operation than the one reviewed."
+  },
+  {
+    "id": "TFA-037-Q2",
+    "prompt": "Can a saved plan contain sensitive data?",
+    "options": [
+      "No; sensitive=true deletes it",
+      "Only its filename can be sensitive",
+      "Only local plans contain secrets",
+      "Yes; protect plan artifacts and restrict retention/access"
+    ],
+    "answer": 3,
+    "explanation": "Console redaction is not artifact sanitization; this repository encrypts saved plan artifacts."
+  },
+  {
+    "id": "TFA-037-Q3",
+    "prompt": "What must remain consistent between plan review and apply?",
+    "options": [
+      "Commit, stage/inputs, backend/state context, and toolchain",
+      "Only the diagram colors",
+      "Only the workflow display name",
+      "Only the PR title"
+    ],
+    "answer": 0,
+    "explanation": "A plan is tied to configuration and state context and becomes stale when those change."
+  },
+  {
+    "id": "TFA-037-Q4",
+    "prompt": "What protects against concurrent workflows writing one state?",
+    "options": [
+      "A public DNS TTL",
+      "Backend locking plus appropriate workflow concurrency",
+      "A WAF managed rule",
+      "A VM availability setting"
+    ],
+    "answer": 1,
+    "explanation": "Workflow orchestration and state locking complement each other."
+  },
+  {
+    "id": "TFA-037-Q5",
+    "prompt": "Does this lab's local apply deploy the Azure capstone?",
+    "options": [
+      "Yes; terraform_data launches all workflows",
+      "Only when operation is destroy",
+      "No; the actual manually dispatched Azure workflow performs that operation",
+      "Only when GitHub is open in a browser"
+    ],
+    "answer": 2,
+    "explanation": "The local contract is an exercise artifact; runtime workflow evidence is separate."
+  }
+]

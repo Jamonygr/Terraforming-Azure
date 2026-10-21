@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Terraforming Azure capstone: one hub, three spokes, one isolated hybrid site</title>
+  <desc id="desc">The 10.0 hub peers separately with application 10.10, data 10.20, and operations 10.30 networks. The public WAF is in its own application subnet and reaches two private IIS servers. Firewall handles selected workload routes, Bastion handles administration, and Private Resolver handles DNS. An isolated Azure-hosted 192.168 simulated site connects through two Azure VPN gateways, not peering. Its NAT Gateway provides public bootstrap egress only.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#090f22"/><stop offset="1" stop-color="#111c36"/></linearGradient>
+    <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#42b5ff"/></marker>
+    <marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#b08cff"/></marker>
+    <marker id="mint" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#5ce0bd"/></marker>
+    <style>
+      text{font-family:'Segoe UI',Arial,sans-serif;fill:#eaf2ff} .title{font-size:28px;font-weight:700;letter-spacing:-.5px}.sub{font-size:15px;fill:#a8b9d6}.section{font-size:19px;font-weight:700}.small{font-size:13px;fill:#a8b9d6}.body{font-size:15px}.label{font-size:13px;font-weight:600}.boundary{fill:#101c35;stroke:#345b89;stroke-width:1.5}.card{fill:#172846;stroke:#3b5c8b;stroke-width:1.2}.chip{fill:#112a45;stroke:#3070a6}.peer{fill:none;stroke:#42b5ff;stroke-width:3;marker-start:url(#blue);marker-end:url(#blue)}.purple{fill:none;stroke:#b08cff;stroke-width:3;marker-start:url(#purple);marker-end:url(#purple)}.public{fill:none;stroke:#5ce0bd;stroke-width:3;marker-end:url(#mint)}
+    </style>
+  </defs>
+  <rect width="1200" height="800" rx="20" fill="url(#bg)"/>
+  <text x="34" y="44" class="title">The graduation architecture</text>
+  <text x="35" y="71" class="sub">TFA-040 · default address plan · one region / one training subscription · all VM NICs are private</text>
+  <rect x="972" y="24" width="195" height="31" rx="15" fill="#26204b" stroke="#6b55ad"/>
+  <text x="1069" y="45" text-anchor="middle" class="label" fill="#c6afff">FINAL STAGE: HYBRID</text>
+
+  <rect x="30" y="100" width="320" height="76" rx="12" class="card"/>
+  <circle cx="62" cy="132" r="10" fill="none" stroke="#5ce0bd" stroke-width="2"/><path d="M46 157Q62 139 78 157" fill="none" stroke="#5ce0bd" stroke-width="2"/>
+  <text x="88" y="130" class="body" font-weight="700">Allowed operator</text>
+  <text x="88" y="152" class="small">Public HTTPS 443 · allowlisted CIDRs</text>
+
+  <rect x="30" y="212" width="320" height="315" rx="17" class="boundary"/>
+  <text x="50" y="241" class="section">Application spoke</text><text x="50" y="264" class="small">10.10.0.0/16</text>
+  <rect x="49" y="286" width="282" height="83" rx="10" class="card"/>
+  <path d="M68 309 83 304 98 309V325Q83 343 68 325Z" fill="#133e59" stroke="#42b5ff" stroke-width="2"/>
+  <text x="110" y="311" class="body" font-weight="700">Application Gateway WAF_v2</text>
+  <text x="110" y="334" class="small">Dedicated 10.10.0.0/24 subnet</text>
+  <text x="110" y="353" class="small">Public listener · no workload UDR</text>
+  <rect x="49" y="416" width="282" height="86" rx="10" class="card"/>
+  <rect x="66" y="436" width="24" height="36" rx="3" fill="#1f3864" stroke="#b08cff"/><path d="M72 444H84M72 452H84M72 460H84" stroke="#b08cff" stroke-width="2"/>
+  <text x="105" y="441" class="body" font-weight="700">Private Windows / IIS</text>
+  <text x="105" y="463" class="small">iis01 10.10.1.4 · iis02 10.10.1.5</text>
+  <text x="105" y="484" class="small">10.10.1.0/24 · managed identities</text>
+  <path d="M350 138H375V327H331" class="public"/>
+  <rect x="40" y="183" width="255" height="22" rx="5" fill="#0b1d30"/><text x="48" y="199" class="label" fill="#5ce0bd">Public HTTPS 443 → WAF policy</text>
+  <path d="M171 370V415" stroke="#5ce0bd" stroke-width="2.5" fill="none" marker-start="url(#mint)" marker-end="url(#mint)"/>
+  <text x="187" y="390" class="small">HTTP 80 / local return</text>
+
+  <rect x="431" y="102" width="370" height="456" rx="17" fill="#171d3c" stroke="#8064bc" stroke-width="1.6"/>
+  <text x="451" y="134" class="section">Shared services hub</text><text x="451" y="157" class="small">10.0.0.0/16</text>
+  <rect x="451" y="177" width="330" height="75" rx="10" fill="#292346" stroke="#8e6dca"/>
+  <path d="M470 200 484 194 498 200V216Q484 231 470 216Z" fill="#553e74" stroke="#c2a3ff" stroke-width="1.5"/>
+  <text x="510" y="203" class="body" font-weight="700">Azure Firewall Standard</text>
+  <text x="510" y="225" class="small">AzureFirewallSubnet · 10.0.0.0/26</text>
+  <text x="510" y="243" class="small">Selected routes · DNS proxy · egress</text>
+  <rect x="451" y="270" width="330" height="64" rx="10" class="card"/>
+  <text x="470" y="295" class="body" font-weight="700">Bastion Standard</text><text x="470" y="317" class="small">AzureBastionSubnet · 10.0.0.64/26</text>
+  <rect x="451" y="352" width="330" height="90" rx="10" class="card"/>
+  <text x="470" y="377" class="body" font-weight="700">DNS Private Resolver</text>
+  <text x="470" y="399" class="small">Inbound 10.0.1.4 · subnet 10.0.1.0/28</text>
+  <text x="470" y="420" class="small">Outbound subnet 10.0.1.16/28 · corp rule</text>
+  <rect x="451" y="460" width="330" height="75" rx="10" class="card"/>
+  <text x="470" y="487" class="body" font-weight="700">Hub VPN gateway · VpnGw1AZ</text>
+  <text x="470" y="510" class="small">GatewaySubnet · 10.0.0.128/27</text>
+  <text x="470" y="528" class="small">Specific spoke routes → Firewall</text>
+
+  <rect x="859" y="102" width="311" height="204" rx="17" class="boundary"/>
+  <text x="879" y="134" class="section">Data spoke</text><text x="879" y="157" class="small">10.20.0.0/16</text>
+  <rect x="879" y="175" width="271" height="77" rx="10" class="card"/>
+  <circle cx="899" cy="199" r="6" fill="#5ce0bd"/><text x="914" y="205" class="body">Blob private endpoint</text>
+  <circle cx="899" cy="226" r="6" fill="#b08cff"/><text x="914" y="232" class="body">Key Vault private endpoint</text>
+  <text x="879" y="274" class="small">PE subnet 10.20.0.0/24 · route policies on</text>
+  <text x="879" y="293" class="small">PaaS service public access disabled</text>
+
+  <rect x="859" y="361" width="311" height="197" rx="17" class="boundary"/>
+  <text x="879" y="393" class="section">Operations spoke</text><text x="879" y="416" class="small">10.30.0.0/16</text>
+  <rect x="879" y="436" width="271" height="76" rx="10" class="card"/>
+  <text x="899" y="463" class="body" font-weight="700">ops01 · private Windows VM</text>
+  <text x="899" y="486" class="small">10.30.0.4 / 24 · private seed + probes</text>
+  <text x="879" y="538" class="small">Service RBAC + observed traffic evidence</text>
+
+  <path d="M350 398H392V214H431" class="peer"/>
+  <text x="363" y="414" class="label" fill="#7acbff">peering</text>
+  <path d="M801 214H859" class="peer"/>
+  <path d="M801 460H859" class="peer"/>
+  <text x="811" y="200" class="small">peer</text><text x="811" y="447" class="small">peer</text>
+  <text x="1014" y="337" text-anchor="middle" class="small">No direct spoke-to-spoke peerings</text>
+
+  <rect x="30" y="594" width="771" height="132" rx="17" fill="#182333" stroke="#8b789e" stroke-dasharray="6 4" stroke-width="1.5"/>
+  <text x="50" y="621" class="section">Isolated Azure-hosted remote site</text><text x="618" y="621" class="body">192.168.0.0/16</text>
+  <text x="50" y="651" class="body" font-weight="700">corp01 / Windows DNS</text>
+  <text x="50" y="674" class="small">192.168.1.4 · corp subnet /24</text>
+  <text x="50" y="699" class="small">No peering to hub or spokes</text>
+  <rect x="329" y="638" width="268" height="68" rx="9" class="card"/>
+  <text x="344" y="662" class="body" font-weight="700">Remote Azure VPN gateway</text>
+  <text x="344" y="685" class="small">GatewaySubnet 192.168.255.224/27</text>
+  <rect x="618" y="638" width="163" height="68" rx="9" class="card"/>
+  <text x="632" y="662" class="body" font-weight="700">NAT Gateway</text><text x="632" y="685" class="small">Bootstrap / agents</text>
+  <path d="M499 535V573H463V638" class="purple"/>
+  <rect x="512" y="566" width="274" height="20" rx="5" fill="#151b34"/><text x="520" y="581" class="label" fill="#c8adff">IPsec / VNet2VNet · two gateways</text>
+  <rect x="859" y="625" width="311" height="82" rx="12" class="card"/>
+  <text x="879" y="654" class="body" font-weight="700">Public bootstrap endpoints</text>
+  <text x="879" y="678" class="small">Private 10.x Azure traffic uses VPN</text>
+  <path d="M781 672H858" class="public"/>
+
+  <path d="M35 759H80" class="peer"/><text x="92" y="764" class="small">Direct hub peering</text>
+  <path d="M293 759H338" class="purple"/><text x="350" y="764" class="small">IPsec connection</text>
+  <path d="M547 759H592" class="public"/><text x="604" y="764" class="small">Public / explicit egress path</text>
+  <text x="1170" y="786" text-anchor="end" class="small">Logical view · inspect packet-path and DNS diagrams for enforcement details</text>
+</svg>

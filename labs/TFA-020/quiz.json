@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-020-Q1",
+    "prompt": "What identifies each for_each network module instance?",
+    "options": [
+      "The order of README sections",
+      "The stable networks map key",
+      "The subnet’s last IP octet",
+      "The provider’s installed folder"
+    ],
+    "answer": 1,
+    "explanation": "Module instance addresses preserve keys such as module.network[\"hub\"]."
+  },
+  {
+    "id": "TFA-020-Q2",
+    "prompt": "What does the label hub create automatically?",
+    "options": [
+      "A DNS forwarding resolver",
+      "Gateway transit between every VNet",
+      "No transit behavior beyond the declared resources",
+      "An Azure Firewall"
+    ],
+    "answer": 2,
+    "explanation": "Labels describe intent; only explicit resources and settings create network behavior."
+  },
+  {
+    "id": "TFA-020-Q3",
+    "prompt": "Do the two module-created groups imply two Terraform states?",
+    "options": [
+      "Yes, resource groups always create state backends",
+      "Yes, map keys are Azure Blob keys",
+      "Yes, modules never share a root",
+      "No; both instances belong to this root’s state"
+    ],
+    "answer": 3,
+    "explanation": "Azure lifecycle containers and Terraform state boundaries are different concepts."
+  },
+  {
+    "id": "TFA-020-Q4",
+    "prompt": "Adding one subnet key inside the spoke map should normally propose what?",
+    "options": [
+      "One subnet creation in the existing spoke module",
+      "All networks recreated",
+      "One new Azure tenant",
+      "Deletion of the hub"
+    ],
+    "answer": 0,
+    "explanation": "Stable outer and inner keys keep unchanged module/resource identities."
+  },
+  {
+    "id": "TFA-020-Q5",
+    "prompt": "What risk accompanies renaming hub to core?",
+    "options": [
+      "Azure deduplicates every resource by tag",
+      "Nested module addresses change and need a reviewed migration",
+      "Only Markdown navigation changes",
+      "The state provider becomes local automatically"
+    ],
+    "answer": 1,
+    "explanation": "Renaming a for_each module key affects the addresses of its entire child resource tree."
+  }
+]

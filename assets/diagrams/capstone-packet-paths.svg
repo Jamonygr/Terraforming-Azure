@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="830" viewBox="0 0 1200 830" role="img" aria-labelledby="title desc">
+  <title id="title">Capstone packet paths: public WAF ingress versus inspected private traffic</title>
+  <desc id="desc">Four separate traffic lanes show public HTTPS through Application Gateway with same-VNet IIS return, operations to IIS through Firewall with reciprocal destination routes, app or operations to private endpoints using a selected data-prefix route and HTTPS application-rule SNAT, and approved Internet egress via a default Firewall route. The WAF subnet does not inherit workload UDRs. Private endpoint policies are enabled and a default route alone is insufficient for inspection.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#090f22"/><stop offset="1" stop-color="#121d37"/></linearGradient>
+    <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#5ce0bd"/></marker>
+    <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#42b5ff"/></marker>
+    <marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#b08cff"/></marker>
+    <style>
+      text{font-family:'Segoe UI',Arial,sans-serif;fill:#eaf2ff}.title{font-size:28px;font-weight:700;letter-spacing:-.5px}.sub{font-size:15px;fill:#acbbd5}.label{font-size:13px;font-weight:600}.small{font-size:13px;fill:#aebfd9}.body{font-size:16px;font-weight:600}.lane{fill:#101d35;stroke:#263d60}.card{fill:#172a48;stroke:#3c618c;stroke-width:1.3}.fw{fill:#292346;stroke:#8b69c7;stroke-width:1.3}.arrow{fill:none;stroke-width:3}.return{fill:none;stroke:#42b5ff;stroke-width:2;stroke-dasharray:6 4;marker-end:url(#blue)}
+    </style>
+  </defs>
+  <rect width="1200" height="830" rx="20" fill="url(#bg)"/>
+  <text x="32" y="44" class="title">Follow both directions of the packet</text>
+  <text x="33" y="72" class="sub">Public ingress and private inspection have different paths · source → enforcement → destination → return</text>
+
+  <rect x="25" y="100" width="1150" height="164" rx="15" class="lane"/>
+  <circle cx="49" cy="125" r="13" fill="#1f5a58"/><text x="49" y="130" text-anchor="middle" class="label">1</text>
+  <text x="73" y="130" class="body">PUBLIC APPLICATION</text>
+  <rect x="270" y="145" width="876" height="99" rx="11" fill="#101f37" stroke="#438c83" stroke-dasharray="5 4"/>
+  <text x="1128" y="163" text-anchor="end" class="small">App VNet · 10.10.0.0/16</text>
+  <rect x="44" y="165" width="161" height="66" rx="9" class="card"/><text x="124" y="191" text-anchor="middle" class="body">Operator</text><text x="124" y="214" text-anchor="middle" class="small">Allowlisted public /32</text>
+  <rect x="292" y="177" width="263" height="52" rx="9" class="card"/><text x="423" y="199" text-anchor="middle" class="body">WAF_v2 · public HTTPS</text><text x="423" y="219" text-anchor="middle" class="small">Own subnet: 10.10.0.0/24</text>
+  <rect x="872" y="177" width="251" height="52" rx="9" class="card"/><text x="997" y="199" text-anchor="middle" class="body">Private IIS .4 / .5</text><text x="997" y="219" text-anchor="middle" class="small">10.10.1.0/24</text>
+  <path d="M205 191H292" class="arrow" stroke="#5ce0bd" marker-end="url(#green)"/><text x="248" y="180" text-anchor="middle" class="label" fill="#5ce0bd">443</text>
+  <path d="M555 191H872" class="arrow" stroke="#5ce0bd" marker-end="url(#green)"/><text x="713" y="181" text-anchor="middle" class="label" fill="#5ce0bd">HTTP 80 / health probe</text>
+  <path d="M872 218H555" class="return"/><text x="713" y="238" text-anchor="middle" class="small">Same-VNet return · no Firewall detour</text>
+  <text x="1129" y="129" text-anchor="end" class="label" fill="#5ce0bd">WAF subnet: no workload route-table association</text>
+
+  <rect x="25" y="282" width="1150" height="153" rx="15" class="lane"/>
+  <circle cx="49" cy="307" r="13" fill="#214467"/><text x="49" y="312" text-anchor="middle" class="label">2</text>
+  <text x="73" y="312" class="body">INTERSPOKE HTTP</text>
+  <rect x="44" y="333" width="224" height="65" rx="9" class="card"/><text x="156" y="359" text-anchor="middle" class="body">ops01 · 10.30.0.4</text><text x="156" y="382" text-anchor="middle" class="small">Operations spoke /16</text>
+  <rect x="456" y="333" width="250" height="65" rx="9" class="fw"/><text x="581" y="359" text-anchor="middle" class="body">Hub Firewall</text><text x="581" y="382" text-anchor="middle" class="small">Network allow · TCP/80</text>
+  <rect x="925" y="333" width="224" height="65" rx="9" class="card"/><text x="1037" y="359" text-anchor="middle" class="body">Private IIS</text><text x="1037" y="382" text-anchor="middle" class="small">10.10.1.4 / .5 + NSG</text>
+  <path d="M268 351H456" class="arrow" stroke="#42b5ff" marker-end="url(#blue)"/><text x="362" y="338" text-anchor="middle" class="label">10.10.0.0/16 UDR</text>
+  <path d="M706 351H925" class="arrow" stroke="#42b5ff" marker-end="url(#blue)"/><text x="816" y="338" text-anchor="middle" class="label">Hub → app peering</text>
+  <path d="M925 389H706" class="return"/><path d="M456 389H268" class="return"/>
+  <text x="580" y="421" text-anchor="middle" class="small">Return: app route 10.30.0.0/16 → Firewall → operations · preserve private source for the network rule</text>
+
+  <rect x="25" y="453" width="1150" height="171" rx="15" class="lane"/>
+  <circle cx="49" cy="478" r="13" fill="#4b386e"/><text x="49" y="483" text-anchor="middle" class="label">3</text>
+  <text x="73" y="483" class="body">PRIVATE ENDPOINT HTTPS</text>
+  <rect x="44" y="511" width="224" height="65" rx="9" class="card"/><text x="156" y="537" text-anchor="middle" class="body">App / operations</text><text x="156" y="560" text-anchor="middle" class="small">Original service FQDN</text>
+  <rect x="456" y="511" width="250" height="65" rx="9" class="fw"/><text x="581" y="537" text-anchor="middle" class="body">Firewall HTTPS rule</text><text x="581" y="560" text-anchor="middle" class="small">Application rule / SNAT</text>
+  <rect x="925" y="511" width="224" height="65" rx="9" class="card"/><text x="1037" y="537" text-anchor="middle" class="body">Blob / Key Vault PE</text><text x="1037" y="560" text-anchor="middle" class="small">10.20.0.0/24 + service RBAC</text>
+  <path d="M268 529H456" class="arrow" stroke="#b08cff" marker-end="url(#purple)"/><text x="362" y="516" text-anchor="middle" class="label">10.20.0.0/16 UDR</text>
+  <path d="M706 529H925" class="arrow" stroke="#b08cff" marker-end="url(#purple)"/><text x="815" y="516" text-anchor="middle" class="label">Private endpoint path</text>
+  <path d="M925 567H706" class="return"/><path d="M456 567H268" class="return"/>
+  <text x="581" y="600" text-anchor="middle" class="small">PE subnet route policies ENABLED · selected data-prefix routes override the direct path · SNAT returns replies to Firewall</text>
+  <text x="1129" y="480" text-anchor="end" class="label" fill="#c9b3ff">A default route alone does not force PE inspection</text>
+
+  <rect x="25" y="642" width="1150" height="123" rx="15" class="lane"/>
+  <circle cx="49" cy="667" r="13" fill="#4b386e"/><text x="49" y="672" text-anchor="middle" class="label">4</text>
+  <text x="73" y="672" class="body">CONTROLLED EGRESS</text>
+  <rect x="44" y="695" width="224" height="49" rx="9" class="card"/><text x="156" y="725" text-anchor="middle" class="body">Private workload</text>
+  <rect x="456" y="695" width="250" height="49" rx="9" class="fw"/><text x="581" y="725" text-anchor="middle" class="body">Firewall / FQDN allowlist</text>
+  <rect x="925" y="695" width="224" height="49" rx="9" class="card"/><text x="1037" y="725" text-anchor="middle" class="body">www.microsoft.com:443</text>
+  <path d="M268 718H456" class="arrow" stroke="#b08cff" marker-end="url(#purple)"/><text x="362" y="705" text-anchor="middle" class="label">0.0.0.0/0 UDR</text>
+  <path d="M706 718H925" class="arrow" stroke="#b08cff" marker-end="url(#purple)"/><text x="815" y="705" text-anchor="middle" class="label">Allowed / stateful return</text>
+  <text x="1129" y="668" text-anchor="end" class="label" fill="#ffb9ca">Unapproved HTTPS: deny + Firewall log evidence</text>
+
+  <path d="M35 793H78" stroke="#5ce0bd" stroke-width="3" marker-end="url(#green)"/><text x="91" y="798" class="small">Public / local application</text>
+  <path d="M350 793H393" stroke="#42b5ff" stroke-width="3" marker-end="url(#blue)"/><text x="406" y="798" class="small">Inspected network flow</text>
+  <path d="M625 793H668" stroke="#b08cff" stroke-width="3" marker-end="url(#purple)"/><text x="681" y="798" class="small">Inspected HTTPS</text>
+  <path d="M900 793H943" class="return"/><text x="956" y="798" class="small">Required return</text>
+  <text x="1170" y="819" text-anchor="end" class="small">Prove effective routes, DNS answers, application results, and logs · configuration alone is not acceptance</text>
+</svg>

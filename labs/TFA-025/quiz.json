@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-025-Q1",
+    "prompt": "What directs a workload subnet's internet traffic through Azure Firewall?",
+    "options": [
+      "Merely deploying Firewall Policy",
+      "A public DNS A record for the firewall",
+      "A route table association with an appropriate next-hop route",
+      "Adding tags to the subnet"
+    ],
+    "answer": 2,
+    "explanation": "Policy decides what to do with packets reaching the firewall; routing brings the packets there."
+  },
+  {
+    "id": "TFA-025-Q2",
+    "prompt": "Which rule fits HTTPS access to a small set of FQDNs?",
+    "options": [
+      "A network rule allowing TCP 443 to every address",
+      "An inbound RDP NSG rule",
+      "A private DNS VNet link",
+      "A narrowly scoped application rule"
+    ],
+    "answer": 3,
+    "explanation": "Application rules express FQDN-aware restrictions; broad port-only access permits more destinations."
+  },
+  {
+    "id": "TFA-025-Q3",
+    "prompt": "What happens to traffic with no matching allow rule?",
+    "options": [
+      "It is denied",
+      "It bypasses inspection",
+      "It uses the next spoke automatically",
+      "It is allowed if the VM has Contributor"
+    ],
+    "answer": 0,
+    "explanation": "Azure Firewall is deny-by-default; Azure RBAC does not authorize packets."
+  },
+  {
+    "id": "TFA-025-Q4",
+    "prompt": "Does this Firewall Standard exercise demonstrate TLS decryption?",
+    "options": [
+      "Yes, every HTTPS application rule decrypts payloads",
+      "No",
+      "Only if its public IP is Standard",
+      "Only if DNS TTL is 60"
+    ],
+    "answer": 1,
+    "explanation": "Allowing an HTTPS FQDN is not the same as configuring TLS inspection."
+  },
+  {
+    "id": "TFA-025-Q5",
+    "prompt": "What does a successful Firewall deployment prove without a test host?",
+    "options": [
+      "The application is reachable",
+      "Every return path is correct",
+      "The configured resources exist, not that a workload flow succeeded",
+      "DNS from all spokes works"
+    ],
+    "answer": 2,
+    "explanation": "Control-plane deployment evidence must not be presented as unperformed packet tests."
+  }
+]

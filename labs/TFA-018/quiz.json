@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-018-Q1",
+    "prompt": "Which change is normally additive with stable subnet keys?",
+    "options": [
+      "Rename web to frontend without migration",
+      "Change the VNet name prefix everywhere",
+      "Remove the app key",
+      "Add a data key while retaining web and app"
+    ],
+    "answer": 3,
+    "explanation": "A new distinct key adds a subnet; existing keys retain their addresses."
+  },
+  {
+    "id": "TFA-018-Q2",
+    "prompt": "What does the module validate about CIDRs locally?",
+    "options": [
+      "Syntax and required nonempty collections",
+      "Every global hybrid address conflict",
+      "Every Azure policy in all subscriptions",
+      "All future peering costs"
+    ],
+    "answer": 0,
+    "explanation": "The teaching module checks a limited input contract and relies on Azure for further network validation."
+  },
+  {
+    "id": "TFA-018-Q3",
+    "prompt": "A caller relies on subnet_ids[\"web\"]. Removing web is what kind of change?",
+    "options": [
+      "A new local variable with no effect",
+      "A potentially breaking interface change",
+      "Always harmless formatting",
+      "A provider cache update only"
+    ],
+    "answer": 1,
+    "explanation": "Output keys used by callers form part of the public contract."
+  },
+  {
+    "id": "TFA-018-Q4",
+    "prompt": "Why inspect a rename plan before applying?",
+    "options": [
+      "Renames only change comments",
+      "Azure never permits subnet names",
+      "It may destroy/create resources due to address and name changes",
+      "All maps are applied alphabetically without state"
+    ],
+    "answer": 2,
+    "explanation": "State-address migration and Azure naming semantics both affect safe refactoring."
+  },
+  {
+    "id": "TFA-018-Q5",
+    "prompt": "What should accompany a breaking module upgrade?",
+    "options": [
+      "A requirement to skip validation",
+      "Public state uploads",
+      "Automatic force-unlock of all environments",
+      "Migration guidance and reviewed plans/tests"
+    ],
+    "answer": 3,
+    "explanation": "Consumers need explicit upgrade instructions and evidence of the resulting actions."
+  }
+]

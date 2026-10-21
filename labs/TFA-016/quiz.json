@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-016-Q1",
+    "prompt": "Why bootstrap storage from local state first?",
+    "options": [
+      "State cannot ever move",
+      "The remote backend must exist before initialization can use it",
+      "Azure Blob creates its own subscription",
+      "Backend blocks are ignored by Terraform"
+    ],
+    "answer": 1,
+    "explanation": "Terraform cannot initialize against a backend resource that has not been created."
+  },
+  {
+    "id": "TFA-016-Q2",
+    "prompt": "What supplies Azure Blob state locking?",
+    "options": [
+      "The README navigation",
+      "The region name",
+      "Blob leasing in the backend",
+      "The resource-group tag"
+    ],
+    "answer": 2,
+    "explanation": "The AzureRM backend uses Blob leases to coordinate state access."
+  },
+  {
+    "id": "TFA-016-Q3",
+    "prompt": "Which role is relevant to Entra-authenticated state blob access?",
+    "options": [
+      "Reader on an unrelated VNet only",
+      "DNS Zone Reader only",
+      "No role is ever required",
+      "Storage Blob Data Contributor"
+    ],
+    "answer": 3,
+    "explanation": "Control-plane ownership alone does not necessarily establish the required blob data-plane authorization."
+  },
+  {
+    "id": "TFA-016-Q4",
+    "prompt": "What must remain consistent after a correct state migration?",
+    "options": [
+      "Resource bindings and state lineage",
+      "Every state serial forever",
+      "The file’s physical storage location",
+      "An account key written into Git"
+    ],
+    "answer": 0,
+    "explanation": "Migration moves the state without recreating its resource ownership history."
+  },
+  {
+    "id": "TFA-016-Q5",
+    "prompt": "What is the correct teardown order for this self-hosting exercise?",
+    "options": [
+      "Disable all state locking permanently",
+      "Migrate back locally, then destroy the backend resources",
+      "Delete storage first, then try to read its state",
+      "Commit state publicly before destroy"
+    ],
+    "answer": 1,
+    "explanation": "Keep the backend available until the state no longer depends on it."
+  }
+]

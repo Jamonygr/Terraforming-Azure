@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-008-Q1",
+    "prompt": "Which custom NSG priority is evaluated first?",
+    "options": [
+      "The rule with the longest name",
+      "100 before 200",
+      "200 before 100",
+      "Only alphabetical rule order matters"
+    ],
+    "answer": 1,
+    "explanation": "Lower numeric priority takes precedence in NSG rule evaluation."
+  },
+  {
+    "id": "TFA-008-Q2",
+    "prompt": "What does an ASG represent?",
+    "options": [
+      "A DNS resolver",
+      "A subnet-wide firewall by itself",
+      "A group of NIC IP configurations for security-rule targeting",
+      "A route table for every subnet"
+    ],
+    "answer": 2,
+    "explanation": "ASGs organize NIC membership for rules; they do not enforce policy independently."
+  },
+  {
+    "id": "TFA-008-Q3",
+    "prompt": "Why is the explicit deny-other-vnet-inbound rule useful?",
+    "options": [
+      "It disables every Azure service tag",
+      "It creates ASG membership",
+      "It makes HTTPS Internet-facing",
+      "It restricts traffic otherwise allowed by a lower-priority default rule"
+    ],
+    "answer": 3,
+    "explanation": "Azure’s default VNet allow must be considered when implementing segmentation."
+  },
+  {
+    "id": "TFA-008-Q4",
+    "prompt": "What does this lab’s empty web ASG mean?",
+    "options": [
+      "No real NIC is yet matched as a web member",
+      "Every NIC in the region is a member",
+      "The rule is automatically applied to the Internet",
+      "All VNet traffic is guaranteed to pass"
+    ],
+    "answer": 0,
+    "explanation": "No ASG membership or packet test is established by creating an empty ASG."
+  },
+  {
+    "id": "TFA-008-Q5",
+    "prompt": "An NSG exists but the subnet does not reference it. What is missing?",
+    "options": [
+      "A second identical priority",
+      "The intended enforcement attachment",
+      "An extra README heading",
+      "A new Azure tenant"
+    ],
+    "answer": 1,
+    "explanation": "A policy object must be attached to the appropriate subnet or NIC to affect that path."
+  }
+]

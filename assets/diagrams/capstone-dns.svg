@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Capstone DNS: spoke proxy, private zones, and bidirectional hybrid forwarding</title>
+  <desc id="desc">Spoke workloads query Azure Firewall DNS proxy. It forwards to the hub resolver inbound IP 10.0.1.4. Hub-linked private DNS zones answer the Azure lab and Blob or Vault private names. A hub-linked ruleset forwards only corp.terraforming-azure.test through the resolver outbound endpoint and the VPN to Windows DNS 192.168.1.4. Corporate Windows DNS conditionally forwards the Azure lab zone and original Blob and Key Vault namespaces through the VPN to the inbound resolver. An Azure private zone must not be forwarded back to that same inbound resolver from a hub-linked rule.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#090f22"/><stop offset="1" stop-color="#111d37"/></linearGradient>
+    <marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#b08cff"/></marker>
+    <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#42b5ff"/></marker>
+    <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#5ce0bd"/></marker>
+    <style>
+      text{font-family:'Segoe UI',Arial,sans-serif;fill:#eaf2ff}.title{font-size:28px;font-weight:700;letter-spacing:-.5px}.sub{font-size:15px;fill:#afc0d9}.section{font-size:18px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#adbfda}.label{font-size:13px;font-weight:600}.card{fill:#172946;stroke:#42628f;stroke-width:1.3}.purple{fill:none;stroke:#b08cff;stroke-width:3;marker-end:url(#purple)}.blue{fill:none;stroke:#42b5ff;stroke-width:3;marker-end:url(#blue)}.answer{fill:none;stroke:#5ce0bd;stroke-width:2;stroke-dasharray:6 4;marker-end:url(#green)}
+    </style>
+  </defs>
+  <rect width="1200" height="800" rx="20" fill="url(#bg)"/>
+  <text x="32" y="44" class="title">DNS follows namespaces, not VNet labels</text>
+  <text x="33" y="72" class="sub">Resolve original service names to private IPs · UDP/TCP 53 · static inbound target · no conditional-forwarding loop</text>
+
+  <rect x="329" y="106" width="813" height="432" rx="18" fill="#151d38" stroke="#7961ac" stroke-width="1.5"/>
+  <text x="349" y="136" class="section">Hub · 10.0.0.0/16</text>
+  <text x="1121" y="136" text-anchor="end" class="small">Private Resolver + linked zones + corp ruleset</text>
+
+  <rect x="30" y="166" width="241" height="163" rx="13" class="card"/>
+  <text x="50" y="196" class="section">Spoke workloads</text>
+  <text x="50" y="225" class="body">iis01 / iis02 · 10.10.1.x</text>
+  <text x="50" y="251" class="body">ops01 · 10.30.0.4</text>
+  <path d="M50 269H251" stroke="#344e72"/>
+  <text x="50" y="292" class="small">VNet DNS server setting:</text>
+  <text x="50" y="314" class="body" fill="#b99cff">Firewall private IP</text>
+
+  <rect x="359" y="175" width="252" height="113" rx="12" fill="#292346" stroke="#9371cf"/>
+  <text x="379" y="205" class="section">Firewall DNS proxy</text>
+  <text x="379" y="231" class="small">proxy_enabled = true</text>
+  <text x="379" y="256" class="body">Upstream: 10.0.1.4</text>
+  <text x="379" y="277" class="small">IP comes from Firewall output</text>
+
+  <rect x="759" y="175" width="353" height="113" rx="12" class="card"/>
+  <text x="779" y="205" class="section">Resolver inbound</text>
+  <text x="779" y="233" class="body" fill="#77caff">Static IP 10.0.1.4</text>
+  <text x="779" y="257" class="small">Delegated subnet 10.0.1.0/28</text>
+  <text x="779" y="277" class="small">Queries use the hub resolution context</text>
+
+  <path d="M271 215H359" class="purple"/><text x="314" y="202" text-anchor="middle" class="label">DNS 53</text>
+  <path d="M611 215H759" class="purple"/><text x="685" y="202" text-anchor="middle" class="label">Forward query</text>
+  <path d="M759 266H611" class="answer"/><path d="M359 266H271" class="answer"/>
+  <text x="683" y="289" text-anchor="middle" class="small">Private IP answer</text>
+
+  <rect x="717" y="353" width="395" height="156" rx="12" class="card"/>
+  <text x="737" y="382" class="section">Hub-linked private zones</text>
+  <circle cx="742" cy="408" r="4" fill="#5ce0bd"/><text x="755" y="413" class="body">azure.terraforming-azure.test</text>
+  <circle cx="742" cy="436" r="4" fill="#42b5ff"/><text x="755" y="441" class="body">privatelink.blob.core.windows.net</text>
+  <circle cx="742" cy="464" r="4" fill="#b08cff"/><text x="755" y="469" class="body">privatelink.vaultcore.azure.net</text>
+  <text x="737" y="495" class="small">A records: IIS/ops and PE zone-group records</text>
+  <path d="M991 288V352" class="blue"/><text x="1005" y="326" class="label">Azure names</text>
+
+  <rect x="359" y="353" width="290" height="156" rx="12" class="card"/>
+  <text x="379" y="382" class="section">Resolver outbound</text>
+  <text x="379" y="410" class="small">Delegated subnet 10.0.1.16/28</text>
+  <text x="379" y="438" class="body">Hub-linked forwarding ruleset</text>
+  <text x="379" y="463" class="body" fill="#c3a8ff">corp.terraforming-azure.test.</text>
+  <text x="379" y="489" class="small">Target 192.168.1.4 : 53</text>
+  <path d="M838 288V319H504V353" class="purple"/>
+  <rect x="515" y="308" width="244" height="22" rx="5" fill="#151d38"/><text x="524" y="324" class="label" fill="#c3a8ff">Corporate namespace match</text>
+
+  <rect x="30" y="591" width="620" height="137" rx="14" fill="#182333" stroke="#8e79a0" stroke-dasharray="6 4" stroke-width="1.5"/>
+  <text x="50" y="622" class="section">Corporate Windows DNS · 192.168.1.4</text>
+  <text x="50" y="649" class="body">Authoritative: corp.terraforming-azure.test</text>
+  <text x="50" y="675" class="small">Conditional forwarders → 10.0.1.4:</text>
+  <text x="50" y="700" class="body">azure.terraforming-azure.test · blob.core.windows.net · vault.azure.net</text>
+
+  <path d="M504 509V591" class="purple"/>
+  <text x="519" y="562" class="label" fill="#c4aaff">Corp lookup via VPN · DNS 53</text>
+  <path d="M650 658H1170V233H1112" class="blue"/>
+  <rect x="799" y="644" width="346" height="26" rx="6" fill="#0e1b30"/><text x="813" y="662" class="label" fill="#75caff">Azure lookup via VPN → inbound 10.0.1.4</text>
+
+  <rect x="717" y="553" width="395" height="58" rx="10" fill="#172b3b" stroke="#426b77"/>
+  <text x="737" y="577" class="body">Service CNAME → private-zone A record</text>
+  <text x="737" y="598" class="small">Returned PE address is in 10.20.0.0/24</text>
+  <rect x="717" y="691" width="395" height="67" rx="10" fill="#322334" stroke="#9a647c"/>
+  <text x="737" y="717" class="body" fill="#ffc0cf">Avoid a forwarding loop</text>
+  <text x="737" y="740" class="small">No hub rule: Azure private zone → own inbound IP</text>
+
+  <path d="M35 764H78" class="purple"/><text x="91" y="769" class="small">Query / conditional forward</text>
+  <path d="M333 764H376" class="blue"/><text x="389" y="769" class="small">Azure-name resolution path</text>
+  <path d="M117 784H160" class="answer"/><text x="173" y="789" class="small">Answer returns along the query path · private DNS is separate from application traffic authorization</text>
+</svg>

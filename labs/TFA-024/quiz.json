@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-024-Q1",
+    "prompt": "Which managed-identity identifier belongs in a role assignment principal_id?",
+    "options": [
+      "The client ID",
+      "The principal object ID",
+      "The Key Vault DNS name",
+      "The subscription display name"
+    ],
+    "answer": 1,
+    "explanation": "RBAC assigns permissions to a principal object; client ID selects an identity during authentication."
+  },
+  {
+    "id": "TFA-024-Q2",
+    "prompt": "What does Key Vault Secrets User primarily grant?",
+    "options": [
+      "Permission to create subscription resource groups",
+      "Permission to create Entra users",
+      "Permission to read secret contents through the vault data plane",
+      "Permission to delete any Key Vault"
+    ],
+    "answer": 2,
+    "explanation": "Vault data-plane roles differ from Azure resource-management roles."
+  },
+  {
+    "id": "TFA-024-Q3",
+    "prompt": "Can an unattached user-assigned identity be used as a laptop login?",
+    "options": [
+      "Yes, by copying its client ID into az login",
+      "Yes, because it has no password",
+      "Only if the vault has a public endpoint",
+      "No; a supported Azure runtime must present that managed identity"
+    ],
+    "answer": 3,
+    "explanation": "An identity resource is not a portable credential and its IDs are not secrets."
+  },
+  {
+    "id": "TFA-024-Q4",
+    "prompt": "Why avoid creating an example secret value in this Terraform lab?",
+    "options": [
+      "A managed secret value can persist in Terraform state",
+      "Key Vault cannot store text",
+      "Terraform sensitive values are encrypted out of state",
+      "RBAC forbids all secret creation"
+    ],
+    "answer": 0,
+    "explanation": "Sensitive output handling does not remove values from state."
+  },
+  {
+    "id": "TFA-024-Q5",
+    "prompt": "A vault name remains unavailable after deletion. What is a likely reason?",
+    "options": [
+      "Managed identities reserve every vault name",
+      "Soft deletion retains the deleted vault and reserves its name",
+      "The DNS TTL controls Azure resource reuse",
+      "Reader permissions prevent all name lookups"
+    ],
+    "answer": 1,
+    "explanation": "Soft delete is a recovery mechanism with retention behavior separate from active-resource deletion."
+  }
+]

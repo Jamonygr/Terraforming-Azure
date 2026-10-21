@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-010-Q1",
+    "prompt": "Why does the IIS extension explicitly depend on the NAT associations?",
+    "options": [
+      "It needs a public VM NIC",
+      "It must disable the VM agent",
+      "All extensions require Bastion",
+      "Bootstrap needs the intended outbound path ready first"
+    ],
+    "answer": 3,
+    "explanation": "Application bootstrap can require outbound access; waiting for both associations makes that dependency explicit."
+  },
+  {
+    "id": "TFA-010-Q2",
+    "prompt": "What does sensitive=true do for the administrator password?",
+    "options": [
+      "Redact normal display, while state may still contain the value",
+      "Remove it from every state file",
+      "Encrypt all local disks automatically",
+      "Rotate the password every hour"
+    ],
+    "answer": 0,
+    "explanation": "Sensitive is a display-handling property, not a secret-storage guarantee."
+  },
+  {
+    "id": "TFA-010-Q3",
+    "prompt": "Which evidence checks actual IIS behavior?",
+    "options": [
+      "A VNet resource ID",
+      "Run Command returning HTTP 200 from localhost",
+      "Only a successful terraform fmt",
+      "The string web in a subnet name"
+    ],
+    "answer": 1,
+    "explanation": "A guest HTTP request validates the application response rather than just control-plane creation."
+  },
+  {
+    "id": "TFA-010-Q4",
+    "prompt": "Stopping W3SVC can leave Terraform plan empty because what?",
+    "options": [
+      "Run Command deletes state",
+      "The VM acquired a public IP",
+      "Guest service runtime is not modeled by this configuration",
+      "Terraform always restarts all Windows services"
+    ],
+    "answer": 2,
+    "explanation": "Terraform does not automatically model every mutable guest operating-system condition."
+  },
+  {
+    "id": "TFA-010-Q5",
+    "prompt": "How should the optional external IP test compare with the NAT output?",
+    "options": [
+      "It should show the VM private IP publicly",
+      "It should equal the subscription GUID",
+      "It should change the administrator password",
+      "The observed source should match outbound_public_ip"
+    ],
+    "answer": 3,
+    "explanation": "A flow leaving through the NAT Gateway should use its configured public source address."
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-036-Q1",
+    "prompt": "Which Azure identity type does this lab federate?",
+    "options": [
+      "A new Entra application registration",
+      "A user-assigned managed identity",
+      "A local Windows account",
+      "A storage account access key"
+    ],
+    "answer": 1,
+    "explanation": "The ARM-based identity/credential path avoids requiring Entra app-registration privileges."
+  },
+  {
+    "id": "TFA-036-Q2",
+    "prompt": "Which OIDC credential field limits access to one GitHub environment?",
+    "options": [
+      "The resource-group location",
+      "The identity display name",
+      "The exact federated subject",
+      "The Log Analytics retention"
+    ],
+    "answer": 2,
+    "explanation": "The subject binds repository and environment; exact case/spelling must match the emitted token."
+  },
+  {
+    "id": "TFA-036-Q3",
+    "prompt": "Which workflow permission permits requesting an OIDC token?",
+    "options": [
+      "issues: write",
+      "packages: read",
+      "checks: none",
+      "id-token: write"
+    ],
+    "answer": 3,
+    "explanation": "The workflow requests a short-lived identity token; it still needs matching Azure federation and RBAC."
+  },
+  {
+    "id": "TFA-036-Q4",
+    "prompt": "What extra backend permission is required for Entra-authenticated Terraform state blob access?",
+    "options": [
+      "Storage Blob Data Contributor at the approved blob scope",
+      "Key Vault Reader only",
+      "Virtual Machine User Login only",
+      "A private DNS record"
+    ],
+    "answer": 0,
+    "explanation": "Azure management Contributor does not automatically grant blob data-plane access and lease operations."
+  },
+  {
+    "id": "TFA-036-Q5",
+    "prompt": "Does the lab RG Contributor role automatically authorize the full capstone and its role assignments?",
+    "options": [
+      "Yes; Contributor applies across the whole tenant",
+      "No; deployment and role-assignment scopes must be deliberately approved",
+      "Only if the repo is public",
+      "Only if two federated credentials exist"
+    ],
+    "answer": 1,
+    "explanation": "Federation supplies identity, while Azure RBAC determines its allowed actions and scopes."
+  }
+]

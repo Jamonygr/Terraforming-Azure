@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-015-Q1",
+    "prompt": "What does an out-of-band tag change demonstrate?",
+    "options": [
+      "Drift between declared and observed configuration",
+      "Automatic module versioning",
+      "A new subscription",
+      "Guaranteed VM compromise"
+    ],
+    "answer": 0,
+    "explanation": "A normal plan can detect provider-observed differences from the configuration."
+  },
+  {
+    "id": "TFA-015-Q2",
+    "prompt": "What is the purpose of an import operation?",
+    "options": [
+      "Copy a README into state",
+      "Bind an existing object to a Terraform address",
+      "Create every missing Azure object",
+      "Grant permission to another tenant"
+    ],
+    "answer": 1,
+    "explanation": "Import establishes Terraform ownership of an existing object at an explicit address."
+  },
+  {
+    "id": "TFA-015-Q3",
+    "prompt": "What does the moved block preserve during a supported refactor?",
+    "options": [
+      "A new Azure group for each file",
+      "An automatic cross-tenant migration",
+      "The existing object binding across address changes",
+      "A new password on every plan"
+    ],
+    "answer": 2,
+    "explanation": "Moved blocks describe address migrations so Terraform need not infer removal and recreation."
+  },
+  {
+    "id": "TFA-015-Q4",
+    "prompt": "What should a drift remediation plan do with the demo external_change tag?",
+    "options": [
+      "Silently rewrite source code",
+      "Delete all resource groups",
+      "Always ignore tag differences",
+      "Propose removing it unless configuration adopts it"
+    ],
+    "answer": 3,
+    "explanation": "The desired tag map remains authoritative unless you deliberately change the configuration."
+  },
+  {
+    "id": "TFA-015-Q5",
+    "prompt": "Why must two states not manage the same resource group?",
+    "options": [
+      "They can issue conflicting lifecycle changes",
+      "Azure requires duplicate resource IDs",
+      "State files cannot contain strings",
+      "Imports always create a new subscription"
+    ],
+    "answer": 0,
+    "explanation": "Unambiguous ownership prevents competing desired states and accidental deletion."
+  }
+]

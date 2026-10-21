@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-033-Q1",
+    "prompt": "What selects the secondary provider for the secondary resource group?",
+    "options": [
+      "The current CLI active subscription alone",
+      "The resource-group display name",
+      "The resource provider = azurerm.secondary binding",
+      "The default location"
+    ],
+    "answer": 2,
+    "explanation": "An explicit alias binding selects that provider configuration."
+  },
+  {
+    "id": "TFA-033-Q2",
+    "prompt": "Can you practice alias syntax with both providers using the same subscription?",
+    "options": [
+      "No, aliases require different tenants",
+      "Only with a VPN",
+      "Only with a GitHub token",
+      "Yes, but that does not demonstrate real cross-subscription access"
+    ],
+    "answer": 3,
+    "explanation": "The exercise can be inexpensive while documenting the limit of its evidence."
+  },
+  {
+    "id": "TFA-033-Q3",
+    "prompt": "What is required in both real target subscriptions?",
+    "options": [
+      "The identity needs the relevant permissions and provider registration support",
+      "Identical resource-group IDs",
+      "Public IPs for resource groups",
+      "A single shared DNS zone"
+    ],
+    "answer": 0,
+    "explanation": "Aliases do not confer authorization or register permissions automatically."
+  },
+  {
+    "id": "TFA-033-Q4",
+    "prompt": "What output is useful to verify the actual subscription boundary?",
+    "options": [
+      "Only a friendly resource-group label",
+      "The full Azure resource ID",
+      "The Terraform file extension",
+      "The Windows password length"
+    ],
+    "answer": 1,
+    "explanation": "ARM IDs include the subscription path and expose wrong-boundary mistakes."
+  },
+  {
+    "id": "TFA-033-Q5",
+    "prompt": "Is rebinding a provider a safe universal Azure subscription migration?",
+    "options": [
+      "Yes; Terraform automatically moves every resource",
+      "Only when using a short prefix",
+      "No; moving existing resources requires a deliberate supported migration plan",
+      "Only when both regions match"
+    ],
+    "answer": 2,
+    "explanation": "Changing provider selection is not an Azure resource-move operation."
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-030-Q1",
+    "prompt": "What represents the remote site in this lab?",
+    "options": [
+      "A physical office router",
+      "A Local Network Gateway resource alone",
+      "A public IIS endpoint",
+      "A second Azure VNet with its own VPN gateway"
+    ],
+    "answer": 3,
+    "explanation": "It is an Azure-hosted simulation, not proof of physical site or WAN compatibility."
+  },
+  {
+    "id": "TFA-030-Q2",
+    "prompt": "What connects the two sites here?",
+    "options": [
+      "Two directional VNet-to-VNet connection resources",
+      "Direct VNet peering",
+      "An Application Gateway listener",
+      "A DNS zone link"
+    ],
+    "answer": 0,
+    "explanation": "Each gateway has a peer connection; there is deliberately no peering shortcut."
+  },
+  {
+    "id": "TFA-030-Q3",
+    "prompt": "Why do both directions use the same shared key?",
+    "options": [
+      "It makes DNS records propagate",
+      "Both VPN peers must authenticate with compatible tunnel settings",
+      "It grants VM Contributor",
+      "It changes the VNet address space"
+    ],
+    "answer": 1,
+    "explanation": "The shared key participates in IPsec authentication and must match."
+  },
+  {
+    "id": "TFA-030-Q4",
+    "prompt": "What evidence goes beyond provisioningState Succeeded?",
+    "options": [
+      "A formatted Terraform file",
+      "A resource-group tag",
+      "Connected tunnel status plus successful cross-site traffic",
+      "A public IP existing"
+    ],
+    "answer": 2,
+    "explanation": "A gateway resource can exist while its tunnel or guest path is unusable."
+  },
+  {
+    "id": "TFA-030-Q5",
+    "prompt": "What happens to gateway charges when you close PowerShell?",
+    "options": [
+      "They stop immediately",
+      "Only the shared key remains charged",
+      "Terraform automatically destroys everything",
+      "They continue until the charged resources are removed"
+    ],
+    "answer": 3,
+    "explanation": "Cloud resource lifetime is independent of terminal lifetime."
+  }
+]

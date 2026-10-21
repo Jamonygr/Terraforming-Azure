@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-031-Q1",
+    "prompt": "Where should a remote-site conditional forwarder send Azure private-name queries in this lab?",
+    "options": [
+      "The Azure DNS Private Resolver inbound endpoint",
+      "Directly to 168.63.129.16 from on-premises",
+      "The storage account public IP",
+      "The VPN public IP on port 443"
+    ],
+    "answer": 0,
+    "explanation": "The inbound endpoint provides a reachable resolver entry point over the hybrid connection."
+  },
+  {
+    "id": "TFA-031-Q2",
+    "prompt": "Why forward the Blob public-service suffix as well as privatelink?",
+    "options": [
+      "It grants Blob Data Reader",
+      "The normal application lookup starts with the public service name",
+      "It makes every zone public",
+      "It disables the VPN"
+    ],
+    "answer": 1,
+    "explanation": "The DNS chain must be handled from the original hostname, not only its eventual private alias."
+  },
+  {
+    "id": "TFA-031-Q3",
+    "prompt": "What makes the private zone visible to the Azure resolver?",
+    "options": [
+      "The Windows administrator password",
+      "The Key Vault secret role",
+      "Its VNet link to the resolver VNet",
+      "A public DNS NS record in the remote VNet"
+    ],
+    "answer": 2,
+    "explanation": "Resolver network context and linked private zones determine the private answer."
+  },
+  {
+    "id": "TFA-031-Q4",
+    "prompt": "Does resolving the Blob name to a private IP authorize a blob read?",
+    "options": [
+      "Yes; DNS acts as the access token",
+      "Only if TTL is 60",
+      "Only if the VPN uses VpnGw1AZ",
+      "No; storage data-plane authorization is still required"
+    ],
+    "answer": 3,
+    "explanation": "DNS, network access, and authorization must each succeed independently."
+  },
+  {
+    "id": "TFA-031-Q5",
+    "prompt": "Which additional resolver components support Azure-to-on-premises conditional forwarding?",
+    "options": [
+      "An outbound endpoint and forwarding ruleset",
+      "A second inbound endpoint alone",
+      "A WAF policy",
+      "A public IP on every VM"
+    ],
+    "answer": 0,
+    "explanation": "Inbound and outbound resolver directions solve different query paths."
+  }
+]

@@ -1,0 +1,6 @@
+# Copy to backend.hcl and use outputs from /bootstrap.
+resource_group_name  = "REPLACE_WITH_BOOTSTRAP_RESOURCE_GROUP"
+storage_account_name = "REPLACE_WITH_BOOTSTRAP_STORAGE_ACCOUNT"
+container_name       = "tfstate"
+key                  = "capstone.terraform.tfstate"
+use_azuread_auth      = true

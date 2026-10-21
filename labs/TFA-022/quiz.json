@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-022-Q1",
+    "prompt": "You create an Azure public DNS zone for a subdomain. What makes ordinary public recursive resolvers find it?",
+    "options": [
+      "Creating a VNet link",
+      "Changing the record TTL to zero",
+      "Creating a private endpoint",
+      "Delegation from the parent zone to its Azure name servers"
+    ],
+    "answer": 3,
+    "explanation": "An authoritative zone can answer direct queries before public delegation exists; recursive discovery needs the parent delegation."
+  },
+  {
+    "id": "TFA-022-Q2",
+    "prompt": "What does linking a private DNS zone to a VNet do?",
+    "options": [
+      "Makes that zone available to clients using the linked VNet DNS resolution path",
+      "Creates routing to every record address",
+      "Grants clients storage data access",
+      "Publishes the zone on the internet"
+    ],
+    "answer": 0,
+    "explanation": "DNS visibility, routing, and authorization are separate mechanisms."
+  },
+  {
+    "id": "TFA-022-Q3",
+    "prompt": "The private A record points to 10.22.1.10. What infrastructure does that create?",
+    "options": [
+      "A VM at that address",
+      "Only a DNS record",
+      "A load balancer and health probe",
+      "A route through the hub"
+    ],
+    "answer": 1,
+    "explanation": "A record describes a name-to-address mapping; the endpoint must exist separately."
+  },
+  {
+    "id": "TFA-022-Q4",
+    "prompt": "Why use an authoritative server explicitly in the public-zone test?",
+    "options": [
+      "Azure DNS cannot answer recursive queries",
+      "It bypasses all internet routing",
+      "The demonstration zone is not delegated from example.com",
+      "It automatically verifies domain ownership"
+    ],
+    "answer": 2,
+    "explanation": "The course does not own example.com and deliberately demonstrates authoritative answers without claiming public delegation."
+  },
+  {
+    "id": "TFA-022-Q5",
+    "prompt": "What mainly controls how long a resolver can cache a record?",
+    "options": [
+      "The VNet address-space size",
+      "The Terraform resource name",
+      "The resource-group location",
+      "The record TTL"
+    ],
+    "answer": 3,
+    "explanation": "TTL is a caching lifetime, not a deployment or connectivity setting."
+  }
+]

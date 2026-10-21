@@ -1,0 +1,62 @@
+[
+  {
+    "id": "TFA-021-Q1",
+    "prompt": "What do these mock tests contact?",
+    "options": [
+      "Every region’s quota service",
+      "The production firewall dataplane",
+      "The mocked provider behavior, with no Azure API deployment",
+      "The real Azure VM host"
+    ],
+    "answer": 2,
+    "explanation": "mock_provider replaces AzureRM operations for these configuration tests."
+  },
+  {
+    "id": "TFA-021-Q2",
+    "prompt": "Why is checking preserved subnet output keys useful?",
+    "options": [
+      "It proves packet loss is zero",
+      "It verifies every VM password",
+      "It replaces all Azure smoke tests",
+      "Callers depend on the public key contract"
+    ],
+    "answer": 3,
+    "explanation": "A key change can break consuming roots even when the HCL still validates."
+  },
+  {
+    "id": "TFA-021-Q3",
+    "prompt": "What makes reject_bad_prefix a successful negative test?",
+    "options": [
+      "The intended validation failure is explicitly expected",
+      "All errors are silently ignored",
+      "The provider automatically fixes input",
+      "The test edits state manually"
+    ],
+    "answer": 0,
+    "explanation": "expect_failures asserts that the specific invalid input is rejected."
+  },
+  {
+    "id": "TFA-021-Q4",
+    "prompt": "What cannot be established by these mock tests?",
+    "options": [
+      "The local prefix validation rule",
+      "Real Azure routing and private DNS behavior",
+      "The configured VNet naming expression",
+      "The subnet output keys"
+    ],
+    "answer": 1,
+    "explanation": "Mocks verify configuration contracts; cloud behavior requires real acceptance evidence."
+  },
+  {
+    "id": "TFA-021-Q5",
+    "prompt": "An assertion fails after the module naming rule changes. What is the best response?",
+    "options": [
+      "Run apply in production to hide the result",
+      "Disable all version constraints",
+      "Review whether the public contract changed intentionally before changing code or tests",
+      "Delete every assertion immediately"
+    ],
+    "answer": 2,
+    "explanation": "A failing contract test is a review signal; weakening it without understanding loses protection."
+  }
+]
